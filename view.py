@@ -41,29 +41,5 @@ def index(name):
 def static(filename):
     return static_file(filename, root='static/')
 
-
-
-# # Static Routes
-# @get("/css/<filepath:re:.*\.css>")
-# def css(filepath):
-#     return static_file(filepath, root="static/css")
-#
-# @get("/fonts/<filepath:re:.*\.(eot|otf|svg|ttf|woff|woff2?)>")
-# def font(filepath):
-#     return static_file(filepath, root="static/fonts")
-#
-# @get("/images/<filepath:re:.*\.(jpg|png|gif|ico|svg)>")
-# def img(filepath):
-#     return static_file(filepath, root="static/images")
-#
-# @get("/js/<filepath:re:.*\.js>")
-# def js(filepath):
-#     return static_file(filepath, root="static/js")
-#
-# @get("/node_modules/<filepath:re:.*\.js>")
-# def nodeModules(filepath):
-#     return static_file(filepath, root="static/node_modules")
-
-
 # run it
 run(host='localhost', port=8080)
