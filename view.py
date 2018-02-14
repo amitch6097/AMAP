@@ -22,7 +22,7 @@ def do_upload():
     #     return "File extension not allowed."
 
     # set up downloads path
-    save_path = "{path}/downloads".format(path=dir_path)
+    save_path = "{path}/downloads".format(path=current_dir_path)
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 

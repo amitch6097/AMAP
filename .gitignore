@@ -1,0 +1,4 @@
+downloads/
+
+*.log*
+*.DS_Store
