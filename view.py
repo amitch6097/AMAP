@@ -1,7 +1,7 @@
 
 import sys
 #trouble adding path so ...
-sys.path.insert(0, "/usr/local/lib/python2.7/site-packages/")
+#sys.path.insert(0, "/usr/local/lib/python2.7/site-packages/")
 
 import os
 from bottle import static_file, run, template, get, redirect, request, route, template
