@@ -31,24 +31,35 @@ def do_upload():
     current_dir_path = os.path.dirname(os.path.realpath(__file__))
 
     # grab uploaded file from form
-    upload = request.files.get('upload')
+    # upload = request.files.get('upload')
 
-    # How to not allow file types
-    # name, ext = os.path.splitext(upload.filename)
-    # if ext not in ('.not', '.allowed', '.example'):
-    #     return "File extension not allowed."
+    uploads = request.files.getall('upload')
+    uploads_name_array = []
 
-    # set up downloads path
-    save_path = "{path}/downloads".format(path=current_dir_path)
-    if not os.path.exists(save_path):
-        os.makedirs(save_path)
+    for upload in uploads:
+        print upload.filename
+
+        # How to not allow file types
+        # name, ext = os.path.splitext(upload.filename)
+        # if ext not in ('.not', '.allowed', '.example'):
+        #     return "File extension not allowed."
+
+        # set up downloads path
+        save_path = "{path}/downloads".format(path=current_dir_path)
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
 
 
-    file_path = "{path}/{file}".format(path=save_path, file=upload.filename)
-    upload.save(file_path)
+        file_path = "{path}/{file}".format(path=save_path, file=upload.filename)
+        upload.save(file_path)
+
+        # add to array of names
+        uploads_name_array.append(upload.filename)
+
+    info = {'file_names' : uploads_name_array}
 
     # return "File successfully saved to '{0}'.".format(save_path)
-    return template('process-modules', file=upload.filename, file_name=upload.filename)
+    return template('process-modules', info)
 
 @route('/process', method='POST')
 def process_upload():

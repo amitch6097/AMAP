@@ -4,6 +4,8 @@
   <div class="row">
     <h3 class="text-info">Modules</h3>
   </div>
+
+ % for file in file_names:
   <div class="row">
     <div class="col-12 grid-margin">
       <div class="card">
@@ -12,7 +14,7 @@
 
           <div class="form-group">
             <form action="/process" method="post" enctype="multipart/form-data">
-              <input type="hidden" name="file_name" value={{file_name}}>
+              <input type="hidden" name="file_name" value={{file}}>
               <div class="form-check form-check-flat">
                 <label class="form-check-label">
                   <input type="checkbox" class="form-check-input" name="selection_1">
@@ -45,6 +47,7 @@
       </div>
     </div>
   </div>
+  % end
 </div>
 
 
