@@ -1,9 +1,10 @@
-
+# coding=utf-8
 import sys
 #trouble adding path so ...
 #sys.path.insert(0, "/usr/local/lib/python2.7/site-packages/")
 
 import os
+import subprocess
 from bottle import static_file, run, template, get, redirect, request, route, template
 
 # import our modules
@@ -93,6 +94,19 @@ def process_upload():
         ouput.append(sha1_module(file_location))
     else:
         ouput.append("NA")
+
+    cwd = os.getcwd()
+
+    #This stays the same
+    locationOfDecoder = cwd + '/RatDecoders/ratdecoder.py'
+
+    #Your path to the malware sample
+    #locationOfMalware = cwd + '/RatDecoders/DarkComet.exe'
+
+    subprocess.call(['python2', locationOfDecoder, file_location])
+    
+    # execStr = "python2 " + cwd + "/../RatDecoders/ratdecoder.py " + cwd + "/../RatDe
+    # os.system(execStr)
 
 
     # return "File successfully saved to '{0}'.".format(save_path)
