@@ -1,7 +1,7 @@
 
 import sys
 #trouble adding path so ...
-#sys.path.insert(0, "/usr/local/lib/python2.7/site-packages/")
+# sys.path.insert(0, "/usr/local/lib/python2.7/site-packages/")
 
 import os
 from bottle import static_file, run, template, get, redirect, request, route, template
@@ -36,6 +36,7 @@ def do_upload():
     uploads = request.files.getall('upload')
     uploads_name_array = []
 
+    #TODO handle uploads with same names
     for upload in uploads:
         print upload.filename
 
@@ -51,7 +52,7 @@ def do_upload():
 
 
         file_path = "{path}/{file}".format(path=save_path, file=upload.filename)
-        upload.save(file_path)
+        upload.save(file_path, overwrite=True) #overwrite TRUE might not be good?
 
         # add to array of names
         uploads_name_array.append(upload.filename)
