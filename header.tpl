@@ -205,5 +205,11 @@
                 <i class="mdi mdi-upload menu-icon"></i>
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="processes">
+                <span class="menu-title">Processes</span>
+                <i class="mdi mdi-upload menu-icon"></i>
+              </a>
+            </li>
           </ul>
         </nav>
