@@ -190,7 +190,7 @@
     <div class="container-fluid page-body-wrapper">
       <div class="row row-offcanvas row-offcanvas-right">
         <!-- partial:partials/_sidebar.html -->
-        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <nav class="sidebar sidebar-offcanvas .bg-gradient-info" id="sidebar">
           <ul class="nav">
             <li class="nav-item">
               <a class="nav-link" href="dashboard">

@@ -13455,8 +13455,8 @@ input:focus {
 
 .bg-gradient-success {
   background: linear-gradient(to right, rgba(80, 204, 127, 0.9), rgba(245, 209, 0, 0.9)); }
-
-.bg-gradient-info {
+/*  Andrew Sidebar */
+.bg-gradient-info , .sidebar{
   background: linear-gradient(to right, rgba(68, 129, 235, 0.9), rgba(4, 190, 254, 0.9)); }
 
 .bg-gradient-warning {
@@ -13465,7 +13465,7 @@ input:focus {
 .bg-gradient-danger {
   background: linear-gradient(to right, rgba(240, 147, 251, 0.9), rgba(245, 87, 108, 0.9)); }
 
-.sidebar-grdient-dark, .sidebar {
+.sidebar-grdient-dark {
   background: #6a008a;
   background: -moz-linear-gradient(top, #6a008a 0%, #6a008a 20%, #fa0053 100%);
   background: -webkit-gradient(left top, left bottom, color-stop(0%, #6a008a), color-stop(20%, #6a008a), color-stop(100%, #fa0053));
@@ -14097,7 +14097,10 @@ address p {
 
 /* Miscellanoeous */
 body {
-  background: #fa0053; }
+  /*  Andrew Old*/
+  /* background: #fa0053; } */
+  background: linear-gradient(to right, rgba(68, 129, 235, 0.9), rgba(4, 190, 254, 0.9)); }
+
 
 body,
 html {

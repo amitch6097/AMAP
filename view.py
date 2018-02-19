@@ -1,7 +1,7 @@
 # coding=utf-8
 import sys
 #trouble adding path so ...
-# sys.path.insert(0, "/usr/local/lib/python2.7/site-packages/")
+sys.path.insert(0, "/usr/local/lib/python2.7/site-packages/")
 
 import os
 import subprocess
@@ -17,14 +17,23 @@ def default():
     return template('dashboard')
     # return redirect('/index.html')
 
-@route('/<name>')
-def index(name):
-    return template(name)
 
 @route('/processes')
 def load_processes():
-    file_names = ['a', 'b', 'c']
-    return template('processes', file_names=file_names)
+    file_names = ['a', 'b', 'c', 'd', 'e']
+    percent_done = [25, 60, 80, 10, 100]
+    return template('processes', file_names=file_names, percent_done=percent_done)
+
+@route('/file_view', method='POST')
+def load_file():
+    file_type="PDF"
+    md5="oifmeswmfpmgdmskgdsmn"
+    sha1="0f9dsifmdsfmdsfijf0e9jfefefe"
+    return template('output', file_type=file_type, sha1=sha1, md5=md5)
+
+@route('/<name>')
+def index(name):
+    return template(name)
 
 # # Static Routes
 @get('/<filename:path>')

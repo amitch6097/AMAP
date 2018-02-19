@@ -31,35 +31,40 @@
                     Start Date
                   </th>
                   <th>
-                    Due Date
                   </th>
                 </tr>
               </thead>
               <tbody>
 
                 % for index, file_name in enumerate(file_names):
-                <tr>
-                  <td>
-                    {{index + 1}}
-                  </td>
-                  <td>
-                    {{file_name}}
-                  </td>
-                  <td>
-                    <div class="progress">
-                      <div class="progress-bar bg-gradient-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                  </td>
-                  <td>
-                    ST-3
-                  </td>
-                  <td>
-                    May 10, 2015
-                  </td>
-                  <td>
-                    May 15, 2015
-                  </td>
-                </tr>
+                % percent = percent_done[index]
+
+                <a href={{file_name}}>
+                  <tr>
+                    <td>
+                      {{index + 1}}
+                    </td>
+                    <td>
+                      {{file_name}}
+                    </td>
+                    <td>
+                      <div class="progress">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: {{percent}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </td>
+                    <td>
+                      ST-3
+                    </td>
+                    <td>
+                      {{1}}
+                    </td>
+                    <td>
+                      <form action="/file_view" method="post" enctype="multipart/form-data">
+                          <button type="submit" class="btn btn-info btn-fw">View</button>
+                      </form>
+                    </td>
+                  </tr>
+                </a>
                  % end
 
               </tbody>
