@@ -117,7 +117,11 @@ def process_upload():
     #Your path to the malware sample
     #locationOfMalware = cwd + '/RatDecoders/DarkComet.exe'
 
-    subprocess.call(['python', locationOfDecoder, file_location])
+    #subprocess.call(['python', locationOfDecoder, file_location])
+
+    p = subprocess.Popen(['python', locationOfDecoder, file_location], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdoutdata, stderrdata = p.communicate()
+    print(stdoutdata)
 
     # execStr = "python2 " + cwd + "/../RatDecoders/ratdecoder.py " + cwd + "/../RatDe
     # os.system(execStr)
