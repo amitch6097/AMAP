@@ -76,6 +76,21 @@ def do_upload():
     # return "File successfully saved to '{0}'.".format(save_path)
     return template('process-modules', info)
 
+
+def processData(data):
+    retList = []
+    aStr = ""
+    for c in data:
+        if c == "\n":
+            retList.append(aStr)
+            aStr = ""
+        else:
+            aStr += c
+
+    return retList
+
+
+
 @route('/process', method='POST')
 def process_upload():
 
@@ -92,22 +107,22 @@ def process_upload():
     #  then it puts it in a database and we can query it later
     # Reall create a new process,and modules are multithreaded
 
-    ouput = []
+    # ouput = []
 
-    if form_selections[0]:
-        ouput.append(filetype_module(file_location))
-    else:
-        ouput.append("NA")
+    # if form_selections[0]:
+    #     ouput.append(filetype_module(file_location))
+    # else:
+    #     ouput.append("NA")
 
-    if form_selections[1]:
-        ouput.append(md5_module(file_location))
-    else:
-        ouput.append("NA")
+    # if form_selections[1]:
+    #     ouput.append(md5_module(file_location))
+    # else:
+    #     ouput.append("NA")
 
-    if form_selections[2]:
-        ouput.append(sha1_module(file_location))
-    else:
-        ouput.append("NA")
+    # if form_selections[2]:
+    #     ouput.append(sha1_module(file_location))
+    # else:
+    #     ouput.append("NA")
 
     cwd = os.getcwd()
 
@@ -121,14 +136,15 @@ def process_upload():
 
     p = subprocess.Popen(['python', locationOfDecoder, file_location], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdoutdata, stderrdata = p.communicate()
-    print(stdoutdata)
+    #return processData(stdoutdata)
 
     # execStr = "python2 " + cwd + "/../RatDecoders/ratdecoder.py " + cwd + "/../RatDe
     # os.system(execStr)
 
+    outData = processData(stdoutdata)
 
     # return "File successfully saved to '{0}'.".format(save_path)
-    return template('output', file_type=ouput[0], sha1=ouput[1], md5=ouput[2])
+    return template('output', ratOutput=outData)
 
 # run it
 run(host='localhost', port=8080)
