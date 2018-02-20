@@ -1,3 +1,9 @@
+#This creates a dummy data in the db
+#And read it, then delete it
+#For demo use
+#Teng ++
+
+
 import pymongo
 from pymongo import MongoClient
 
@@ -18,4 +24,4 @@ for i in alpha.find(): #Now listing everything
 	print (i)
 	
 	
-alpha.remove({"MD5":"111"})   #Remove one
+alpha.remove({"MD5":"1A2B3C4D"})   #Remove data(s)
