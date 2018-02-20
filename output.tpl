@@ -9,10 +9,11 @@
       <div class="card">
         <div class="card-body">
           <h4 class="card-title">File Output</h4>
-          <h5>File Type: {{file_type}}</h5>
-          <h5>sha1: {{sha1}}</h5>
-          <h5>md5: {{md5}}</h5>
-
+          <div>
+            % for element in ratOutput:
+                <p>{{element}}</p>
+            % end
+          </div>
         </div>
       </div>
     </div>
