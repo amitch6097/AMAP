@@ -19,7 +19,7 @@ def db_get_count():	#Get how many items are there in the database
 	print('\nThis many--->',alpha.find().count()) 
 
 def db_list_one(name,val): #Show one result using specific rule
-	alpha.find_one({name:val})
+	print(alpha.find_one({name:val}))
 	
 def db_list_all(): #Show everything inside the database
 	for i in alpha.find(): 
