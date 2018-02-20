@@ -18,4 +18,4 @@ for i in alpha.find(): #Now listing everything
 	print (i)
 	
 	
-alpha.remove({"MD5":"111"})   #Remove every books published by Newton
+alpha.remove({"MD5":"111"})   #Remove one
