@@ -27,3 +27,8 @@ def db_list_all(): #Show everything inside the database
 	
 def db_del_element(name,val):	#Remove info from the database
 	alpha.remove({name:val})
+
+#Example usages...	
+#db_insert_to("0012.mid","25faa9b7d2ff96e3ba424d464580a375","2b110d7bc681eb133f089fd4cdf580ec496c21b9459b474ed33d000f260b4425")
+#db_del_element("Name","0012.mid")
+#db_list_one("Name","0012.mid")
