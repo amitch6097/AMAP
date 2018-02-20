@@ -20,9 +20,13 @@ def default():
 
 @route('/processes')
 def load_processes():
-    file_names = ['a', 'b', 'c', 'd', 'e']
+    file_names = ['b3d9cabf3ecb22dbccbd0f13f95313e5ab95be94aec879e6edfaaf534d7f3799', 'dff02aca142d4fcffe7721b9c7cb5d7d4ef4965d11e77328d290aaf2eac8d4dd', 'dcf789f34aabe7ba4c34bbce09bfdd6ac6a2efde9f664ec0eab16fd0e37bef0d', '2e112bbf5fa0afaf225eb2441b245539cd73f52fb473a6b749490d4749f7d105', '9ac3accd466a70884091364b5d2e13534cfa78153b25f51fe477d6bfcc6f9abe']
+    md5s = ['eb684b584704e2fb599d6eaf883c1ae5', '4871e4752bd67662ac9435d84014391d', '3501fa1f022cb8ad97276d55c97377b5', '9490fe6870d1273dda8c957cf1b81907', '68b329da9893e34099c7d8ad5cb9c940']
+    start_time = ['18-1-27 1:54:24', '18-2-2 1:59:32', '18-2-3 5:52:45', '18-2-3 6:00:23', '18-2-5 12:32:02']
+
+
     percent_done = [25, 60, 80, 10, 100]
-    return template('processes', file_names=file_names, percent_done=percent_done)
+    return template('processes', file_names=file_names, percent_done=percent_done, md5s=md5s, start_time=start_time)
 
 @route('/file_view', method='POST')
 def load_file():

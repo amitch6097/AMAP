@@ -5,7 +5,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Purple Admin</title>
+  <title>AMAP</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="node_modules/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="node_modules/perfect-scrollbar/dist/css/perfect-scrollbar.min.css">
@@ -58,7 +58,7 @@
               <i class="mdi mdi-fullscreen" id="fullscreen-button"></i>
             </a>
           </li>
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
               <i class="mdi mdi-email-outline"></i>
               <span class="count"></span>
@@ -104,7 +104,7 @@
               <div class="dropdown-divider"></div>
               <h6 class="p-3 mb-0 text-center">4 new messages</h6>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item dropdown">
             <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
               <i class="mdi mdi-bell-outline"></i>
@@ -160,8 +160,8 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle nav-profile" id="profileDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
-              <img src="images/faces/face1.jpg" alt="image">
-              <span class="d-none d-lg-inline">Daniel Russiel</span>
+              <!-- <img src="images/faces/face1.jpg" alt="image"> -->
+              <span class="d-none d-lg-inline">Andrew Mitchell</span>
             </a>
             <div class="dropdown-menu navbar-dropdown w-100" aria-labelledby="profileDropdown">
               <a class="dropdown-item" href="#">
@@ -208,7 +208,7 @@
             <li class="nav-item">
               <a class="nav-link" href="processes">
                 <span class="menu-title">Processes</span>
-                <i class="mdi mdi-upload menu-icon"></i>
+                <i class="mdi mdi-folder menu-icon"></i>
               </a>
             </li>
           </ul>

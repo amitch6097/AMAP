@@ -13739,7 +13739,7 @@ input:focus {
         width: calc(247px - 120px);
         max-width: 100%;
         height: 28px;
-        margin: auto auto auto 25px;
+        margin: auto auto auto auto;
         vertical-align: middle; }
     .navbar .navbar-brand-wrapper .brand-logo-mini {
       display: none; }

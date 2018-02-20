@@ -19,13 +19,13 @@
                     #
                   </th>
                   <th>
-                    Name
+                    SHA256
+                  </th>
+                  <th>
+                    MD5
                   </th>
                   <th>
                     Overall Progress
-                  </th>
-                  <th>
-                    ID
                   </th>
                   <th>
                     Start Date
@@ -38,6 +38,8 @@
 
                 % for index, file_name in enumerate(file_names):
                 % percent = percent_done[index]
+                % md5 = md5s[index]
+                % time = start_time[index]
 
                 <a href={{file_name}}>
                   <tr>
@@ -48,19 +50,19 @@
                       {{file_name}}
                     </td>
                     <td>
+                      {{md5}}
+                    </td>
+                    <td>
                       <div class="progress">
                         <div class="progress-bar bg-info" role="progressbar" style="width: {{percent}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
                     </td>
                     <td>
-                      ST-3
-                    </td>
-                    <td>
-                      {{1}}
+                      {{time}}
                     </td>
                     <td>
                       <form action="/file_view" method="post" enctype="multipart/form-data">
-                          <button type="submit" class="btn btn-info btn-fw">View</button>
+                          <button type="submit" class="btn btn-info btn-fw" style="min-width: 12px;">View</button>
                       </form>
                     </td>
                   </tr>
