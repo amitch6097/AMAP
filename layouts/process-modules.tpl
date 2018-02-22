@@ -26,7 +26,7 @@
     </div>
 
  % for file in file_names:
- 
+
   <div class="row">
     <div class="col-12 grid-margin">
       <div class="card">
@@ -37,43 +37,43 @@
               <input type="hidden" name="file_name" value={{file}}>
               <div class="form-check form-check-flat">
                 <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input" name="selection_1" checked>
+                  <input type="checkbox" class="form-check-input" name="file_type" checked>
                   File Type
                 </label>
               </div>
               <div class="form-check form-check-flat">
                 <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input" name="selection_2" checked>
+                  <input type="checkbox" class="form-check-input" name="md5" checked>
                   MD5
                 </label>
               </div>
               <div class="form-check form-check-flat">
                 <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input" name="selection_3" checked>
+                  <input type="checkbox" class="form-check-input" name="sha1" checked>
                   SHA1
                 </label>
               </div>
               <div class="form-check form-check-flat">
                 <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input" name="selection_3" checked>
+                  <input type="checkbox" class="form-check-input" name="sha256" checked>
                   SHA256
                 </label>
               </div>
               <div class="form-check form-check-flat">
                 <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input" name="selection_3" checked>
+                  <input type="checkbox" class="form-check-input" name="entropy" checked>
                   Entropy
                 </label>
               </div>
               <div class="form-check form-check-flat">
                 <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input" name="selection_3" checked>
+                  <input type="checkbox" class="form-check-input" name="decoder" checked>
                   Decoder
                 </label>
               </div>
               <div class="form-check form-check-flat">
                 <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input" name="selection_3" checked>
+                  <input type="checkbox" class="form-check-input" name="netdata" checked>
                   NETDATA
                 </label>
               </div>
