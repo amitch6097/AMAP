@@ -1,5 +1,6 @@
 downloads/
 modules/*.pyc
+yara-python/
 
 *.log*
 *.DS_Store
