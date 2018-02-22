@@ -4,3 +4,4 @@ yara-python/
 
 *.log*
 *.DS_Store
+*.pyc

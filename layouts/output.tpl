@@ -1,4 +1,4 @@
-%include header
+%include layouts/header
 
 <div class="content-wrapper">
   <div class="row">
@@ -22,4 +22,4 @@
 </div>
 
 
-%include footer
+%include layouts/footer

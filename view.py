@@ -6,12 +6,14 @@ sys.path.insert(0, "/usr/local/lib/python2.7/site-packages/")
 import os
 import run_modules
 from bottle import static_file, run, template, get, redirect, request, route, template
-
+import json
 
 
 @route('/')
 def default():
-    return template('dashboard')
+    # return template('dashboard')
+    return template('layouts/dashboard')
+
     # return redirect('/index.html')
 
 
@@ -23,18 +25,18 @@ def load_processes():
 
 
     percent_done = [25, 60, 80, 10, 100]
-    return template('processes', file_names=file_names, percent_done=percent_done, md5s=md5s, start_time=start_time)
+    return template('layouts/processes', file_names=file_names, percent_done=percent_done, md5s=md5s, start_time=start_time)
 
 @route('/file_view', method='POST')
 def load_file():
     file_type="PDF"
     md5="oifmeswmfpmgdmskgdsmn"
     sha1="0f9dsifmdsfmdsfijf0e9jfefefe"
-    return template('output', file_type=file_type, sha1=sha1, md5=md5)
+    return template('layouts/output', file_type=file_type, sha1=sha1, md5=md5)
 
 @route('/<name>')
 def index(name):
-    return template(name)
+    return template("layouts/"+name)
 
 # # Static Routes
 @get('/<filename:path>')
@@ -75,10 +77,19 @@ def do_upload():
     info = {'file_names' : uploads_name_array}
 
     # return "File successfully saved to '{0}'.".format(save_path)
-    return template('process-modules', info)
+    return template('layouts/process-modules', info)
 
 
+@route('/mu', method='POST')
+def servo_pos():
+    uploads = request.files.getall('files[]')
+    uploads_name_array = []
 
+    #TODO handle uploads with same names
+    for upload in uploads:
+        print upload.filename
+        uploads_name_array.append(upload.filename)
+    return json.dumps(uploads_name_array)
 
 
 
@@ -90,7 +101,7 @@ def process_upload():
     request.forms.get('md5') == 'on',
     request.forms.get('sha1') == 'on',
     request.forms.get('sha256') == 'on',
-	request.forms.get('entropy') == 'on', 
+	request.forms.get('entropy') == 'on',
 	request.forms.get('decoder') == 'on',
 	request.forms.get('netdata') == 'on'
 	 ]
@@ -98,8 +109,8 @@ def process_upload():
     file_name = request.forms.get('file_name')
     file_location = "downloads/{file_name}".format(file_name=file_name)
     outData = run_modules.modules(form_selections,file_location)
-    
-    return template('output', ratOutput=outData)
+
+    return template('layouts/output', ratOutput=outData)
 
 
 # run it
