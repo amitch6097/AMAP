@@ -112,6 +112,12 @@ def process_upload():
 
     return template('layouts/output', ratOutput=outData)
 
-
+@route('/login', method="POST")
+def login_page():
+    username = request.forms.get('user_email')
+    password = request.forms.get('password')
+    print("Printing username: {}".format(username))
+    print("Printing password: {}".format(password))
+    return template('layouts/dashboard')
 # run it
 run(host='localhost', port=8080)
