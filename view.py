@@ -14,7 +14,9 @@ from static_hashes import sha1_module, md5_module
 
 @route('/')
 def default():
-    return template('dashboard')
+    # return template('dashboard')
+    return template('layouts/dashboard')
+
     # return redirect('/index.html')
 
 
@@ -26,18 +28,18 @@ def load_processes():
 
 
     percent_done = [25, 60, 80, 10, 100]
-    return template('processes', file_names=file_names, percent_done=percent_done, md5s=md5s, start_time=start_time)
+    return template('layouts/processes', file_names=file_names, percent_done=percent_done, md5s=md5s, start_time=start_time)
 
 @route('/file_view', method='POST')
 def load_file():
     file_type="PDF"
     md5="oifmeswmfpmgdmskgdsmn"
     sha1="0f9dsifmdsfmdsfijf0e9jfefefe"
-    return template('output', file_type=file_type, sha1=sha1, md5=md5)
+    return template('layouts/output', file_type=file_type, sha1=sha1, md5=md5)
 
 @route('/<name>')
 def index(name):
-    return template(name)
+    return template("layouts/"+name)
 
 # # Static Routes
 @get('/<filename:path>')
@@ -78,7 +80,7 @@ def do_upload():
     info = {'file_names' : uploads_name_array}
 
     # return "File successfully saved to '{0}'.".format(save_path)
-    return template('process-modules', info)
+    return template('layouts/process-modules', info)
 
 
 def processData(data):
@@ -148,7 +150,7 @@ def process_upload():
     outData = processData(stdoutdata)
 
     # return "File successfully saved to '{0}'.".format(save_path)
-    return template('output', ratOutput=outData)
+    return template('layouts/output', ratOutput=outData)
 
 # run it
 run(host='localhost', port=8080)
