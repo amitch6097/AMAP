@@ -50,9 +50,11 @@
     var uploadForm = document.getElementById('js-upload-form');
     var uploadButton = document.getElementById('js-upload-submit');
     var uploadedFiles = document.getElementById('js-upload-finished');
+    var uploads = 0;
 
 
     var startUpload = function(files) {
+      uploads++;
       console.log(files)
 
       uploadButton.innerHTML = 'Uploading...';
@@ -91,13 +93,16 @@
                   '<p href="#" class="list-group-item list-group-item-success"><span class="badge alert-success pull-right">Success</span> '+files[file]+' </p>'
                 )
           }
+          uploads--;
 
-          uploadButton.innerHTML = 'Upload Files';
-          dropZone.innerHTML = 'Just drag and drop files here';
-
-
+          if(uploads == 0)
+          {
+            uploadButton.innerHTML = 'Upload Files';
+            dropZone.innerHTML = 'Just drag and drop files here';
+          }
         } else {
           alert('An error occurred!');
+          uploads--;
         }
       };
       // Send the Data.
