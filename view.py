@@ -6,7 +6,7 @@ sys.path.insert(0, "/usr/local/lib/python2.7/site-packages/")
 import os
 import run_modules
 from bottle import static_file, run, template, get, redirect, request, route, template
-
+import json
 
 
 @route('/')
@@ -80,7 +80,16 @@ def do_upload():
     return template('layouts/process-modules', info)
 
 
+@route('/mu', method='POST')
+def servo_pos():
+    uploads = request.files.getall('files[]')
+    uploads_name_array = []
 
+    #TODO handle uploads with same names
+    for upload in uploads:
+        print upload.filename
+        uploads_name_array.append(upload.filename)
+    return json.dumps(uploads_name_array)
 
 
 
