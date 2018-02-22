@@ -80,7 +80,8 @@ def do_upload():
     return template('layouts/process-modules', info)
 
 
-@route('/mu', method='POST')
+#TODO build out
+@route('/module-upload', method='POST')
 def servo_pos():
     uploads = request.files.getall('files[]')
     uploads_name_array = []
@@ -90,6 +91,19 @@ def servo_pos():
         print upload.filename
         uploads_name_array.append(upload.filename)
     return json.dumps(uploads_name_array)
+
+
+@route('/malware-search', method='POST')
+def malware_search():
+    search_input = request.forms.get('module-search-input')
+    print search_input
+
+    #send input to database
+        #get back array of dictionary objects?
+    fake_obj = [{"file_name":"file.pdf", "SHA1":"2324effefe", "MD5":"iogroi4t4"},
+    {"file_name":"file.pdf", "SHA1":"2324effefe", "MD5":"iogroi4t4"}]
+
+    return template('layouts/search', search_output=fake_obj)
 
 
 

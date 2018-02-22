@@ -29,19 +29,21 @@
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-stretch">
         <div class="search-field ml-4 d-none d-md-block">
-          <form class="d-flex align-items-stretch h-100" action="#">
+          <!-- action="" method="post" enctype="multipart/form-data" id="js-upload-form" -->
+          <form class="d-flex align-items-stretch h-100" action="/malware-search" method="post" enctype="multipart/form-data">
             <div class="input-group">
-              <input type="text" class="form-control bg-transparent border-0" placeholder="Search">
+              <input type="text" name="module-search-input" class="form-control bg-transparent border-0" placeholder="Search">
               <div class="input-group-btn">
                 <button type="button" class="btn bg-transparent dropdown-toggle px-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class="mdi mdi-earth"></i>
+                  File Name
                 </button>
                 <div class="dropdown-menu dropdown-menu-right">
-                  <a class="dropdown-item" href="#">Today</a>
-                  <a class="dropdown-item" href="#">This week</a>
-                  <a class="dropdown-item" href="#">This month</a>
-                  <div role="separator" class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">Month and older</a>
+                  <a class="dropdown-item" href="#">File Name</a>
+                  <a class="dropdown-item" href="#">MD256</a>
+                  <a class="dropdown-item" href="#">SHA1</a>
+                  <!-- <div role="separator" class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Month and older</a> -->
                 </div>
               </div>
               <div class="input-group-addon bg-transparent border-0 search-button">

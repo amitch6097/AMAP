@@ -9,7 +9,7 @@
       <div class="panel panel-default">
           <!-- Standar Form -->
           <h4>Select files from your computer</h4>
-          <form action="/mu" method="post" enctype="multipart/form-data" id="js-upload-form">
+          <form action="" method="post" enctype="multipart/form-data" id="js-upload-form">
             <div class="form-inline">
               <div class="form-group">
                 <input type="file" name="files[]" id="js-upload-files" multiple>
@@ -26,7 +26,14 @@
 
           <!-- Upload Finished -->
           <div class="js-upload-finished" id="js-upload-finished">
-            <h3>Processed files</h3>
+            <div class="row">
+              <!-- <div class="form-row align-items-center"> -->
+                <h3>Processed files</h3>
+                <div class="col-auto ml-auto">
+                  <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+              <!-- </div> -->
+            </div>
             <div class="list-group">
               <!-- <p href="#" class="list-group-item list-group-item-success"><span class="badge alert-success pull-right">Success</span>image-01.jpg</p>
               <p href="#" class="list-group-item list-group-item-success"><span class="badge alert-success pull-right">Success</span>image-02.jpg</p> -->
@@ -78,7 +85,7 @@
       // Set up the request.
       var xhr = new XMLHttpRequest();
       // Open the connection.
-      xhr.open('POST', '/mu', true);
+      xhr.open('POST', '/module-upload', true);
       // Set up a handler for when the request finishes.
       xhr.onload = function (e) {
         if (xhr.status === 200) {
