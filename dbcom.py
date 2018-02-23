@@ -22,6 +22,6 @@ print('\nThis many--->',alpha.find().count()) #How many now?
 
 for i in alpha.find(): #Now listing everything
 	print (i)
-	
-	
+
+
 alpha.remove({"MD5":"1A2B3C4D"})   #Remove data(s)

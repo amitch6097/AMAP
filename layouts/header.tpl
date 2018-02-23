@@ -39,9 +39,9 @@
                   File Name
                 </button>
                 <div class="dropdown-menu dropdown-menu-right">
-                  <a class="dropdown-item" href="#">File Name</a>
-                  <a class="dropdown-item" href="#">MD256</a>
-                  <a class="dropdown-item" href="#">SHA1</a>
+                  <a class="dropdown-item" href="" id="search-category">File Name</a>
+                  <a class="dropdown-item" href="" id="search-category">MD256</a>
+                  <a class="dropdown-item" href="" id="search-category">SHA1</a>
                   <!-- <div role="separator" class="dropdown-divider"></div>
                   <a class="dropdown-item" href="#">Month and older</a> -->
                 </div>
@@ -197,7 +197,7 @@
             <li class="nav-item">
               <a class="nav-link" href="dashboard">
                 <span class="menu-title">Dashboard</span>
-                <span class="menu-sub-title">( 2 new updates )</span>
+                <!-- <span class="menu-sub-title">( 2 new updates )</span> -->
                 <i class="mdi mdi-home menu-icon"></i>
               </a>
             </li>
@@ -213,5 +213,105 @@
                 <i class="mdi mdi-folder menu-icon"></i>
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="module-upload">
+                <span class="menu-title">Module Upload</span>
+                <i class="mdi mdi-folder menu-icon"></i>
+              </a>
+            </li>
           </ul>
         </nav>
+
+
+<script type="text/javascript">
+
++ function($) {
+  'use strict';
+
+  // UPLOAD CLASS DEFINITION
+  // ======================
+
+  var dropZone = document.getElementById('search-category');
+
+  var startUpload = function(files) {
+    uploads++;
+    console.log(files)
+
+    uploadButton.innerHTML = 'Uploading...';
+    dropZone.innerHTML = 'Uploading...';
+
+
+    var formData = new FormData();
+
+            // Loop through each of the selected files.
+    for (var i = 0; i < files.length; i++) {
+      var file = files[i];
+
+      // // Check the file type.
+      // if (!file.type.match('image.*')) {
+      //   continue;
+      // }
+
+      // Add the file to the request.
+      formData.append('files[]', file, file.name);
+    }
+    // Set up the request.
+    var xhr = new XMLHttpRequest();
+    // Open the connection.
+    xhr.open('POST', '/module-upload', true);
+    // Set up a handler for when the request finishes.
+    xhr.onload = function (e) {
+      if (xhr.status === 200) {
+
+        files = JSON.parse(xhr.response)
+
+        for(var file = 0; file < files.length; file++)
+        {
+          $('#js-upload-finished')
+              .find('.list-group')
+              .append(
+                '<p href="#" class="list-group-item list-group-item-success"><span class="badge alert-success pull-right">Success</span> '+files[file]+' </p>'
+              )
+        }
+        uploads--;
+
+        if(uploads == 0)
+        {
+          uploadButton.innerHTML = 'Upload Files';
+          dropZone.innerHTML = 'Just drag and drop files here';
+        }
+      } else {
+        alert('An error occurred!');
+        uploads--;
+      }
+    };
+    // Send the Data.
+    xhr.send(formData);
+  }
+
+  uploadForm.addEventListener('submit', function(e) {
+    e.preventDefault()
+    var files = document.getElementById('js-upload-files').files;
+
+    startUpload(files)
+  })
+
+  dropZone.ondrop = function(e) {
+      e.preventDefault();
+      this.className = 'upload-drop-zone';
+
+      startUpload(e.dataTransfer.files)
+  }
+
+  dropZone.ondragover = function() {
+      this.className = 'upload-drop-zone drop';
+      return false;
+  }
+
+  dropZone.ondragleave = function() {
+      this.className = 'upload-drop-zone';
+      return false;
+  }
+
+}(jQuery);
+</script>
