@@ -1,4 +1,4 @@
-%include header
+%include layouts/header
 <!-- partial -->
 <div class="content-wrapper">
   <div class="row">
@@ -413,4 +413,4 @@
     </div>
   </div> -->
 </div>
-%include footer
+%include layouts/footer

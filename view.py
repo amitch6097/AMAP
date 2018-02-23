@@ -4,17 +4,16 @@ import sys
 sys.path.insert(0, "/usr/local/lib/python2.7/site-packages/")
 
 import os
-import subprocess
+import run_modules
 from bottle import static_file, run, template, get, redirect, request, route, template
+import json
 
-# import our modules
-sys.path.insert(0, 'modules/')
-from static_type import filetype_module
-from static_hashes import sha1_module, md5_module
 
 @route('/')
 def default():
-    return template('dashboard')
+    # return template('dashboard')
+    return template('layouts/dashboard')
+
     # return redirect('/index.html')
 
 
@@ -26,18 +25,18 @@ def load_processes():
 
 
     percent_done = [25, 60, 80, 10, 100]
-    return template('processes', file_names=file_names, percent_done=percent_done, md5s=md5s, start_time=start_time)
+    return template('layouts/processes', file_names=file_names, percent_done=percent_done, md5s=md5s, start_time=start_time)
 
 @route('/file_view', method='POST')
 def load_file():
     file_type="PDF"
     md5="oifmeswmfpmgdmskgdsmn"
     sha1="0f9dsifmdsfmdsfijf0e9jfefefe"
-    return template('output', file_type=file_type, sha1=sha1, md5=md5)
+    return template('layouts/output', file_type=file_type, sha1=sha1, md5=md5)
 
 @route('/<name>')
 def index(name):
-    return template(name)
+    return template("layouts/"+name)
 
 # # Static Routes
 @get('/<filename:path>')
@@ -78,20 +77,33 @@ def do_upload():
     info = {'file_names' : uploads_name_array}
 
     # return "File successfully saved to '{0}'.".format(save_path)
-    return template('process-modules', info)
+    return template('layouts/process-modules', info)
 
 
-def processData(data):
-    retList = []
-    aStr = ""
-    for c in data:
-        if c == "\n":
-            retList.append(aStr)
-            aStr = ""
-        else:
-            aStr += c
+#TODO build out
+@route('/module-upload', method='POST')
+def servo_pos():
+    uploads = request.files.getall('files[]')
+    uploads_name_array = []
 
-    return retList
+    #TODO handle uploads with same names
+    for upload in uploads:
+        print upload.filename
+        uploads_name_array.append(upload.filename)
+    return json.dumps(uploads_name_array)
+
+
+@route('/malware-search', method='POST')
+def malware_search():
+    search_input = request.forms.get('module-search-input')
+    print search_input
+
+    #send input to database
+        #get back array of dictionary objects?
+    fake_obj = [{"file_name":"file.pdf", "SHA1":"2324effefe", "MD5":"iogroi4t4"},
+    {"file_name":"file.pdf", "SHA1":"2324effefe", "MD5":"iogroi4t4"}]
+
+    return template('layouts/search', search_output=fake_obj)
 
 
 
@@ -99,56 +111,27 @@ def processData(data):
 def process_upload():
 
     form_selections = [
-    request.forms.get('selection_1') == 'on',
-    request.forms.get('selection_2') == 'on',
-    request.forms.get('selection_3') == 'on',
-    request.forms.get('selection_4') == 'on' ]
+    request.forms.get('file_type') == 'on',
+    request.forms.get('md5') == 'on',
+    request.forms.get('sha1') == 'on',
+    request.forms.get('sha256') == 'on',
+	request.forms.get('entropy') == 'on',
+	request.forms.get('decoder') == 'on',
+	request.forms.get('netdata') == 'on'
+	 ]
 
     file_name = request.forms.get('file_name')
     file_location = "downloads/{file_name}".format(file_name=file_name)
+    outData = run_modules.modules(form_selections,file_location)
 
-    # really want to send this to something else
-    #  then it puts it in a database and we can query it later
-    # Reall create a new process,and modules are multithreaded
+    return template('layouts/output', ratOutput=outData)
 
-    # ouput = []
-
-    # if form_selections[0]:
-    #     ouput.append(filetype_module(file_location))
-    # else:
-    #     ouput.append("NA")
-
-    # if form_selections[1]:
-    #     ouput.append(md5_module(file_location))
-    # else:
-    #     ouput.append("NA")
-
-    # if form_selections[2]:
-    #     ouput.append(sha1_module(file_location))
-    # else:
-    #     ouput.append("NA")
-
-    cwd = os.getcwd()
-
-    #This stays the same
-    locationOfDecoder = cwd + '/RatDecoders/ratdecoder.py'
-
-    #Your path to the malware sample
-    #locationOfMalware = cwd + '/RatDecoders/DarkComet.exe'
-
-    #subprocess.call(['python', locationOfDecoder, file_location])
-
-    p = subprocess.Popen(['python', locationOfDecoder, file_location], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdoutdata, stderrdata = p.communicate()
-    #return processData(stdoutdata)
-
-    # execStr = "python2 " + cwd + "/../RatDecoders/ratdecoder.py " + cwd + "/../RatDe
-    # os.system(execStr)
-
-    outData = processData(stdoutdata)
-
-    # return "File successfully saved to '{0}'.".format(save_path)
-    return template('output', ratOutput=outData)
-
+@route('/login', method="POST")
+def login_page():
+    username = request.forms.get('user_email')
+    password = request.forms.get('password')
+    print("Printing username: {}".format(username))
+    print("Printing password: {}".format(password))
+    return template('layouts/dashboard')
 # run it
 run(host='localhost', port=8080)
