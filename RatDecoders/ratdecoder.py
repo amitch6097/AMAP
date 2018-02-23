@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
-sys.path.insert(0, "/usr/local/lib/python2.7/site-packages/")
+#sys.path.insert(0, "/usr/local/lib/python2.7/site-packages/")
 
 import importlib
 import hashlib

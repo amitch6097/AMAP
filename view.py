@@ -1,12 +1,13 @@
 # coding=utf-8
 import sys
 #trouble adding path so ...
-sys.path.insert(0, "/usr/local/lib/python2.7/site-packages/")
+#sys.path.insert(0, "/usr/local/lib/python2.7/site-packages/")
 
 import os
 import run_modules
 from bottle import static_file, run, template, get, redirect, request, route, template
 import json
+import zipfile
 
 
 @route('/')
@@ -83,14 +84,39 @@ def do_upload():
 #TODO build out
 @route('/module-upload', method='POST')
 def servo_pos():
-    uploads = request.files.getall('files[]')
+    current_dir_path = os.path.dirname(os.path.realpath(__file__))
+
+    # grab uploaded file from form
+    # upload = request.files.get('upload')
+
+    uploads = request.files.getall('upload')
     uploads_name_array = []
 
     #TODO handle uploads with same names
     for upload in uploads:
         print upload.filename
+
+        # How to not allow file types
+        # name, ext = os.path.splitext(upload.filename)
+        # if ext not in ('.not', '.allowed', '.example'):
+        #     return "File extension not allowed."
+
+        # set up downloads path
+        save_path = "{path}/RatDecoders".format(path=current_dir_path)
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+
+
+        file_path = "{path}/{file}".format(path=save_path, file=upload.filename)
+        upload.save(file_path, overwrite=True) #overwrite TRUE might not be good?
+
+        # add to array of names
         uploads_name_array.append(upload.filename)
-    return json.dumps(uploads_name_array)
+
+    info = {'file_names' : uploads_name_array}
+
+
+    return template('layouts/modules', info)
 
 
 @route('/malware-search', method='POST')
@@ -99,12 +125,25 @@ def malware_search():
     print search_input
 
     #send input to database
-        #get back array of dictionary objects?
+    #get back array of dictionary objects?
     fake_obj = [{"file_name":"file.pdf", "SHA1":"2324effefe", "MD5":"iogroi4t4"},
     {"file_name":"file.pdf", "SHA1":"2324effefe", "MD5":"iogroi4t4"}]
 
     return template('layouts/search', search_output=fake_obj)
 
+@route('/upload-module', method='POST')
+def upload_module():
+    file_name = request.forms.get('file_name')
+    file_location = "RatDecoders/{file_name}".format(file_name=file_name)
+
+    path_to_zip_file = file_location
+    directory_to_extract_to = "RatDecoders"
+
+    zip_ref = zipfile.ZipFile(path_to_zip_file, 'r')
+    zip_ref.extractall(directory_to_extract_to)
+    zip_ref.close()
+
+    return template('layouts/dashboard')
 
 
 @route('/process', method='POST')
