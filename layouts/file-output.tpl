@@ -11,8 +11,16 @@
             <h4 class="card-title">{{file_obj['Name']}}</h4>
             <div>
               %for key, value in file_obj.iteritems():
-
-                  <p>{{key}}: {{value}}</p>
+                  % if key != 'RAT':
+                    <p>{{key}}: {{value}}</p>
+                  % else:
+                    <div>{{key}}:
+                      % for element in range(len(value)):
+                        <p>{{value[element]}}</p>
+                      % end
+                    </div>
+                  % end 
+                  
               %end
             </div>
           </div>
