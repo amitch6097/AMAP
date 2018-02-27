@@ -41,7 +41,6 @@
                 % md5 = md5s[index]
                 % time = start_time[index]
 
-                <a href={{file_name}}>
                   <tr>
                     <td>
                       {{index + 1}}
@@ -63,10 +62,10 @@
                     <td>
                       <form action="/file_view" method="post" enctype="multipart/form-data">
                           <button type="submit" class="btn btn-info btn-fw" style="min-width: 12px;">View</button>
+                          <input type="hidden" name="filename" value={{file_name}}>
                       </form>
                     </td>
                   </tr>
-                </a>
                  % end
 
               </tbody>

@@ -30,15 +30,15 @@ def load_processes():
     start_time = ['18-1-27 1:54:24', '18-2-2 1:59:32', '18-2-3 5:52:45', '18-2-3 6:00:23', '18-2-5 12:32:02']
 
 
-    percent_done = [25, 60, 80, 10, 100]
+    percent_done = [100, 100, 100, 100, 100]
     return template('layouts/processes', file_names=file_names, percent_done=percent_done, md5s=md5s, start_time=start_time)
 
 @route('/file_view', method='POST')
 def load_file():
-    file_type="PDF"
-    md5="oifmeswmfpmgdmskgdsmn"
-    sha1="0f9dsifmdsfmdsfijf0e9jfefefe"
-    return template('layouts/output', file_type=file_type, sha1=sha1, md5=md5)
+    file_select = request.forms.get('filename')
+    database_obj = Database.db_list_one('Name', file_select)
+
+    return template('layouts/file-output', file_obj=database_obj)
 
 @route('/<name>')
 def index(name):

@@ -24,8 +24,8 @@
     <!-- partial:partials/_navbar.html -->
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo" href="index.html"><img src="images/accenture_logo.png" alt="logo"/></a>
-        <a class="navbar-brand brand-logo-mini" href="index.html"><img src="images/logo-mini.svg" alt="logo"/></a>
+        <a class="navbar-brand brand-logo" href="/"><img src="images/accenture_logo.png" alt="logo"/></a>
+        <a class="navbar-brand brand-logo-mini" href="/"><img src="images/logo-mini.svg" alt="logo"/></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-stretch">
         <div class="search-field ml-4 d-none d-md-block">
@@ -107,7 +107,7 @@
               <h6 class="p-3 mb-0 text-center">4 new messages</h6>
             </div>
           </li> -->
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
               <i class="mdi mdi-bell-outline"></i>
               <span class="count"></span>
@@ -159,19 +159,19 @@
               <div class="dropdown-divider"></div>
               <h6 class="p-3 mb-0 text-center">See all notifications</h6>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle nav-profile" id="profileDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
               <!-- <img src="images/faces/face1.jpg" alt="image"> -->
               <span class="d-none d-lg-inline">Andrew Mitchell</span>
             </a>
             <div class="dropdown-menu navbar-dropdown w-100" aria-labelledby="profileDropdown">
-              <a class="dropdown-item" href="#">
+              <!-- <a class="dropdown-item" href="#">
                 <i class="mdi mdi-cached mr-2 text-success"></i>
                 Activity Log
-              </a>
+              </a> -->
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">
+              <a class="dropdown-item" href="/login">
                 <i class="mdi mdi-logout mr-2 text-primary"></i>
                 Signout
               </a>

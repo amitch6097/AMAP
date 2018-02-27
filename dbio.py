@@ -21,7 +21,7 @@ class Dbio:
 		return '\nThis many--->',self.alpha.find().count()
 
 	def db_list_one(self, name,val): #Show one result using specific rule
-		print(self.alpha.find_one({name:val}))
+		return self.alpha.find_one({name:val})
 
 	def db_find_first_char(self, chars):
 		# assert (len) == 1

@@ -14330,7 +14330,8 @@ pre {
 
 /* Auth */
 .auth-pages {
-  background: url("../images/samples/Login_bg.jpg") no-repeat center center;
+  /* background: url("../images/samples/Login_bg.jpg") no-repeat center center; */
+  /*  Andrew */
   background-size: cover; }
   .auth-pages .forgot-pass {
     font-size: 0.875rem;
@@ -14366,8 +14367,8 @@ pre {
       background-image: url("../images/samples/Login_bg2.jpg");
       background-size: cover; }
     .auth-pages.login-2.login-2, .auth-pages.option-2.login-2 {
-      background-image: url("../images/samples/Login_bg.jpg");
-      background-size: cover;
+      /* background-image: url("../images/samples/Login_bg.jpg"); */
+      /* background-size: cover; */
       background-position: right bottom; }
 
 /*-------------------------------------------------------------------*/

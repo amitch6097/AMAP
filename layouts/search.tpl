@@ -18,6 +18,10 @@
                   <p>SHA256: {{obj['SHA256']}}</p>
                   <p>MD5: {{obj['MD5']}}</p>
             </div>
+            <form action="/file_view" method="post" enctype="multipart/form-data">
+                <button type="submit" class="btn btn-info btn-fw" style="min-width: 12px;">View</button>
+                <input type="hidden" name="filename" value={{obj['Name']}}>
+            </form>
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Purple Admin</title>
+  <title>AMAP Login</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="../../node_modules/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="../../node_modules/perfect-scrollbar/dist/css/perfect-scrollbar.min.css">
@@ -48,14 +48,14 @@
                 <div class="text-center">
                   <button type="submit" class="btn btn-primary btn-block enter-btn">Login</button>
                 </div>
-                <div class="d-flex">
+                <!-- <div class="d-flex">
                   <button class="btn btn-facebook mr-2 col">
                       <i class="mdi mdi-facebook"></i> Facebook
                   </button>
                   <button class="btn btn-google col">
                       <i class="mdi mdi-google-plus"></i> Google plus
                   </button>
-                </div>
+                </div> -->
                 <p class="sign-up">Don't have an Account?<a href="#"> Sign Up</a></p>
               </form>
             </div>
