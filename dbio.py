@@ -23,15 +23,11 @@ class Dbio:
 	def db_list_one(self, name,val): #Show one result using specific rule
 		print(self.alpha.find_one({name:val}))
 
-	def db_find_first_char(self):
+	def db_find_first_char(self, chars):
 		# assert (len) == 1
 		# isinstance(s, basestring)
 
-		# import re
-		# regx = re.compile("^foo", re.IGNORECASE)
-		# db.users.find_one({"files": regx})
-
-		return self.alpha.find( {'Name': { '$regex': '^t'}})
+		return self.alpha.find( {'Name': { '$regex': '^' + chars}})
 
 
 	def db_list_all(self): #Show everything inside the database

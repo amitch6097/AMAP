@@ -219,12 +219,6 @@
                 <i class="mdi mdi-folder menu-icon"></i>
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="module-upload">
-                <span class="menu-title">Module Upload</span>
-                <i class="mdi mdi-folder menu-icon"></i>
-              </a>
-            </li>
           </ul>
         </nav>
 
