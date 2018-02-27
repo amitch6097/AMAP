@@ -5,20 +5,25 @@
   <div class="row">
     <h3 class="text-info">This is Search</h3>
   </div>
-  <div class="row">
-    <div class="col-12 grid-margin">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title">Search Output</h4>
-          <!-- <form action="/upload" method="post" enctype="multipart/form-data">
-            Select a file: <input type="file" name="upload" multiple>
-            <input type="submit" value="Start upload" />
-          </form> -->
+
+  <!--TODO not output but button leading to page -->
+  %for obj in search_output:
+
+    <div class="row">
+      <div class="col-12 grid-margin">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">{{obj['Name']}}</h4>
+            <div>
+                  <p>SHA256: {{obj['SHA256']}}</p>
+                  <p>MD5: {{obj['MD5']}}</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+  %end
 
-  </div>
 </div>
 
 

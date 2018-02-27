@@ -129,12 +129,18 @@ def malware_search():
     search_input = request.forms.get('module-search-input')
     print search_input
 
+
+    formated_objs = []
+    search_ouput_objects = Database.db_find_first_char(search_input)
+    for i in search_ouput_objects:
+        formated_objs.append(i)
+    print formated_objs
     #send input to database
     #get back array of dictionary objects?
     fake_obj = [{"file_name":"file.pdf", "SHA1":"2324effefe", "MD5":"iogroi4t4"},
     {"file_name":"file.pdf", "SHA1":"2324effefe", "MD5":"iogroi4t4"}]
 
-    return template('layouts/search', search_output=fake_obj)
+    return template('layouts/search', search_output=formated_objs)
 
 @route('/upload-module', method='POST')
 def upload_module():
