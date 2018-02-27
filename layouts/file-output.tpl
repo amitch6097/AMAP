@@ -10,8 +10,10 @@
         <div class="card-body">
             <h4 class="card-title">{{file_obj['Name']}}</h4>
             <div>
-                  <p>SHA256: {{file_obj['SHA256']}}</p>
-                  <p>MD5: {{file_obj['MD5']}}</p>
+              %for key, value in file_obj.iteritems():
+
+                  <p>{{key}}: {{value}}</p>
+              %end
             </div>
           </div>
         </div>

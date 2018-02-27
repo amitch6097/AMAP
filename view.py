@@ -12,6 +12,9 @@ from dbio import Dbio
 
 Database = Dbio()
 
+# Database.db_del_element('Name', 'scraper_2_rutgers.py')
+# Database.db_del_element('Name', 'scraper_2_rutgers.py')
+
 import zipfile
 
 
@@ -172,7 +175,13 @@ def process_upload():
 
     file_name = request.forms.get('file_name')
     file_location = "downloads/{file_name}".format(file_name=file_name)
-    outData = run_modules.modules(form_selections,file_location)
+    outData, output_obj = run_modules.modules(form_selections,file_location)
+
+    #ADD ouput to database
+    output_obj['Name'] = file_name
+    output_obj['location'] = file_location
+    Database.db_insert(output_obj)
+    Database.db_list_all()
 
     return template('layouts/output', ratOutput=outData)
 

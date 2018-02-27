@@ -25,19 +25,25 @@ def modules(form_selections,file_location):
     # Reall create a new process,and modules are multithreaded
 
     output = []
+    output_obj = {}
 
     if form_selections[0]:
         output.append("File Type: "+filetype_module(file_location))
+        output_obj["filetype"] = filetype_module(file_location)
     else:
         output.append("")
 
     if form_selections[1]:
         output.append("md5: "+md5_module(file_location))
+        output_obj["md5"] = md5_module(file_location)
+
     else:
         output.append("")
 
     if form_selections[2]:
         output.append("sha1: "+sha1_module(file_location))
+        output_obj["sha1"] = sha1_module(file_location)
+
     else:
         output.append("")
 
@@ -59,7 +65,9 @@ def modules(form_selections,file_location):
     # os.system(execStr)
 
     outData = processData(stdoutdata)
+    output_obj["RAT"] = "<p>{0}</p>".format("</p><p>".join(outData))
+
 
     # return "File successfully saved to '{0}'.".format(save_path)
     output += outData
-    return output
+    return output, output_obj

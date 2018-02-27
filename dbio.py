@@ -29,6 +29,8 @@ class Dbio:
 
 		return self.alpha.find( {'Name': { '$regex': '^' + chars}})
 
+	def db_insert(self, input_obj):
+		self.alpha.insert(input_obj)
 
 	def db_list_all(self): #Show everything inside the database
 		for i in self.alpha.find():
