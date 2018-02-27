@@ -7,7 +7,18 @@ import os
 import run_modules
 from bottle import static_file, run, template, get, redirect, request, route, template
 import json
+from dbio import Dbio
 
+
+Database = Dbio()
+# Database.db_insert_to("test", "test", "test")
+# Database.db_insert_to("test2", "test", "test")
+print 'a'
+# Database.db_list_one("Name", "test")
+for i in Database.db_find_first_char():
+    print i
+# Database.db_del_element("Name", "test")
+# Database.db_list_all()
 
 @route('/')
 def default():
