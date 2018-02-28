@@ -6,8 +6,9 @@ from bottle import static_file, run, template, get, redirect, request, route, te
 import os
 import zipfile
 import json
+import shutil
 
-import run_modules
+# import run_modules
 # import helper_functions
 from dbio import Dbio
 from processor import Processor
@@ -72,7 +73,7 @@ def load_processes():
     # IF PROCS WHERE LOADED FROM DB
     # db_procs = Database.db_get_all_processes()
     # Processor.db_proc_stack_to_processes()
-    
+
     return template('processes', processes=Processor.get_all_processes())
 
 
@@ -90,20 +91,18 @@ def static(filename):
     return static_file(filename, root='static/')
 
 
-#TODO build out
 @route('/module-upload', method='POST')
 def servo_pos():
     current_dir_path = os.path.dirname(os.path.realpath(__file__))
-
-    # grab uploaded file from form
-    # upload = request.files.get('upload')
 
     uploads = request.files.getall('upload')
     uploads_name_array = []
 
     #TODO handle uploads with same names
     for upload in uploads:
-        print upload.filename
+        name, ext = os.path.splitext(upload.filename)
+        assert ext == '.zip'
+
 
         # How to not allow file types
         # name, ext = os.path.splitext(upload.filename)
@@ -111,7 +110,7 @@ def servo_pos():
         #     return "File extension not allowed."
 
         # set up downloads path
-        save_path = "{path}/RatDecoders".format(path=current_dir_path)
+        save_path = "{path}/modules".format(path=current_dir_path, filename=name)
         if not os.path.exists(save_path):
             os.makedirs(save_path)
 
@@ -119,13 +118,15 @@ def servo_pos():
         file_path = "{path}/{file}".format(path=save_path, file=upload.filename)
         upload.save(file_path, overwrite=True) #overwrite TRUE might not be good?
 
-        # add to array of names
-        uploads_name_array.append(upload.filename)
+        zip_ref = zipfile.ZipFile(file_path, 'r')
+        zip_ref.extractall(save_path)
+        zip_ref.close()
 
-    info = {'file_names' : uploads_name_array}
+        os.remove(file_path)
+        # shutil.rmtree("{0}/__MAXOSX".format(save_path))
 
 
-    return template('modules', info)
+    return template('dashboard')
 
 
 @route('/malware-search', method='POST')
@@ -142,14 +143,16 @@ def malware_search():
 @route('/upload-module', method='POST')
 def upload_module():
     file_name = request.forms.get('file_name')
-    file_location = "RatDecoders/{file_name}".format(file_name=file_name)
+    file_location = "modules/{file_name}".format(file_name=file_name)
 
     path_to_zip_file = file_location
-    directory_to_extract_to = "RatDecoders"
+    directory_to_extract_to = "modules"
 
     zip_ref = zipfile.ZipFile(path_to_zip_file, 'r')
     zip_ref.extractall(directory_to_extract_to)
     zip_ref.close()
+
+    # os.remove(path_to_zip_file)
 
     return template('dashboard')
 
@@ -162,5 +165,7 @@ def login_page():
     print("Printing username: {}".format(username))
     print("Printing password: {}".format(password))
     return template('dashboard')
+
+
 # run it
 run(host='localhost', port=8080, reloder=True)

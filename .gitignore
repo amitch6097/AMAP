@@ -1,6 +1,8 @@
 downloads/
 modules/*.pyc
+modules/__MACOSX
 yara-python/
+
 
 *.log*
 *.DS_Store
