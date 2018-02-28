@@ -80,6 +80,10 @@ class Processor:
         for file_or_dir in os.listdir(modules_folder):
             if os.path.isdir("{0}/{1}".format(modules_folder, file_or_dir)):
                 self.modules.append(file_or_dir)
+
+        if "__MACOSX" in self.modules:
+            del myDict["__MACOSX"]
+
         return self.modules
 
     def create_process_obj(self, forms, uploaded_malware_array, Database):

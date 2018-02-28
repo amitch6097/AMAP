@@ -110,7 +110,7 @@ def servo_pos():
         #     return "File extension not allowed."
 
         # set up downloads path
-        save_path = "{path}/modules".format(path=current_dir_path, filename=name)
+        save_path = "{path}/modules".format(path=current_dir_path)
         if not os.path.exists(save_path):
             os.makedirs(save_path)
 
@@ -118,12 +118,18 @@ def servo_pos():
         file_path = "{path}/{file}".format(path=save_path, file=upload.filename)
         upload.save(file_path, overwrite=True) #overwrite TRUE might not be good?
 
+        # new_dir = "{0}/{1}".format(save_path, name)
+        # os.makedirs(new_dir)
+
         zip_ref = zipfile.ZipFile(file_path, 'r')
         zip_ref.extractall(save_path)
         zip_ref.close()
 
         os.remove(file_path)
-        # shutil.rmtree("{0}/__MAXOSX".format(save_path))
+
+        # mac_created_folder = "{0}/__MACOSX".format(save_path)
+        # if os.path.isdir(mac_created_folder):
+        #     shutil.rmtree(mac_created_folder)
 
 
     return template('dashboard')
@@ -140,21 +146,21 @@ def malware_search():
 
     return template('search', search_output=formated_objs)
 
-@route('/upload-module', method='POST')
-def upload_module():
-    file_name = request.forms.get('file_name')
-    file_location = "modules/{file_name}".format(file_name=file_name)
-
-    path_to_zip_file = file_location
-    directory_to_extract_to = "modules"
-
-    zip_ref = zipfile.ZipFile(path_to_zip_file, 'r')
-    zip_ref.extractall(directory_to_extract_to)
-    zip_ref.close()
-
-    # os.remove(path_to_zip_file)
-
-    return template('dashboard')
+# @route('/upload-module', method='POST')
+# def upload_module():
+#     file_name = request.forms.get('file_name')
+#     file_location = "modules/{file_name}".format(file_name=file_name)
+#
+#     path_to_zip_file = file_location
+#     directory_to_extract_to = "modules"
+#
+#     zip_ref = zipfile.ZipFile(path_to_zip_file, 'r')
+#     zip_ref.extractall(directory_to_extract_to)
+#     zip_ref.close()
+#
+#     # os.remove(path_to_zip_file)
+#
+#     return template('dashboard')
 
 
 
