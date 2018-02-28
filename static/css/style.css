@@ -13505,7 +13505,8 @@ input:focus {
   font-family: "pt-sans-regular", sans-serif;
   min-height: 100%;
   padding: 0;
-  position: absolute;
+  /* ANDREW FROM ABSOLUTE TO FIXED */
+  position: fixed;
   width: 247px;
   z-index: 11;
   transition: width 0.25s ease, background 0.25s ease;
