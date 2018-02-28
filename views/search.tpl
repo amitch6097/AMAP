@@ -9,7 +9,7 @@
   <!--TODO not output but button leading to page -->
   %for obj in search_output:
 
-    <div class="row">
+    <!-- <div class="row">
       <div class="col-12 grid-margin">
         <div class="card">
           <div class="card-body">
@@ -21,7 +21,27 @@
           </div>
         </div>
       </div>
+    </div> -->
+    <form action="/file_view" method="post" enctype="multipart/form-data">
+    <div class="row">
+      <div class="col-12 grid-margin">
+        <div class="card">
+          <div class="card-body">
+            <div class="form-row align-items-center">
+              <label class="form-check-label">
+                  <h4>{{obj['Name']}}</h4>
+              </label>
+              <div class="col-auto ml-auto">
+                <button type="submit" class="btn btn-info btn-fw" style="min-width: 12px;">View</button>
+                <input type="hidden" name="filename" value={{obj['Name']}}>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </form>
+
   %end
 
 </div>
