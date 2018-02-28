@@ -149,4 +149,4 @@ def login_page():
     print("Printing password: {}".format(password))
     return template('dashboard')
 # run it
-run(host='localhost', port=8080)
+run(host='localhost', port=8080, reloder=True)

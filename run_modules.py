@@ -93,7 +93,7 @@ def modules(form_selections,file_location):
     # os.system(execStr)
 
     outData = processData(stdoutdata)
-    output_obj["RAT"] = "<p>{0}</p>".format("</p><p>".join(outData).encode('ascii', 'xmlcharrefreplace'))
+    output_obj["RAT"] = outData
 
 
     # return "File successfully saved to '{0}'.".format(save_path)
