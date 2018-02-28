@@ -22,11 +22,14 @@ class Process:
     def __init__(self, f):
         self.file = f
         self.modules = {}
-        self.finished = False
         self.percent_done = 0
         self.start_time = "idle"
         self.end_time = "waiting..."
+        self.run_number = -1
+        self.id = -1
 
+    def edit_id(self, id):
+        self.id = id
 
     def add_module(self, module, on_off):
         self.modules[module] = on_off
@@ -36,7 +39,6 @@ class Process:
             print "KEY:{0} VALUE:{1}".format(key, self.modules[key])
 
     def finish_process(self):
-        self.finished = True
         self.percent_done = 100
         self.end_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
@@ -44,12 +46,30 @@ class Process:
         self.start_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
         self.end_time = "running..."
 
+    def get_file_runs(self, Database):
+        assert self.file.id != -1
+        self.run_number = Database.db_inc_runs_by_id(self.file.id)
+        self.file.runs = self.run_number
+
+    def to_database_file(self):
+        return {'file_id':self.file.id,
+            "filename":self.file.filename,
+             "modules":self.modules,
+             "run_number":self.run_number,
+             "start_time":self.start_time,
+             "end_time":self.end_time,
+             }
 
 
 class Processor:
     def __init__(self):
         self.modules = []
-        self.processes = []
+        self.new_processes = []
+        self.old_processes = []
+
+    def get_all_processes(self):
+        return self.old_processes + self.new_processes
+
 
     def get_modules(self):
         self.modules = []
@@ -62,10 +82,11 @@ class Processor:
                 self.modules.append(file_or_dir)
         return self.modules
 
-    def create_process_obj(self, forms, uploaded_malware_array):
+    def create_process_obj(self, forms, uploaded_malware_array, Database):
 
         for current_file in uploaded_malware_array:
             process = Process(current_file)
+            process.get_file_runs(Database)
 
             for index, module in enumerate(self.modules):
                 name = "{0}_{1}".format(current_file.filename, index)
@@ -73,7 +94,8 @@ class Processor:
 
                 process.add_module(module, (checkbox == 'on'))
 
-            self.processes.append(process)
+            Database.db_proc_insert(process)
+            self.new_processes.append(process)
 
     def processData(self, data):
         retList = []
@@ -88,12 +110,13 @@ class Processor:
         return retList
 
     def run_modules(self, debug, Database):
-        for process in self.processes:
+        while self.new_processes:
+            process = self.new_processes.pop()
             process.start_process()
+
             cwd = os.getcwd()
 
-            output_obj = {"Name":process.file.filename, "location":process.file.path}
-
+            output_obj = process.file.to_database_file()
 
             for module in process.modules:
                 if process.modules[module] == False:
@@ -111,8 +134,12 @@ class Processor:
 
                     output = self.processData(stdoutdata)
                     output_obj[module] = output
+                    print output_obj
+                    print process.file.id
+                    Database.db_update_on_id(process.file.id, output_obj)
+
 
             process.finish_process()
-            Database.db_insert(output_obj)
+            process = self.old_processes.append(process)
 
-        return output_obj
+        # return output_obj

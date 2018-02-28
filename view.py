@@ -17,9 +17,8 @@ from uploader import MalwareUploader
 Database = Dbio()
 Uploader = MalwareUploader(os.path.dirname(os.path.realpath(__file__)))
 Processor = Processor()
-# Database.db_del_element('Name', 'scraper_2_rutgers.py')
-# Database.db_del_element('Name', 'scraper_2_rutgers.py')
 
+# Database.db_clear()
 
 @route('/')
 def default():
@@ -31,6 +30,14 @@ def index(name):
 
 
 #MALWARE UPLOADING THINGS
+
+@route('/file-rerun', method='POST')
+def file_rerun():
+    db_file = Database.db_find_by_id(request.forms.get('id'))
+
+    Uploader.add_preloaded(db_file, Database)
+    info = {'file_names' : Uploader.get_current_upload_filenames(), 'module_options': Processor.get_modules()}
+    return template('process-modules', info)
 
 @route('/file-upload')
 def file_upload():
@@ -45,7 +52,7 @@ def file_upload():
 
 @route('/upload', method='POST')
 def do_upload():
-    Uploader.upload(request.files.getall('upload'))
+    Uploader.upload(request.files.getall('upload'), Database)
 
     info = {'file_names' : Uploader.get_current_upload_filenames(), 'module_options': Processor.get_modules()}
     return template('process-modules', info)
@@ -53,7 +60,7 @@ def do_upload():
 @route('/process', method='POST')
 def process_upload():
 
-    Processor.create_process_obj(request.forms, Uploader.current_uploads)
+    Processor.create_process_obj(request.forms, Uploader.current_uploads, Database)
     Uploader.reset()
     Processor.run_modules(False, Database)
 
@@ -61,8 +68,15 @@ def process_upload():
 
 @route('/processes')
 def load_processes():
-    return template('processes', processes=Processor.processes)
 
+    # IF PROCS WHERE LOADED FROM DB
+    # db_procs = Database.db_get_all_processes()
+    # Processor.db_proc_stack_to_processes()
+    
+    return template('processes', processes=Processor.get_all_processes())
+
+
+# TODO db_list_one only gets the first file with name, is a problem for duplicates
 @route('/file_view', method='POST')
 def load_file():
     file_select = request.forms.get('filename')

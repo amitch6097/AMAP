@@ -32,6 +32,8 @@
                   </th>
                   <th>
                   </th>
+                  <th>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -59,10 +61,28 @@
                       {{process.end_time}}
                     </td>
                     <td>
+
+                      <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample{{index}}" aria-expanded="false" aria-controls="collapseExample">
+                        Display Modules
+                      </button>
+                    </td>
+
+                    <td>
                       <form action="/file_view" method="post" enctype="multipart/form-data">
                           <button type="submit" class="btn btn-info btn-fw" style="min-width: 12px;">View</button>
                           <input type="hidden" name="filename" value={{process.file.filename}}>
                       </form>
+                    </td>
+                  </tr>
+                  <tr class="collapse" id="collapseExample{{index}}">
+                    <td>
+                      <!-- <div class="collapse" id="collapseExample"> -->
+                        %for module in process.modules:
+                          %if process.modules[module] == True:
+                            <p>{{module}}</p>
+                          %end
+                        %end
+                      <!-- </div> -->
                     </td>
                   </tr>
                  % end

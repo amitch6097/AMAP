@@ -4,6 +4,18 @@ class Malware:
     def __init__(self, filename, path):
         self.filename = filename
         self.path = path
+        self.id = -1
+        self.runs = 0
+
+    def edit_id(self, id):
+        self.id = id
+
+    def to_database_file(self):
+        return {
+            'Name'      :self.filename,
+            'location'  :self.path,
+            'runs'      :self.runs
+        }
 
 class MalwareUploader:
 
@@ -27,9 +39,17 @@ class MalwareUploader:
         file_name_array = [f.filename for f in self.current_uploads]
         return file_name_array
 
+    def add_preloaded(self, db_file, Database):
+        self.state = "modules"
+        malware = Malware(db_file['Name'], db_file['location'])
+        self.current_uploads.append(malware)
+        malware.edit_id(db_file['_id'])
+        malware.runs = db_file['runs']
+        # Database.db_insert_malware_obj(malware)
+
 
     #TODO handle uploads with same names
-    def upload(self, file_uploads):
+    def upload(self, file_uploads, Database):
         self.state = "modules"
         for upload in file_uploads:
 
@@ -43,3 +63,4 @@ class MalwareUploader:
 
             malware = Malware(upload.filename, file_path)
             self.current_uploads.append(malware)
+            Database.db_insert_malware_obj(malware)
