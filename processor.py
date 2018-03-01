@@ -81,8 +81,7 @@ class Processor:
             if os.path.isdir("{0}/{1}".format(modules_folder, file_or_dir)):
                 self.modules.append(file_or_dir)
 
-        if "__MACOSX" in self.modules:
-            del myDict["__MACOSX"]
+        self.modules = [x for x in self.modules if x != "__MACOSX"]
 
         return self.modules
 

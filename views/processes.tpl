@@ -22,6 +22,9 @@
                     File Name
                   </th>
                   <th>
+                    Run #
+                  </th>
+                  <th>
                     Start Time
                   </th>
                   <th>
@@ -37,6 +40,7 @@
                 </tr>
               </thead>
               <tbody>
+                
 
                 %index = 0
                 % for process in processes:
@@ -48,6 +52,9 @@
                     </td>
                     <td>
                       {{process.file.filename}}
+                    </td>
+                    <td>
+                      {{process.run_number}}
                     </td>
                     <td>
                       {{process.start_time}}
@@ -76,10 +83,16 @@
                   </tr>
                   <tr class="collapse" id="collapseExample{{index}}">
                     <td>
+                    </td>
+                    <td>
+
                       <!-- <div class="collapse" id="collapseExample"> -->
                         %for module in process.modules:
                           %if process.modules[module] == True:
-                            <p>{{module}}</p>
+                          <p>
+                          <i class="mdi mdi-circle mr-2 text-primary"></i>
+                            {{module}}
+                          </p>
                           %end
                         %end
                       <!-- </div> -->

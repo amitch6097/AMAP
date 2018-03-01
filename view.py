@@ -146,6 +146,23 @@ def malware_search():
 
     return template('search', search_output=formated_objs)
 
+@route('/my-modules')
+def get_my_modules():
+    modules = Processor.get_modules()
+    return template('display-modules', modules=modules)
+
+@route('/delete-module', method='POST')
+def get_my_modules():
+    modules_name = request.forms.get('module-name')
+    current_dir_path = os.path.dirname(os.path.realpath(__file__))
+
+    path = "{0}/modules/{1}".format(current_dir_path,modules_name)
+
+    if os.path.isdir(path):
+        shutil.rmtree(path)
+
+    modules = Processor.get_modules()
+    return template('display-modules', modules=modules)
 # @route('/upload-module', method='POST')
 # def upload_module():
 #     file_name = request.forms.get('file_name')

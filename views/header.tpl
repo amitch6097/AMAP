@@ -166,10 +166,10 @@
               <span class="d-none d-lg-inline">Andrew Mitchell</span>
             </a>
             <div class="dropdown-menu navbar-dropdown w-100" aria-labelledby="profileDropdown">
-              <!-- <a class="dropdown-item" href="#">
-                <i class="mdi mdi-cached mr-2 text-success"></i>
-                Activity Log
-              </a> -->
+              <a class="dropdown-item" href="/my-modules">
+                <!-- <i class="mdi fa-code mr-2 text-success"></i> -->
+                My Modules
+              </a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="/login">
                 <i class="mdi mdi-logout mr-2 text-primary"></i>

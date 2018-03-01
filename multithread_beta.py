@@ -1,6 +1,6 @@
 import os
 import sys
-import _thread
+import thread
 
 
 def run(name): #Rub Scanning
@@ -8,4 +8,4 @@ def run(name): #Rub Scanning
 
 with open("scan.list", "r") as ins:
     for line in ins:
-        print _thread.start_new_thread( run, (line,) ) #Returns Each Thread ID
+        print thread.start_new_thread( run, (line,) ) #Returns Each Thread ID
