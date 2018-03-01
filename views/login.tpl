@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <!-- Required meta tags -->
   <meta charset="utf-8">
@@ -25,7 +24,9 @@
       <div class="row">
         <div class="content-wrapper full-page-wrapper d-flex align-items-center auth-pages">
           <div class="card col-lg-4 mx-auto">
+            <img src="images/accenture_logo.png" alt="logo" style="margin: auto; padding-top: 1em;" height="50%" width="50%"/>
             <div class="card-body px-5 py-5">
+
               <h3 class="card-title text-left mb-3">Login</h3>
               <form action="/login" method="POST">
                 <div class="form-group">
