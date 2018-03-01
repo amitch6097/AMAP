@@ -95,7 +95,8 @@ class Processor:
                 name = "{0}_{1}".format(current_file.filename, index)
                 checkbox = forms.get(name)
 
-                process.add_module(module, (checkbox == 'on'))
+                if (checkbox == 'on'):
+                    process.add_module(module, False)
 
             Database.db_proc_insert(process)
             self.new_processes.append(process)
@@ -103,6 +104,7 @@ class Processor:
     def processData(self, data):
         retList = []
         aStr = ""
+        print data
         for c in data:
             if c == "\n":
                 retList.append(aStr)
@@ -122,8 +124,6 @@ class Processor:
             output_obj = process.file.to_database_file()
 
             for module in process.modules:
-                if process.modules[module] == False:
-                    continue
 
                 location_of_module = '{0}/modules/{1}/{1}.py'.format(cwd, module)
 
@@ -134,15 +134,22 @@ class Processor:
                 else:
                     p = subprocess.Popen(['python', location_of_module, process.file.path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     stdoutdata, stderrdata = p.communicate()
+                    print stderrdata
+
+                    module_passed = True
+                    if stderrdata:
+                        module_passed = False
 
                     output = self.processData(stdoutdata)
                     output_obj[module] = output
-                    print output_obj
-                    print process.file.id
+
+                    process.modules[module] = module_passed
+
                     Database.db_update_on_id(process.file.id, output_obj)
 
 
             process.finish_process()
+
             process = self.old_processes.append(process)
 
         # return output_obj

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
-#sys.path.insert(0, "/usr/local/lib/python2.7/site-packages/")
+# sys.path.insert(0, "/usr/local/lib/python2.7/site-packages/")
 
 import importlib
 import hashlib
@@ -18,7 +18,7 @@ __description__ = 'RAT Config Extractor'
 __author__ = 'Kevin Breen, https://techanarchy.net, https://malwareconfig.com'
 __version__ = '1.0'
 __date__ = '2016/04'
-rule_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'yaraRules', 'yaraRules.yar')
+rule_file = os.path.join('yaraRules', 'yaraRules.yar')
 
 
 def unpack(raw_data):

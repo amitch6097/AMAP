@@ -40,7 +40,7 @@
                 </tr>
               </thead>
               <tbody>
-                
+
 
                 %index = 0
                 % for process in processes:
@@ -91,6 +91,11 @@
                           %if process.modules[module] == True:
                           <p>
                           <i class="mdi mdi-circle mr-2 text-primary"></i>
+                            {{module}}
+                          </p>
+                          %else:
+                          <p>
+                            <i class="mdi mdi-circle mr-2 text-danger"></i>
                             {{module}}
                           </p>
                           %end

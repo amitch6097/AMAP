@@ -1,12 +1,17 @@
 # coding=utf-8
 import sys
 #trouble adding path so ...
-#sys.path.insert(0, "/usr/local/lib/python2.7/site-packages/")
+sys.path.insert(0, "/usr/local/lib/python2.7/site-packages")
 from bottle import static_file, run, template, get, redirect, request, route, template
 import os
 import zipfile
 import json
 import shutil
+
+# need for other rat
+import pefile
+import pype32
+import yara
 
 # import run_modules
 # import helper_functions
@@ -19,7 +24,7 @@ Database = Dbio()
 Uploader = MalwareUploader(os.path.dirname(os.path.realpath(__file__)))
 Processor = Processor()
 
-# Database.db_clear()
+Database.db_clear()
 
 @route('/')
 def default():
@@ -82,6 +87,7 @@ def load_processes():
 def load_file():
     file_select = request.forms.get('filename')
     database_obj = Database.db_list_one('Name', file_select)
+    del database_obj['location']
 
     return template('file-output', file_obj=database_obj)
 
@@ -181,7 +187,7 @@ def get_my_modules():
 
 
 
-@route('/login', method="POST")
+@route('/login-user', method="POST")
 def login_page():
     username = request.forms.get('user_email')
     password = request.forms.get('password')

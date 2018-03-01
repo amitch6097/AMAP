@@ -15,15 +15,21 @@
             <h4 class="card-title">{{file_obj['Name']}}</h4>
             <div>
               %for key, value in file_obj.iteritems():
-                  % if key != 'RAT':
-                    <p>{{key}}: {{value}}</p>
-                  % else:
-                    <div>{{key}}:
-                      % for element in range(len(value)):
-                        <p>{{value[element]}}</p>
-                      % end
+                    <div>
+                      <h5 class="font-weight-bold">{{key}}:</h5>
+                      <div style="margin-left:20px;">
+                      % if isinstance(value, list):
+
+                        % for element in value:
+                          <p>{{element}}</p>
+                        % end
+
+                      %else:
+                        <p>{{value}}</p>
+                        %end
+                      </div>
+
                     </div>
-                  % end
 
               %end
             </div>

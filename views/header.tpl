@@ -24,7 +24,7 @@
     <!-- partial:partials/_navbar.html -->
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo" href="/"><img src="images/accenture_logo.png" alt="logo"/></a>
+        <a class="navbar-brand brand-logo" href="/dashboard"><img src="images/accenture_logo.png" alt="logo"/></a>
         <a class="navbar-brand brand-logo-mini" href="/"><img src="images/logo-mini.svg" alt="logo"/></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-stretch">
@@ -38,13 +38,14 @@
                   <i class="mdi mdi-earth"></i>
                   File Name
                 </button>
-                <div class="dropdown-menu dropdown-menu-right">
+                <!-- Andrew Fix ALPHA -->
+                <!-- <div class="dropdown-menu dropdown-menu-right">
                   <a class="dropdown-item" href="" id="search-category">File Name</a>
                   <a class="dropdown-item" href="" id="search-category">MD256</a>
                   <a class="dropdown-item" href="" id="search-category">SHA1</a>
                   <!-- <div role="separator" class="dropdown-divider"></div>
                   <a class="dropdown-item" href="#">Month and older</a> -->
-                </div>
+                <!-- </div> --> -->
               </div>
               <div class="input-group-addon bg-transparent border-0 search-button">
                 <button type="submit" class="btn btn-sm bg-transparent px-0">

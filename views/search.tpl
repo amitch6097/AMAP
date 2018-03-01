@@ -3,10 +3,21 @@
 
 <div class="content-wrapper">
   <div class="row">
-    <h3 class="text-info">This is Search</h3>
+    <h3 class="text-info">Search</h3>
   </div>
 
   <!--TODO not output but button leading to page -->
+  %if len(search_output) == 0:
+  <div class="row">
+    <div class="col-12 grid-margin">
+      <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">No Matching Files</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  %else:
   %for obj in search_output:
 
     <!-- <div class="row">
@@ -42,6 +53,7 @@
     </div>
   </form>
 
+  %end
   %end
 
 </div>
