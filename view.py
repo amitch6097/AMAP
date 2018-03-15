@@ -37,6 +37,7 @@ def index(name):
 
 #MALWARE UPLOADING THINGS
 
+#RUNS WHEN a start new process button is pressed on File View page
 @route('/file-rerun', method='POST')
 def file_rerun():
     db_file = Database.db_find_by_id(request.forms.get('id'))
@@ -45,58 +46,88 @@ def file_rerun():
     info = {'file_names' : Uploader.get_current_upload_filenames(), 'module_options': Processor.get_modules()}
     return template('process-modules', info)
 
+#RUNS WHEN file upload side bar button is Processed
+# Decides which page to show file upload or process options
 @route('/file-upload')
 def file_upload():
 
-    #We have not chosen the modules for theses files so go to that page
+    #We have files that need to be processed still
     if Uploader.has_uploads():
         info = {'file_names' : Uploader.get_current_upload_filenames(), 'module_options': Processor.get_modules()}
         return template('process-modules', info)
 
+    #show file upload
     else:
         return template('file-upload')
 
+#RUNS WHEN upload button is pressed on file upload packages
+#Uploads the files and navigates to process options page
 @route('/upload', method='POST')
 def do_upload():
-    Uploader.upload(request.files.getall('upload'), Database)
 
+    #upload files
+    files = request.files.getall('upload')
+    Uploader.upload(files, Database)
+
+    #get info to display on next page
     info = {'file_names' : Uploader.get_current_upload_filenames(), 'module_options': Processor.get_modules()}
+
     return template('process-modules', info)
 
+#RUNS WHEN submit button is pressed on file upload module options page
 @route('/process', method='POST')
 def process_upload():
 
+    #make process objects from page information and uploads
     Processor.create_process_obj(request.forms, Uploader.current_uploads, Database)
+
+    #reset uploader so that we can upload more files
     Uploader.reset()
+
+    # run the process objects we just created
     Processor.run_modules(False, Database)
 
+    # return to the base page
     return template('file-upload')
 
+
+#RUNS WHEN processes sidebar option is pressed
 @route('/processes')
 def load_processes():
 
-    # IF PROCS WHERE LOADED FROM DB
+    #TODO
+    # IF PROCESSES WHERE LOADED FROM DB
     # db_procs = Database.db_get_all_processes()
     # Processor.db_proc_stack_to_processes()
 
     return template('processes', processes=Processor.get_all_processes())
 
 
+#RUNS WHEN a file is click on in either processes page or search_input
 # TODO db_list_one only gets the first file with name, is a problem for duplicates
 @route('/file_view', method='POST')
 def load_file():
+
+    #grab the selected file
     file_select = request.forms.get('filename')
+
+    #grab a file with the same name
     database_obj = Database.db_list_one('Name', file_select)
+
+    # used to not show location of the file on system
+    #TODO could be deleted
     del database_obj['location']
 
     return template('file-output', file_obj=database_obj)
 
 # Static Routes
+#USED for our CSS, JS and other assets
 @get('/<filename:path>')
 def static(filename):
     return static_file(filename, root='static/')
 
-
+#RUNS WHEN a module is uploaded
+# unzips the file and places it in modules folder
 @route('/module-upload', method='POST')
 def servo_pos():
     current_dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -140,23 +171,29 @@ def servo_pos():
 
     return template('dashboard')
 
-
+#RUNS WHEN search button is pressed
+#grabs input from search bar and searches database for those chars
 @route('/malware-search', method='POST')
 def malware_search():
+
     search_input = request.forms.get('module-search-input')
 
     formated_objs = []
+
     search_ouput_objects = Database.db_find_first_char(search_input)
     for obj in search_ouput_objects:
         formated_objs.append(obj)
 
     return template('search', search_output=formated_objs)
 
+#RUNS WHEN my modules is selected
+#shows the current uploaded modules
 @route('/my-modules')
 def get_my_modules():
     modules = Processor.get_modules()
     return template('display-modules', modules=modules)
 
+#RUNS WHEN delete is selected on my modules page
 @route('/delete-module', method='POST')
 def get_my_modules():
     modules_name = request.forms.get('module-name')
