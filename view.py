@@ -35,6 +35,11 @@ def index(name):
     return template(name)
 
 
+@route('/wizard')
+def wizard():
+    return template('wizard')
+
+
 #MALWARE UPLOADING THINGS
 
 #RUNS WHEN a start new process button is pressed on File View page
