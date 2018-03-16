@@ -154,8 +154,10 @@ class Processor:
         aStr = ""
         print data
         for c in data:
+
             if c == "\n":
                 retList.append(aStr)
+                print aStr
                 aStr = ""
             else:
                 aStr += c
