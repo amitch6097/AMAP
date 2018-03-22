@@ -2,7 +2,7 @@
 import sys
 #trouble adding path so ...
 sys.path.insert(0, "/usr/local/lib/python2.7/site-packages")
-from bottle import static_file, run, template, get, redirect, request, route, template
+from bottle import static_file, run, template, get, redirect, request, route, template, auth_basic
 import os
 import zipfile
 import json
@@ -198,3 +198,12 @@ def login_page():
 
 # run it
 run(host='localhost', port=8080, reloder=True)
+
+#@route('/')
+#def check_password(user,password)
+#check user/password here and return True/False
+
+#@route('/')
+#@auth_basic(check)
+#def display_data():
+#    return {'data': request.auth_basic}

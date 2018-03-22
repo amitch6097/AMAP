@@ -1,8 +1,6 @@
 import os
 import sys
 import thread
-<<<<<<< HEAD
-=======
 import time
 import subprocess
 import threading
@@ -16,7 +14,7 @@ class decoder(threading.Thread):
 	    #p = subprocess.call(['python', 'RatDecoders/ratdecoder.py', name])
 	    # os.popen('python RatDecoders/ratdecoder.py '+ "-o test.txt " + name).read()
 	    output = subprocess.check_output('python RatDecoders/ratdecoder.py '+ "-o test.txt " + self.name, shell=True)
->>>>>>> e491b48fce649ff1ddeee2f0fdda8ffbfb598f6a
+
 
 
 def run(name): #Rub Scanning
