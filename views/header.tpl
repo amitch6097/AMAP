@@ -220,6 +220,12 @@
                 <i class="mdi mdi-folder menu-icon"></i>
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="wizard">
+                <span class="menu-title">AMAP Wizard</span>
+                <i class="mdi mdi-multiplication menu-icon"></i>
+              </a>
+            </li>
           </ul>
         </nav>
 
