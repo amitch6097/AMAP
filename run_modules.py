@@ -1,6 +1,7 @@
 import os
 import subprocess
 import sys
+import time
 # import our modules
 sys.path.insert(0, 'modules/')
 
@@ -26,7 +27,7 @@ def run_modules(array_of_process_objs, debug):
     process = array_of_process_objs[0]
     cwd = os.getcwd()
 
-    output_obj = {"Name":process.file.filename, "location":process.file.path}
+    output_obj = {"Name":process.file.filename, "location":process.file.path, 'time':time.time()}
 
 
     for module in process.modules:

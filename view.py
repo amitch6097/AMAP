@@ -12,6 +12,7 @@ import shutil
 import pefile
 import pype32
 import yara
+import time
 
 # import run_modules
 # import helper_functions
@@ -75,7 +76,7 @@ def do_upload():
     Uploader.upload(files, Database)
 
     #get info to display on next page
-    info = {'file_names' : Uploader.get_current_upload_filenames(), 'module_options': Processor.get_modules()}
+    info = {'file_names' : Uploader.get_current_upload_filenames(),'time':time.time(), 'module_options': Processor.get_modules()}
 
     return template('process-modules', info)
 
