@@ -1,6 +1,8 @@
+
 # coding=utf-8
 import sys
 #trouble adding path so ...
+
 sys.path.insert(0, "/usr/local/lib/python2.7/site-packages")
 from bottle import static_file, run, template, get, redirect, request, route, template
 import os
