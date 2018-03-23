@@ -12,6 +12,7 @@ import shutil
 import pefile
 import pype32
 import yara
+import time
 
 # import run_modules
 # import helper_functions
@@ -24,9 +25,7 @@ Database = Dbio()
 Uploader = MalwareUploader(os.path.dirname(os.path.realpath(__file__)))
 Processor = Processor()
 
-Database.db_clear()
-for i in Database.db_get_all_processes():
-    print i
+# Database.db_clear()
 
 @route('/')
 def default():
@@ -35,6 +34,11 @@ def default():
 @route('/<name>')
 def index(name):
     return template(name)
+
+
+@route('/wizard')
+def wizard():
+    return template('wizard')
 
 
 #MALWARE UPLOADING THINGS
@@ -102,7 +106,7 @@ def load_processes():
     # db_procs = Database.db_get_all_processes()
     # Processor.db_proc_stack_to_processes()
 
-    return template('processes', processes=Processor.get_all_processes())
+    return template('processes', processes=Processor.get_all_processes(Database))
 
 
 #RUNS WHEN a file is click on in either processes page or search_input
@@ -232,7 +236,10 @@ def login_page():
     password = request.forms.get('password')
     print("Printing username: {}".format(username))
     print("Printing password: {}".format(password))
-    return template('dashboard')
+    db_list = Database.db_list_all()
+    print(db_list)
+    info = {'processed_day' : 1125, 'new_sample': 500, 'avg_time' : 3.5}
+    return template('dashboard', info)
 
 
 # run it

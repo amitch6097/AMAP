@@ -94,16 +94,18 @@ class Dbio:
 
 	def db_clear(self):
 		self.alpha.delete_many({})
+		self.proc.delete_many({})
+
 
 
 	# THIS IS PROCESS DATABSE STUFF
 
 	#Inserts a process into the database
 	#
-	#	proc_obj - A process object
-	def db_proc_insert(self, proc_obj):
-		db_id = self.proc.insert(proc_obj.to_database_file())
-		proc_obj.edit_id(id)
+	#	process - A process object
+	def db_proc_insert(self, process):
+		db_id = self.proc.insert(process.to_database_file())
+		process.edit_id(db_id)
 
 	#Gets all the processes in the database
 	def db_get_all_processes(self):
@@ -112,10 +114,10 @@ class Dbio:
 	#updates a process in the database
 	#
 	#	process - A process Object
-	def db_update_process_on_id(self, process):
+	def db_update_process(self, process_id, update_obj):
 		self.proc.update_one(
-	        {"_id": process.id},
-			{"$set": process.to_database_file()}
+	        {"_id": process_id},
+			{"$set": update_obj}
     	)
 
 

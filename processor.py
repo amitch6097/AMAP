@@ -26,10 +26,9 @@ class Process:
 
     #
     #   file   - a Malware Object see Uploader.py
-    def __init__(self, file):
-        self.file = file
-        self.file_id =  file.id
-        self.file_name = file.filename
+    def __init__(self, file_id, file_name):
+        self.file_id =  file_id
+        self.file_name = file_name
 
         #modules is a dictionary w/
         # {'module name': wether or not module passed/ran}
@@ -71,23 +70,21 @@ class Process:
     #
     #   Database  - our global database object
     def get_file_runs(self, Database):
-        assert self.file.id != -1
-        self.run_number = Database.db_inc_runs_by_id(self.file.id)
-        self.file.runs = self.run_number
-
+        # assert self.file_id != -1
+        self.run_number = Database.db_inc_runs_by_id(self.file_id)
 
     #for putting the process into the database
     def to_database_file(self):
-        return {'file_id':self.file.id,
-            "filename":self.file.filename,
+        return {'file_id':self.file_id,
+            "file_name":self.file_name,
              "modules":self.modules,
              "run_number":self.run_number,
              "start_time":self.start_time,
              "end_time":self.end_time,
              }
+
     def from_database_file(self, db_file):
-        self.file.id = db_file['file_id']
-        self.file.filename = db_file["filename"]
+        self.id = db_file["_id"]
         self.modules = db_file["modules"]
         self.run_number = db_file["run_number"]
         self.start_time = db_file["start_time"]
@@ -101,8 +98,26 @@ class Processor:
         self.old_processes = [] #processes that have been run
 
     # for displaying all of the processes, already run or running
-    def get_all_processes(self):
-        return self.old_processes + self.new_processes
+    def get_all_processes(self, Database):
+        process_stack = Database.db_get_all_processes()
+        processes = self.process_stack_to_processes(process_stack, Database)
+        return processes
+        # return self.old_processes + self.new_processes
+
+    def process_stack_to_processes(self, db_process_stack, Database):
+        processes = []
+        for db_process in db_process_stack:
+
+            file_id = db_process['file_id'];
+            file = Database.db_find_by_id(file_id)
+
+            process = Process(file['_id'], file['Name'])
+            process.from_database_file(db_process)
+            processes.append(process)
+
+        return processes
+
+
 
     #get all of the possible modules we can run
     def get_modules(self):
@@ -131,7 +146,7 @@ class Processor:
         #loop through malware objects
         for current_file in uploaded_malware_array:
             #create a process object from it
-            process = Process(current_file)
+            process = Process(current_file.id, current_file.filename)
             # get the nummber of times the file has been run
             process.get_file_runs(Database)
 
@@ -152,19 +167,11 @@ class Processor:
 
             #insert the process into the database
             Database.db_proc_insert(process)
+            print "THIS IS NEW DB_PROC ID"
+            print process.id
 
             #add the process to list of processes that still need to be processed
             self.new_processes.append(process)
-
-    def db_proc_stack_to_processes(db_proc_stack, Database):
-        for proc in db_proc_stack:
-
-            file_id = proc['file_id'];
-            File = Database.db_find_by_id(file_id)
-
-            from_database_file
-
-
 
     #processes the string data output of a processes
     def processData(self, data):
@@ -172,8 +179,10 @@ class Processor:
         aStr = ""
         print data
         for c in data:
+
             if c == "\n":
                 retList.append(aStr)
+                print aStr
                 aStr = ""
             else:
                 aStr += c
@@ -189,18 +198,20 @@ class Processor:
         #loop throug all curren new processees
         while self.new_processes:
 
+
             #remove the process
             process = self.new_processes.pop()
             #put a timestamp on it
             process.start_process()
-
+            print "THIS IS NEW PROC ID"
+            print process.id
             cwd = os.getcwd()
 
             # grab the file out of the databse because
             #we are updating the information on the file
             # output_obj = process.file.to_database_file()
             db_file_obj = Database.db_find_by_id(process.file_id)
-            output_obj = []
+            output_obj = {}
 
             for module in process.modules:
 
@@ -236,7 +247,7 @@ class Processor:
             process.finish_process()
 
             #put the process in old, so we can still show it
-            process = self.old_processes.append(process)
-            Database.db_update_process(process)
+            self.old_processes.append(process)
+            Database.db_update_process(process.id, process.to_database_file())
 
         # return output_obj

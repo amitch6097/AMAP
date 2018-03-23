@@ -1,5 +1,5 @@
 import os
-
+import time
 
 #CLASS to define a single file or malware upload
 class Malware:
@@ -19,7 +19,8 @@ class Malware:
         return {
             'Name'      :self.filename,
             'location'  :self.path,
-            'runs'      :self.runs
+            'runs'      :self.runs,
+            'time'      :time.time()
         }
 
 #CLASS to upload malware and get current uploaded files

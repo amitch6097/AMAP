@@ -51,7 +51,7 @@
                       {{index}}
                     </td>
                     <td>
-                      {{process.file.filename}}
+                      {{process.file_name}}
                     </td>
                     <td>
                       {{process.run_number}}
@@ -77,7 +77,7 @@
                     <td>
                       <form action="/file_view" method="post" enctype="multipart/form-data">
                           <button type="submit" class="btn btn-info btn-fw" style="min-width: 12px;">View</button>
-                          <input type="hidden" name="filename" value={{process.file.filename}}>
+                          <input type="hidden" name="filename" value={{process.file_name}}>
                       </form>
                     </td>
                   </tr>
