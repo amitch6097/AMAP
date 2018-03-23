@@ -25,7 +25,7 @@ Database = Dbio()
 Uploader = MalwareUploader(os.path.dirname(os.path.realpath(__file__)))
 Processor = Processor()
 
-Database.db_clear()
+#Database.db_clear()
 
 @route('/')
 def default():
@@ -76,7 +76,7 @@ def do_upload():
     Uploader.upload(files, Database)
 
     #get info to display on next page
-    info = {'file_names' : Uploader.get_current_upload_filenames(),'time':time.time(), 'module_options': Processor.get_modules()}
+    info = {'file_names' : Uploader.get_current_upload_filenames(), 'module_options': Processor.get_modules()}
 
     return template('process-modules', info)
 
@@ -236,7 +236,10 @@ def login_page():
     password = request.forms.get('password')
     print("Printing username: {}".format(username))
     print("Printing password: {}".format(password))
-    return template('dashboard')
+    db_list = Database.db_list_all()
+    print(db_list)
+    info = {'processed_day' : 1125, 'new_sample': 500, 'avg_time' : 3.5}
+    return template('dashboard', info)
 
 
 # run it
