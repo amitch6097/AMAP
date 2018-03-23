@@ -20,13 +20,17 @@ class Dbio:
 		self.alpha.insert(sample)
 
 	def db_get_count(self):	#Get how many items are there in the database
-		return '\nThis many--->',self.alpha.find().count()
+		return self.alpha.find().count()
 
 	def db_list_one(self, name,val): #Show one result using specific rule
 		return self.alpha.find_one({name:val})
 
 	def db_find_by_id(self, id):
 		return self.alpha.find_one({"_id":ObjectId(id)})
+		
+	def db_list_all_time(self):
+		for i in self.alpha.find({},{'time':1,'_id':0}):
+			print(i)
 
 	# increments the amount of times a file has been run
 	def db_inc_runs_by_id(self, db_id):
