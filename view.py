@@ -23,9 +23,9 @@ from uploader import MalwareUploader
 
 Database = Dbio()
 Uploader = MalwareUploader(os.path.dirname(os.path.realpath(__file__)))
-Processor = Processor()
+Processor = Processor(Database)
 
-# Database.db_clear()
+Database.db_clear()
 
 @route('/')
 def default():
@@ -94,7 +94,7 @@ def process_upload():
     Processor.run_modules(False, Database)
 
     # return to the base page
-    return template('file-upload')
+    return load_processes()
 
 
 #RUNS WHEN processes sidebar option is pressed

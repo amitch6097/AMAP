@@ -1,4 +1,6 @@
 import multiprocessing as mp
+from multiprocessing import Process, Queue, Manager
+
 import os
 import subprocess
 import sys
@@ -90,12 +92,102 @@ class Process:
         self.start_time = db_file["start_time"]
         self.end_time = db_file["end_time"]
 
+    #processes the string data output of a processes
+    def processData(self, data):
+        retList = []
+        aStr = ""
+        print data
+        for c in data:
+
+            if c == "\n":
+                retList.append(aStr)
+                print aStr
+                aStr = ""
+            else:
+                aStr += c
+
+        return retList
+
+    def run(self, Database):
+        self.start_process()
+        cwd = os.getcwd()
+
+        # grab the file out of the databse because
+        #we are updating the information on the file
+        # output_obj = process.file.to_database_file()
+        db_file_obj = Database.db_find_by_id(self.file_id)
+        output_obj = {}
+
+        for module in self.modules:
+
+            #location main python file in modules folder on system
+            location_of_module = '{0}/modules/{1}/{1}.py'.format(cwd, module)
+
+            p = subprocess.Popen(['python', location_of_module, db_file_obj['location']], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdoutdata, stderrdata = p.communicate()
+            # print stderrdata
+
+            #if we get error data the module 'failed'
+            module_passed = True
+            if stderrdata:
+                module_passed = False
+
+            #process the output for printing to html
+            output = self.processData(stdoutdata)
+            #update the file with new module information
+            output_obj[module] = output
+
+            # set the processed module to passede or not
+            self.modules[module] = module_passed
+
+            #update our file in the database
+            Database.db_update_malware_on_id(db_file_obj["_id"], output_obj)
+
+        # put a timestamp on the process
+        self.finish_process()
+        Database.db_update_process(self.id, self.to_database_file())
+
+
+class MultiProcer:
+    def __init__(self, queue, Database):
+        self._queue = queue
+        self.cpu_count = mp.cpu_count()
+        self.Database = Database
+    # def start(self):
+    #     pool = mp.Pool(processes=1)
+    #     res= pool.apply_async(self.fuck)
+    #     print(res.get(timeout=1))
+    #     # self.run()
+    #
+    #     #     pool = mp.Pool(processes=4)
+    #     #     results = [pool.apply_async(add_processes, args=(key, batch_obj[key])) for key in batch_obj]
+
+    def start(self):
+        # pool = multiprocessing.Pool(processes=cpu_count)
+        # pool.map(work, ['ls'] * count)
+
+        processes = [mp.Process(target=self.run) for i in range(mp.cpu_count())]
+        for proc in processes:
+            proc.start()
+
+    def run(self):
+        # while(True):
+        if( self._queue.empty()):
+            return
+
+        process = self._queue.get()
+        process.run(self.Database)
+
+
 #CLASS to create process objects and run them
 class Processor:
-    def __init__(self):
+    def __init__(self, Database):
         self.modules = []       #all prossible modules we can run
         self.new_processes = [] #processes that need to be run still
         self.old_processes = [] #processes that have been run
+        m = Manager()
+        self.queue = m.Queue()
+        self.Multiproc = MultiProcer(self.queue, Database)
 
     # for displaying all of the processes, already run or running
     def get_all_processes(self, Database):
@@ -167,8 +259,6 @@ class Processor:
 
             #insert the process into the database
             Database.db_proc_insert(process)
-            print "THIS IS NEW DB_PROC ID"
-            print process.id
 
             #add the process to list of processes that still need to be processed
             self.new_processes.append(process)
@@ -201,53 +291,54 @@ class Processor:
 
             #remove the process
             process = self.new_processes.pop()
-            #put a timestamp on it
-            process.start_process()
-            print "THIS IS NEW PROC ID"
-            print process.id
-            cwd = os.getcwd()
 
-            # grab the file out of the databse because
-            #we are updating the information on the file
-            # output_obj = process.file.to_database_file()
-            db_file_obj = Database.db_find_by_id(process.file_id)
-            output_obj = {}
-
-            for module in process.modules:
-
-                #location main python file in modules folder on system
-                location_of_module = '{0}/modules/{1}/{1}.py'.format(cwd, module)
-
-                 # PRINT OUTPUT TO CONSOLE
-                if debug==True:
-                    p = subprocess.Popen(['python', location_of_module, db_file_obj['location']])
-
-                else:
-                    p = subprocess.Popen(['python', location_of_module, db_file_obj['location']], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    stdoutdata, stderrdata = p.communicate()
-                    # print stderrdata
-
-                    #if we get error data the module 'failed'
-                    module_passed = True
-                    if stderrdata:
-                        module_passed = False
-
-                    #process the output for printing to html
-                    output = self.processData(stdoutdata)
-                    #update the file with new module information
-                    output_obj[module] = output
-
-                    # set the processed module to passede or not
-                    process.modules[module] = module_passed
-
-                    #update our file in the database
-                    Database.db_update_malware_on_id(db_file_obj["_id"], output_obj)
-
-            # put a timestamp on the process
-            process.finish_process()
-
-            #put the process in old, so we can still show it
-            self.old_processes.append(process)
-            Database.db_update_process(process.id, process.to_database_file())
+            self.queue.put(process)
+        self.Multiproc.start()
+            # #put a timestamp on it
+            # process.start_process()
+            # cwd = os.getcwd()
+            #
+            # # grab the file out of the databse because
+            # #we are updating the information on the file
+            # # output_obj = process.file.to_database_file()
+            # db_file_obj = Database.db_find_by_id(process.file_id)
+            # output_obj = {}
+            #
+            # for module in process.modules:
+            #
+            #     #location main python file in modules folder on system
+            #     location_of_module = '{0}/modules/{1}/{1}.py'.format(cwd, module)
+            #
+            #      # PRINT OUTPUT TO CONSOLE
+            #     if debug==True:
+            #         p = subprocess.Popen(['python', location_of_module, db_file_obj['location']])
+            #
+            #     else:
+            #         p = subprocess.Popen(['python', location_of_module, db_file_obj['location']], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            #         stdoutdata, stderrdata = p.communicate()
+            #         # print stderrdata
+            #
+            #         #if we get error data the module 'failed'
+            #         module_passed = True
+            #         if stderrdata:
+            #             module_passed = False
+            #
+            #         #process the output for printing to html
+            #         output = self.processData(stdoutdata)
+            #         #update the file with new module information
+            #         output_obj[module] = output
+            #
+            #         # set the processed module to passede or not
+            #         process.modules[module] = module_passed
+            #
+            #         #update our file in the database
+            #         Database.db_update_malware_on_id(db_file_obj["_id"], output_obj)
+            #
+            # # put a timestamp on the process
+            # process.finish_process()
+            #
+            # #put the process in old, so we can still show it
+            # self.old_processes.append(process)
+            # Database.db_update_process(process.id, process.to_database_file())
 
         # return output_obj
