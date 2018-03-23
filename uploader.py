@@ -99,3 +99,5 @@ class MalwareUploader:
             self.current_uploads.append(malware)
 
             Database.db_insert_malware_obj(malware)
+
+    

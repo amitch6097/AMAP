@@ -28,6 +28,8 @@ class Process:
     #   file   - a Malware Object see Uploader.py
     def __init__(self, file):
         self.file = file
+        self.file_id =  file.id
+        self.file_name = file.filename
 
         #modules is a dictionary w/
         # {'module name': wether or not module passed/ran}
@@ -73,6 +75,7 @@ class Process:
         self.run_number = Database.db_inc_runs_by_id(self.file.id)
         self.file.runs = self.run_number
 
+
     #for putting the process into the database
     def to_database_file(self):
         return {'file_id':self.file.id,
@@ -82,6 +85,13 @@ class Process:
              "start_time":self.start_time,
              "end_time":self.end_time,
              }
+    def from_database_file(self, db_file):
+        self.file.id = db_file['file_id']
+        self.file.filename = db_file["filename"]
+        self.modules = db_file["modules"]
+        self.run_number = db_file["run_number"]
+        self.start_time = db_file["start_time"]
+        self.end_time = db_file["end_time"]
 
 #CLASS to create process objects and run them
 class Processor:
@@ -146,6 +156,14 @@ class Processor:
             #add the process to list of processes that still need to be processed
             self.new_processes.append(process)
 
+    def db_proc_stack_to_processes(db_proc_stack, Database):
+        for proc in db_proc_stack:
+
+            file_id = proc['file_id'];
+            File = Database.db_find_by_id(file_id)
+
+            from_database_file
+
 
 
     #processes the string data output of a processes
@@ -180,7 +198,9 @@ class Processor:
 
             # grab the file out of the databse because
             #we are updating the information on the file
-            output_obj = process.file.to_database_file()
+            # output_obj = process.file.to_database_file()
+            db_file_obj = Database.db_find_by_id(process.file_id)
+            output_obj = []
 
             for module in process.modules:
 
@@ -189,10 +209,10 @@ class Processor:
 
                  # PRINT OUTPUT TO CONSOLE
                 if debug==True:
-                    p = subprocess.Popen(['python', location_of_module, process.process.file.path])
+                    p = subprocess.Popen(['python', location_of_module, db_file_obj['location']])
 
                 else:
-                    p = subprocess.Popen(['python', location_of_module, process.file.path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    p = subprocess.Popen(['python', location_of_module, db_file_obj['location']], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     stdoutdata, stderrdata = p.communicate()
                     # print stderrdata
 
@@ -210,13 +230,13 @@ class Processor:
                     process.modules[module] = module_passed
 
                     #update our file in the database
-                    Database.db_update_on_id(process.file.id, output_obj)
+                    Database.db_update_malware_on_id(db_file_obj["_id"], output_obj)
 
             # put a timestamp on the process
             process.finish_process()
 
             #put the process in old, so we can still show it
-            #TODO could just go in the database
             process = self.old_processes.append(process)
+            Database.db_update_process(process)
 
         # return output_obj

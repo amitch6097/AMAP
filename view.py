@@ -25,6 +25,8 @@ Uploader = MalwareUploader(os.path.dirname(os.path.realpath(__file__)))
 Processor = Processor()
 
 Database.db_clear()
+for i in Database.db_get_all_processes():
+    print i
 
 @route('/')
 def default():
