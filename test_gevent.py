@@ -17,6 +17,10 @@ def stream():
 def default():
     return template('login')
 
+@route('/<name>')
+def index(name):
+    return template(name)
+
 # Static Routes
 #USED for our CSS, JS and other assets
 @get('/<filename:path>')

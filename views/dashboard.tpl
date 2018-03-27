@@ -6,8 +6,8 @@
       <div class="card bg-gradient-info text-white">
         <div class="card-body">
           <h4 class="font-weight-normal mb-3">Todays Processed Files</h4>
-          <h4 class="font-weight-normal mb-5">New Malicious Files: 1125</h4>
-          <h4 class="font-weight-normal mb-5">New Non-Malicious Files: 500</h4>
+          <h4 class="font-weight-normal mb-5">New Malicious Files: {{processed_day}}</h4>
+          <h4 class="font-weight-normal mb-5">New Non-Malicious Files: {{new_sample}}</h4>
         </div>
       </div>
     </div>
@@ -15,7 +15,7 @@
       <div class="card bg-gradient-info text-white">
         <div class="card-body">
           <h4 class="font-weight-normal mb-3">Average Processing Time</h4>
-          <h2 class="font-weight-normal mb-5">Time: 3.5 minutes</h4>
+          <h2 class="font-weight-normal mb-5">Time: {{avg_time}} minutes</h4>
         </div>
       </div>
     </div>

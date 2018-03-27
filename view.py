@@ -4,7 +4,9 @@ import sys
 #trouble adding path so ...
 
 sys.path.insert(0, "/usr/local/lib/python2.7/site-packages")
+from gevent import monkey; monkey.patch_all()
 from bottle import static_file, run, template, get, redirect, request, route, template
+
 import os
 import zipfile
 import json
@@ -27,7 +29,7 @@ Database = Dbio()
 Uploader = MalwareUploader(os.path.dirname(os.path.realpath(__file__)))
 Processor = Processor(Database)
 
-#Database.db_clear()
+Database.db_clear()
 
 @route('/')
 def default():
@@ -102,12 +104,6 @@ def process_upload():
 #RUNS WHEN processes sidebar option is pressed
 @route('/processes')
 def load_processes():
-
-    #TODO
-    # IF PROCESSES WHERE LOADED FROM DB
-    # db_procs = Database.db_get_all_processes()
-    # Processor.db_proc_stack_to_processes()
-
     return template('processes', processes=Processor.get_all_processes(Database))
 
 
@@ -245,4 +241,4 @@ def login_page():
 
 
 # run it
-run(host='localhost', port=8080, reloder=True)
+run(host='0.0.0.0', port=8080, server='gevent')

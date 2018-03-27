@@ -1,11 +1,14 @@
 import multiprocessing as mp
-from multiprocessing import Process, Queue, Manager
+from multiprocessing import Process,Queue, Manager
 
 import os
 import subprocess
 import sys
 from time import gmtime, strftime
 
+import gevent
+from gevent import monkey; monkey.patch_all()
+# from gevent.queue import Queue
 #OLD MULTIPROCESSING STUFF
 #
 # def add_processes(key, values):
@@ -96,12 +99,12 @@ class Process:
     def processData(self, data):
         retList = []
         aStr = ""
-        print data
+        # print data
         for c in data:
 
             if c == "\n":
                 retList.append(aStr)
-                print aStr
+                # print aStr
                 aStr = ""
             else:
                 aStr += c
@@ -165,18 +168,31 @@ class MultiProcer:
     def start(self):
         # pool = multiprocessing.Pool(processes=cpu_count)
         # pool.map(work, ['ls'] * count)
+        print self.cpu_count
+        print "THIS IS CPU COUNT"
 
-        processes = [mp.Process(target=self.run) for i in range(mp.cpu_count())]
+        #TODO
+        #could add process count so we don't always spin up 8 processes say
+
+        processes = [mp.Process(target=self.run) for i in range(self.cpu_count)]
         for proc in processes:
             proc.start()
 
-    def run(self):
-        # while(True):
-        if( self._queue.empty()):
-            return
 
-        process = self._queue.get()
-        process.run(self.Database)
+    def run(self):
+        proc = mp.current_process()
+        while(True):
+            if( self._queue.empty()):
+
+                #TODO
+                #not sure if this actually exits the process
+
+                print "DONE"
+                return
+
+            process = self._queue.get()
+            print process.file_name
+            process.run(self.Database)
 
 
 #CLASS to create process objects and run them
@@ -185,8 +201,8 @@ class Processor:
         self.modules = []       #all prossible modules we can run
         self.new_processes = [] #processes that need to be run still
         self.old_processes = [] #processes that have been run
-        m = Manager()
-        self.queue = m.Queue()
+        self.m = Manager()
+        self.queue = Queue()
         self.Multiproc = MultiProcer(self.queue, Database)
 
     # for displaying all of the processes, already run or running
@@ -267,12 +283,12 @@ class Processor:
     def processData(self, data):
         retList = []
         aStr = ""
-        print data
+        # print data
         for c in data:
 
             if c == "\n":
                 retList.append(aStr)
-                print aStr
+                # print aStr
                 aStr = ""
             else:
                 aStr += c
@@ -287,7 +303,6 @@ class Processor:
 
         #loop throug all curren new processees
         while self.new_processes:
-
 
             #remove the process
             process = self.new_processes.pop()
