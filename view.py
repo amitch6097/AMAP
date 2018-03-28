@@ -4,6 +4,7 @@ import sys
 #trouble adding path so ...
 
 sys.path.insert(0, "/usr/local/lib/python2.7/site-packages")
+import gevent
 from gevent import monkey; monkey.patch_all()
 from bottle import static_file, run, template, get, redirect, request, route, template
 
@@ -23,11 +24,13 @@ import time
 from dbio import Dbio
 from processor import Processor
 from uploader import MalwareUploader
+from file_watcher import Watcher
 
 
 Database = Dbio()
 Uploader = MalwareUploader(os.path.dirname(os.path.realpath(__file__)))
 Processor = Processor(Database)
+Watcher = Watcher()
 
 Database.db_clear()
 
