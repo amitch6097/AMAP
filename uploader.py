@@ -11,6 +11,7 @@ class Malware:
         self.path = path
         self.id = -1
         self.runs = 0
+        self.time = time.time()
 
     def edit_id(self, id):
         self.id = id
@@ -20,7 +21,7 @@ class Malware:
             'Name'      :self.filename,
             'location'  :self.path,
             'runs'      :self.runs,
-            'time'      :time.time()
+            'time'      :self.time
         }
 
 #CLASS to upload malware and get current uploaded files
