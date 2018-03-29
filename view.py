@@ -98,6 +98,7 @@ def process_upload():
     Uploader.reset()
 
     # run the process objects we just created
+    # Processor.run_modules(False, Database)
     Processor.run_modules(False, Database)
 
     # return to the base page
@@ -107,7 +108,12 @@ def process_upload():
 #RUNS WHEN processes sidebar option is pressed
 @route('/processes')
 def load_processes():
-    return template('processes', processes=Processor.get_all_processes(Database))
+    try:
+        processes = Processor.get_all_processes_db(Database)
+    except ProtocolError:
+        processes = Processor.get_all_processes()
+
+    return template('processes', processes=processes)
 
 
 #RUNS WHEN a file is click on in either processes page or search_input

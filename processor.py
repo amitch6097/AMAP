@@ -158,6 +158,7 @@ class Process:
 class MultiProcer:
     def __init__(self, Database):
         self.cpu_count = mp.cpu_count()
+        # self.cpu_count = 1
         self.Database = Database
         self.processes = []
         self.queue = Queue()
@@ -166,7 +167,7 @@ class MultiProcer:
         #TODO
         #could add process count so we don't always spin up 8 processes say
 
-        self.processes = [mp.Process(target=self.run) for i in range(self.cpu_count)]
+        self.processes = [mp.Process(target=self.run, args=(self.queue,)) for i in range(self.cpu_count)]
         for proc in self.processes:
             proc.start()
         # pool = mp.Pool(processes=4)
@@ -179,19 +180,23 @@ class MultiProcer:
     def pop_queue(self):
         return self.queue.get()
 
+    def join_all():
+        for proc in self.processes:
+            proc.join()
 
-    def run(self):
+
+    def run(self, q):
         # proc = mp.current_process()
         while(True):
-            if( self.queue.empty()):
+            # if( q.empty()):
+            #
+            #     #TODO
+            #     #not sure if this actually exits the process
+            #
+            #     print "DONE"
+            #     return
 
-                #TODO
-                #not sure if this actually exits the process
-
-                print "DONE"
-                return
-
-            process = self.pop_queue()
+            process = q.get()
 
             print process.file_name
             process.run(self.Database)
@@ -209,11 +214,13 @@ class Processor:
         self.Multiproc = MultiProcer( Database)
 
     # for displaying all of the processes, already run or running
-    def get_all_processes(self, Database):
+    def get_all_processes(self):
+        return self.old_processes + self.new_processes
+
+    def get_all_processes_db(self, Database):
         process_stack = Database.db_get_all_processes()
         processes = self.process_stack_to_processes(process_stack, Database)
         return processes
-        # return self.old_processes + self.new_processes
 
     def process_stack_to_processes(self, db_process_stack, Database):
         processes = []
@@ -319,12 +326,14 @@ class Processor:
     #   debug      - TRUE/FALSE wether or not to print module ouput to console
     #   Database   - globale database obj
     def run_modules(self, debug, Database):
-
         #loop throug all curren new processees
+        self.Multiproc.start()
+
         while self.new_processes:
 
             #remove the process
             process = self.new_processes.pop()
 
             self.Multiproc.add_to_queue(process)
-        self.Multiproc.start()
+
+        # self.MultiProcer.join_all()

@@ -27,7 +27,7 @@ class Dbio:
 
 	def db_find_by_id(self, id):
 		return self.alpha.find_one({"_id":ObjectId(id)})
-		
+
 	def db_list_all_time(self):
 		for i in self.alpha.find({},{'time':1,'_id':0}):
 			print(i)
@@ -36,7 +36,6 @@ class Dbio:
 	def db_inc_runs_by_id(self, db_id):
 		db_file = self.alpha.find_one({"_id":ObjectId(db_id)})
 		runs = db_file["runs"]
-		print runs
 		runs = int(runs)
 		runs += 1
 		self.alpha.update_one(
