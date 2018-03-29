@@ -230,6 +230,13 @@ def get_my_modules():
 #     return template('dashboard')
 
 
+@route('/dashboard')
+def dash():
+    db_list = Database.db_list_all_time()
+    print(db_list)
+    info = {'processed_day' : Database.db_get_count(), 'new_sample': Database.db_get_count(), 'avg_time' : 3.5}
+    return template('dashboard', info)
+
 
 @route('/login-user', method="POST")
 def login_page():
