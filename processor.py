@@ -78,9 +78,9 @@ class Process:
     #Get the number of runs the file has been through
     #
     #   Database  - our global database object
-    def get_file_runs(self, Database):
+    def get_file_runs(self):
         # assert self.file_id != -1
-        self.run_number = Database.db_inc_runs_by_id(self.file_id)
+        self.run_number = self.Database.db_inc_runs_by_id(self.file_id)
 
     #for putting the process into the database
     def to_database_file(self):
@@ -212,14 +212,19 @@ class Processor:
         self.old_processes = [] #processes that have been run
 
         self.Multiproc = MultiProcer( Database)
+        self.Multiproc.start()
+
+        self.Database = Database
+
+        self.is_running = False
 
     # for displaying all of the processes, already run or running
     def get_all_processes(self):
         return self.old_processes + self.new_processes
 
-    def get_all_processes_db(self, Database):
-        process_stack = Database.db_get_all_processes()
-        processes = self.process_stack_to_processes(process_stack, Database)
+    def get_all_processes_db(self):
+        process_stack = self.Database.db_get_all_processes()
+        processes = self.process_stack_to_processes(process_stack, self.Database)
         return processes
 
     def process_stack_to_processes(self, db_process_stack, Database):
@@ -259,14 +264,14 @@ class Processor:
     #   forms                  - a form submitted through a post action
     #   uploaded_malware_array - array of Malware Objects see Uploader.py
     #   Database               - our global database object
-    def create_process_obj(self, forms, uploaded_malware_array, Database):
+    def create_process_obj(self, forms, uploaded_malware_array):
 
         #loop through malware objects
         for current_file in uploaded_malware_array:
             #create a process object from it
             process = Process(current_file.id, current_file.filename)
             # get the nummber of times the file has been run
-            process.get_file_runs(Database)
+            process.get_file_runs()
 
             # loop through all of the possible modules
             for index, module in enumerate(self.modules):
@@ -284,25 +289,33 @@ class Processor:
                     process.add_module(module)
 
             #insert the process into the database
-            Database.db_proc_insert(process)
+            self.Database.db_proc_insert(process)
 
             #add the process to list of processes that still need to be processed
             self.new_processes.append(process)
 
 
     #auto_modules_config = {'module':True, 'module2':False}
-    def create_process_obj_auto(file, auto_modules_config):
-        process = Process(file.id, file.filename)
-        process.get_file_runs(Database)
+    #NOTE NEED TO CHANGE BACK ONCE CONFIG CLASS IS IMPLEMENTED
+    # def create_process_obj_auto(self, file, auto_modules_config):
 
-        for module in auto_modules_config:
-            if(auto_modules_config[module] == True):
-                process.add_module(module)
+    def create_process_obj_auto(self, files_array):
+        for file in files_array:
+            modules_array = self.get_modules()
+            auto_modules_config = { x : True for x in modules_array }
 
-        #insert the process into the database
-        Database.db_proc_insert(process)
-        #add the process to list of processes that still need to be processed
-        self.new_processes.append(process)
+            process = Process(file.id, file.filename)
+            process.get_file_runs()
+
+            for module in auto_modules_config:
+                if(auto_modules_config[module] == True):
+                    process.add_module(module)
+
+            #insert the process into the database
+            self.Database.db_proc_insert(process)
+            #add the process to list of processes that still need to be processed
+            self.new_processes.append(process)
+        self.run_modules(False)
 
 
     #processes the string data output of a processes
@@ -325,9 +338,11 @@ class Processor:
     #
     #   debug      - TRUE/FALSE wether or not to print module ouput to console
     #   Database   - globale database obj
-    def run_modules(self, debug, Database):
+    def run_modules(self, debug):
         #loop throug all curren new processees
-        self.Multiproc.start()
+        # if(self.is_running == False):
+        #     self.is_running = True
+        #     self.Multiproc.start()
 
         while self.new_processes:
 

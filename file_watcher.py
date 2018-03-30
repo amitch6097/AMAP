@@ -7,10 +7,19 @@ from watchdog.events import FileSystemEventHandler
 
 import multiprocessing as mp
 
+#NOTE not pretty clean up
+from uploader import Malware
+#NOTE really there should be a better way to "upload"
+#malware and add to database then FileGrab but ...
+
 #TODO Make sure we are moving files at the last second or they could be in limbo
 
 class FileGrab:
-    def __init__(self, file_process_callback):
+    def __init__(self, Database, file_process_callback):
+
+        #NOTE not pretty clean up
+        self.Database = Database
+
         self.is_running = False
         self.number_of_file_to_grab_each_iter = 1
         self.time_between_each_iter = 10 #seconds I think?
@@ -35,11 +44,22 @@ class FileGrab:
 
     def stop(self):
         if(self.is_running):
+
+            print ""
+            print "----BACKGROUND PROCESSING STOPPED----"
+            print ""
+
             self.is_running = False
             self.proc.terminate()
 
     def run(self):
         if(self.is_running == False):
+
+            print ""
+            print "----BACKGROUND PROCESSING RUNNING----"
+            print ""
+
+
             self.is_running = True
 
             self.proc = mp.Process(target=self.run_loop)
@@ -52,10 +72,11 @@ class FileGrab:
         try:
             while True:
                 files = self.grab_files_names()
-                full_paths = self.move_files(files)
+                filename_path_dict = self.move_files(files)
+                malware_array = self.paths_to_malware_objs(filename_path_dict)
 
                 #NOTE IDEALLY FILEWATCHER WOULD JUST WORK AND CATCH THE FILES BUT ...
-                self.process_files(full_paths)
+                self.process_files(malware_array)
 
                 time.sleep(self.time_between_each_iter)
 
@@ -76,23 +97,40 @@ class FileGrab:
 
     def move_files(self,files):
 
-
-        new_full_paths_of_files = []
+        #{"filename":"path/to/file", "filename":"path/to/file"}
+        filename_path_dict = {}
 
         for file in files:
             os.rename("{0}/{1}".format(self.input_dir, file), ("{0}/{1}".format(self.output_dir, file)))
             full_path = os.path.join(self.output_dir, file)
-            new_full_paths_of_files.append(full_path)
+            filename_path_dict[file] = full_path
 
-        return new_full_paths_of_files
+        return filename_path_dict
 
-    def process_files(self,full_paths):
+    #NOTE not pretty clean up
+    def paths_to_malware_objs(self, filename_path_dict):
 
-        print "PROCESSING"
-        print full_paths
+        malware_array = []
+
+        for file in filename_path_dict:
+
+            path = filename_path_dict[file]
+            malware = Malware(file, path)
+
+            self.Database.db_insert_malware_obj(malware)
+
+            malware_array.append(malware)
+
+        return malware_array
+
+
+    def process_files(self,malware_array):
+
+        print ""
+        print "----AUTO PROCESSING {0} FILES----".format(len(malware_array))
         print ""
 
-        self.file_process_callback(full_paths)
+        self.file_process_callback(malware_array)
 
 class Watcher:
 

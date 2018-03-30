@@ -37,17 +37,17 @@ Database = Dbio()
 Uploader = MalwareUploader(os.path.dirname(os.path.realpath(__file__)))
 Processor = Processor(Database)
 
-def file_process_callback(files):
-    for file in files:
-        print file
+# def file_process_callback(files):
+#     for file in files:
+#         print file
 
-FileGrab = FileGrab(file_process_callback)
+FileGrab = FileGrab(Database, Processor.create_process_obj_auto)
 
 # watcher_process = mp.Process(target=FileGrab.run)
 # watcher_process.daemon = True
 # watcher_process.start()
 
-#WATCH DOG STUFF THAT DOESN' WORK
+#WATCH DOG STUFF THAT DOESN'T WORK
 # Watcher = Watcher()
 # def print_something(event):
 #     print "This"
@@ -73,6 +73,16 @@ Database.db_clear()
 
 @route('/')
 def default():
+    return template('login')
+
+@route('/run-background')
+def default():
+    FileGrab.run()
+    return template('login')
+
+@route('/stop-background')
+def default():
+    FileGrab.stop()
     return template('login')
 
 @route('/<name>')
@@ -128,14 +138,14 @@ def do_upload():
 def process_upload():
 
     #make process objects from page information and uploads
-    Processor.create_process_obj(request.forms, Uploader.current_uploads, Database)
+    Processor.create_process_obj(request.forms, Uploader.current_uploads)
 
     #reset uploader so that we can upload more files
     Uploader.reset()
 
     # run the process objects we just created
     # Processor.run_modules(False, Database)
-    Processor.run_modules(False, Database)
+    Processor.run_modules(False)
 
     # return to the base page
     return load_processes()
@@ -145,7 +155,7 @@ def process_upload():
 @route('/processes')
 def load_processes():
     try:
-        processes = Processor.get_all_processes_db(Database)
+        processes = Processor.get_all_processes_db()
     except ProtocolError:
         processes = Processor.get_all_processes()
 
