@@ -24,13 +24,50 @@ import time
 from dbio import Dbio
 from processor import Processor
 from uploader import MalwareUploader
-from file_watcher import Watcher
+# from file_watcher import Watcher
+from file_watcher import FileGrab
+
+
+import multiprocessing as mp
+import threading
+
 
 
 Database = Dbio()
 Uploader = MalwareUploader(os.path.dirname(os.path.realpath(__file__)))
 Processor = Processor(Database)
-Watcher = Watcher()
+
+def file_process_callback(files):
+    for file in files:
+        print file
+
+FileGrab = FileGrab(file_process_callback)
+
+# watcher_process = mp.Process(target=FileGrab.run)
+# watcher_process.daemon = True
+# watcher_process.start()
+
+#WATCH DOG STUFF THAT DOESN' WORK
+# Watcher = Watcher()
+# def print_something(event):
+#     print "This"
+#     if event.is_directory:
+#         return None
+#
+#     elif event.event_type == 'created':
+#         # Take any action here when a file is first created.
+#         print "Received created event - %s." % event.src_path
+#
+#     elif event.event_type == 'modified':
+#         # Taken any action here when a file is modified.
+#         print "Received modified event - %s." % event.src_path
+# Watcher.run(print_something)
+# watcher_process = mp.Process(target=Watcher.run, args=(print_something,))
+# watcher_process.daemon = True
+# watcher_process.start()
+
+# NOTE HANGS FOREVER
+# gevent.spawn(Watcher.run, print_something)
 
 Database.db_clear()
 
@@ -63,7 +100,6 @@ def file_rerun():
 # Decides which page to show file upload or process options
 @route('/file-upload')
 def file_upload():
-
     #We have files that need to be processed still
     if Uploader.has_uploads():
         info = {'file_names' : Uploader.get_current_upload_filenames(), 'module_options': Processor.get_modules()}
@@ -203,6 +239,9 @@ def malware_search():
 #shows the current uploaded modules
 @route('/my-modules')
 def get_my_modules():
+
+    watcher_process.terminate()
+
     modules = Processor.get_modules()
     return template('display-modules', modules=modules)
 
