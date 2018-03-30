@@ -3,7 +3,7 @@
 import sys
 #trouble adding path so ...
 
-sys.path.insert(0, "/usr/local/lib/python2.7/site-packages")
+#sys.path.insert(0, "/usr/local/lib/python2.7/site-packages")
 import gevent
 from gevent import monkey; monkey.patch_all()
 from bottle import static_file, run, template, get, redirect, request, route, template
@@ -27,11 +27,15 @@ from uploader import MalwareUploader
 # from file_watcher import Watcher
 from file_watcher import FileGrab
 
+# Wizard class for Background Analysis Platform
+from wizard import Wizard
+
 
 import multiprocessing as mp
 import threading
 
 
+Wizard = Wizard()
 
 Database = Dbio()
 Uploader = MalwareUploader(os.path.dirname(os.path.realpath(__file__)))
@@ -82,7 +86,42 @@ def index(name):
 
 @route('/wizard')
 def wizard():
-    return template('wizard')
+    #get info to display on next page
+    info = {'module_options': Processor.get_modules(), 'running': Wizard.isRunning(), 'active_modules': Wizard.getModules() }
+
+    return template('wizard', info)
+
+@route('/amap-active', method='POST')
+def start_amap():
+    buttonPressed = request.forms.get('enter')
+
+    # Start Running AMAP
+    if buttonPressed == "Submit":
+        #set the wizard to running == True
+        Wizard.startRunning()
+        #set the selected modules
+        Wizard.setModules(request.forms, Processor.get_modules())
+
+        # Run AMAP
+        FileGrab.run()
+
+    # Return To Dashboard
+    elif buttonPressed == "Return to Dashboard":
+        return dash()
+
+    # Quit Running AMAP
+    elif buttonPressed == "Quit AMAP":
+        Wizard.stopRunning()
+
+        #Stop Running
+        FileGrab.stop()
+
+
+    #get info to display on next page
+    info = {'module_options': Processor.get_modules(), 'running': Wizard.isRunning(), 'active_modules': Wizard.getModules() }
+
+    return template('wizard', info)
+
 
 
 #MALWARE UPLOADING THINGS
