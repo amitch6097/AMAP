@@ -75,6 +75,28 @@ Database.db_clear()
 def default():
     return template('login')
 
+@route('/download/<filename:path>')
+def d(filename):
+    print filename
+    return static_file(filename, root='modues/', download=True)
+
+# #RUNS WHEN delete is selected on my modules page
+# @route('/download-module')
+# def download_my_module():
+#     # modules_name = request.forms.get('module-name')
+#     modules_name = 'sha1'
+#     current_dir_path = os.path.dirname(os.path.realpath(__file__))
+#
+#     path = "{0}/modules/".format(current_dir_path)
+#
+#     if os.path.isdir(path):
+#         shutil.rmtree(path)
+#
+#     return static_file(modules_name, root=path, download=True)
+
+###########################
+#TODO DELETE THESE ADD REAL BUTTONS
+
 @route('/run-background')
 def default():
     FileGrab.run()
@@ -85,8 +107,11 @@ def default():
     FileGrab.stop()
     return template('login')
 
+############################
+
 @route('/<name>')
 def index(name):
+    print name
     return template(name)
 
 
@@ -266,6 +291,8 @@ def get_my_modules():
 
     modules = Processor.get_modules()
     return template('display-modules', modules=modules)
+
+
 # @route('/upload-module', method='POST')
 # def upload_module():
 #     file_name = request.forms.get('file_name')
