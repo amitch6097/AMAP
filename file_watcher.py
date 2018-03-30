@@ -16,8 +16,14 @@ class FileGrab:
         self.time_between_each_iter = 10 #seconds I think?
 
         current_dir_path = os.path.dirname(os.path.realpath(__file__))
+
         self.input_dir = os.path.join(current_dir_path, "background_files_unprocessed")
+        if not os.path.exists(self.input_dir):
+            os.makedirs(self.input_dir)
+
         self.output_dir = os.path.join(current_dir_path, "background_files_processed")
+        if not os.path.exists(self.output_dir):
+            os.makedirs(self.output_dir)
 
         self.file_process_callback = file_process_callback
 
@@ -30,9 +36,9 @@ class FileGrab:
 
     def run(self):
         if(self.is_running == False):
-            self.proc = mp.Process(target=self.run_loop)
-
             self.is_running = True
+
+            self.proc = mp.Process(target=self.run_loop)
 
             self.proc.daemon = True
             self.proc.start()

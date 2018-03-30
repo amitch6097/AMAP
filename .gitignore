@@ -1,4 +1,7 @@
 downloads/
+background_files_unprocessed/
+background_files_processed/
+
 modules/*.pyc
 modules/__MACOSX
 yara-python/
