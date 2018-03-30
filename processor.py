@@ -78,9 +78,9 @@ class Process:
     #Get the number of runs the file has been through
     #
     #   Database  - our global database object
-    def get_file_runs(self):
+    def get_file_runs(self, Database):
         # assert self.file_id != -1
-        self.run_number = self.Database.db_inc_runs_by_id(self.file_id)
+        self.run_number = Database.db_inc_runs_by_id(self.file_id)
 
     #for putting the process into the database
     def to_database_file(self):
@@ -271,7 +271,7 @@ class Processor:
             #create a process object from it
             process = Process(current_file.id, current_file.filename)
             # get the nummber of times the file has been run
-            process.get_file_runs()
+            process.get_file_runs(self.Database)
 
             # loop through all of the possible modules
             for index, module in enumerate(self.modules):
@@ -305,7 +305,7 @@ class Processor:
             auto_modules_config = { x : True for x in modules_array }
 
             process = Process(file.id, file.filename)
-            process.get_file_runs()
+            process.get_file_runs(self.Database)
 
             for module in auto_modules_config:
                 if(auto_modules_config[module] == True):
