@@ -240,8 +240,6 @@ def malware_search():
 @route('/my-modules')
 def get_my_modules():
 
-    watcher_process.terminate()
-
     modules = Processor.get_modules()
     return template('display-modules', modules=modules)
 
