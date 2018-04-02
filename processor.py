@@ -6,10 +6,10 @@ import subprocess
 import sys
 from time import gmtime, strftime
 import time
-from dbio import Dbio
+# from dbio import Dbio
 import gevent
 from gevent import monkey; monkey.patch_all()
-database = Dbio()
+# database = Dbio()
 #NOTE gevent queue doesnt work async with processes
 #NOTE also mp.manager.queue doesn't work
 # from gevent.queue import Queue
@@ -102,12 +102,12 @@ class Process:
         self.end_time = db_file["end_time"]
 
     #processes the string data output of a processes
-    def processData(self, data):
+    def processData(self, data, Database):
         retList = []
         aStr = ""
         # print data
         if "Unabel to match" not in data:
-            database.db_add_malware(time.time())
+            Database.db_add_malware(time.time())
 
         for c in data:
 
@@ -162,7 +162,7 @@ class Process:
                 module_passed = False
 
             #process the output for printing to html
-            output = self.processData(stdoutdata)
+            output = self.processData(stdoutdata, Database)
             #update the file with new module information
             output_obj[module] = output
 
