@@ -360,9 +360,14 @@ def get_my_modules():
 
 @route('/dashboard')
 def dash():
-    db_list = Database.db_list_all_time()
-    print(db_list)
-    info = {'processed_day' : Database.db_get_count(), 'new_sample': Database.db_get_count(), 'avg_time' : 3.5}
+    #db_list = Database.db_list_all_time()
+    #print(db_list)
+    from_DB = Database.db_list_malwaredate()
+    malware_count = 0
+    for i in from_DB:
+        print(i["Time"])
+        malware_count += 1
+    info = {'new_mal' : malware_count, 'new_nmal': Database.db_get_count()- malware_count, 'avg_time' : 3.5}
     return template('dashboard', info)
 
 

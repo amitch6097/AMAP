@@ -5,10 +5,11 @@ import os
 import subprocess
 import sys
 from time import gmtime, strftime
-
+import time
+from dbio import Dbio
 import gevent
 from gevent import monkey; monkey.patch_all()
-
+database = Dbio()
 #NOTE gevent queue doesnt work async with processes
 #NOTE also mp.manager.queue doesn't work
 # from gevent.queue import Queue
@@ -104,6 +105,9 @@ class Process:
         retList = []
         aStr = ""
         # print data
+        if "Unabel to match" not in data:
+            database.db_add_malware(time.time())
+
         for c in data:
 
             if c == "\n":
