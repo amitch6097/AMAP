@@ -19,6 +19,8 @@ import time
 from dbio import Dbio
 from processor import Processor
 from uploader import MalwareUploader
+from passlib.apps import custom_app_context as pwd_context
+from beaker.middleware import SessionMiddleware
 
 
 Database = Dbio()
@@ -234,9 +236,30 @@ def get_my_modules():
 def login_page():
     username = request.forms.get('user_email')
     password = request.forms.get('password')
+    if username == "" or password == "":
+        return {"error":"These can't be blank"}
+
+    user = users.find_one({"Username":username})
+    if user is None:
+        return {"error":"%s is not a valid user" %(username)}
+    if pwd_context.verify(password, user['pwdhash']):
+        #Success, let's set the session and send them back to the dashboard
+        success = bottle.request.environ.get('beaker.session')
+        success['logged_in'] = True
+        success['username'] = username
+        redirect("/")
+    else:
+        return {"error":"Incorrect password"}
     print("Printing username: {}".format(username))
     print("Printing password: {}".format(password))
+    Databse.db_verify_login(username,password)
     return template('dashboard')
+
+@route('/logout', method=['GET'])
+def handle_logout():
+    success = bottle.request.environ.get('beaker.session')
+    success.invalidate()
+    redirect("/")
 
 
 # run it

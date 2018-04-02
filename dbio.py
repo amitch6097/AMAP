@@ -22,18 +22,17 @@ class Dbio:
 
 
 	def db_insert_to_login(self, username, password):	#Insert username and password into the database
-		sample = {"Username":username, "Password":password}
+		sample = {"Username":username, "pwdhash":password}
 		self.authentication.insert(sample)
 
 	def db_get_user_by_username(self, username):
-			return self.authentication.find({'Username': username}))
+		return self.authentication.find({'Username': username}))
 
 
 	def db_verify_login(self, username):
-		user_object = db_get_username(username)
-
-		db_username = user_object["Username"]
-		db_password = user_object["Password"]
+		user_object = db_get_user_by_username(username)
+		username = user_object["Username"]
+		password = user_object["pwdhash"]
 
 
 	def db_insert_to(self, name, md5, sha256):	#Insert a piece of information into the database
