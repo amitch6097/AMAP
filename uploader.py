@@ -1,5 +1,5 @@
 import os
-
+import time
 
 #CLASS to define a single file or malware upload
 class Malware:
@@ -11,6 +11,7 @@ class Malware:
         self.path = path
         self.id = -1
         self.runs = 0
+        self.time = time.time()
 
     def edit_id(self, id):
         self.id = id
@@ -19,7 +20,8 @@ class Malware:
         return {
             'Name'      :self.filename,
             'location'  :self.path,
-            'runs'      :self.runs
+            'runs'      :self.runs,
+            'time'      :self.time
         }
 
 #CLASS to upload malware and get current uploaded files
