@@ -38,6 +38,10 @@ class FileGrab:
 
         self.proc = mp.Process(target=self.run_loop)
 
+    def set_files_per_sec(files_count, sec):
+        self.number_of_file_to_grab_each_iter = files_count
+        self.time_between_each_iter = sec #seconds I think?
+
     def set_files_per_sec(file_amount, sec):
         self.number_of_file_to_grab_each_iter = file_amount
         self.time_between_each_iter = sec #seconds I think?

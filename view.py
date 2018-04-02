@@ -292,7 +292,16 @@ def servo_pos():
         #     shutil.rmtree(mac_created_folder)
 
 
-    return template('dashboard')
+    return dash()
+
+
+@route('/module-create', method='POST')
+def servo_pos():
+    current_dir_path = os.path.dirname(os.path.realpath(__file__))
+    text = request.forms.get('')
+
+
+    return dash()
 
 #RUNS WHEN search button is pressed
 #grabs input from search bar and searches database for those chars
