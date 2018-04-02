@@ -6,8 +6,8 @@
       <div class="card bg-gradient-info text-white">
         <div class="card-body">
           <h4 class="font-weight-normal mb-3">Todays Processed Files</h4>
-          <h4 class="font-weight-normal mb-5">New Malicious Files: {{processed_day}}</h4>
-          <h4 class="font-weight-normal mb-5">New Non-Malicious Files: {{new_sample}}</h4>
+          <h4 class="font-weight-normal mb-5">New Malicious Files: {{new_mal}}</h4>
+          <h4 class="font-weight-normal mb-5">New Non-Malicious Files: {{new_nmal}}</h4>
         </div>
       </div>
     </div>

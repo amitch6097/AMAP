@@ -2,6 +2,7 @@
 #Teng++
 
 import pymongo
+import time
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 
@@ -13,6 +14,7 @@ class Dbio:
 		#There is a collection called "alpha" in my database, so I need to get it...
 		self.alpha = db.alpha
 		self.proc = db.processes
+		self.malware = db.malware
 		print("\n CONNECT DB SUCCESS! \n")
 
 	def db_insert_to(self, name, md5, sha256):	#Insert a piece of information into the database
@@ -32,6 +34,12 @@ class Dbio:
 		for i in self.alpha.find({},{'time':1,'_id':0}):
 			print(i)
 
+	def db_add_malware(self,time):
+		info = {"Time":time}
+		self.malware.insert(info)
+
+	def db_list_malwaredate(self):
+		return self.malware.find({},{'Time':1,'_id':0})
 	# increments the amount of times a file has been run
 	def db_inc_runs_by_id(self, db_id):
 		db_file = self.alpha.find_one({"_id":ObjectId(db_id)})
