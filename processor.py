@@ -49,6 +49,7 @@ class Process:
         self.end_time = "waiting..."
         self.run_number = -1
         self.id = -1
+        self.modules_ignore = ["Cuckoo"]
 
     def edit_id(self, id):
         self.id = id
@@ -115,6 +116,17 @@ class Process:
 
         return retList
 
+    def check_cuckoo(self, Database):
+        #NOTE remove cuckoo because it is not run the same
+        if "Cuckoo" in self.modules.keys() :
+            #     print "---DOING CUCKOO THINGS---"
+            #     # response_id = CUCKOOAPI.add_file()?
+            response_id = 1
+
+            output_obj = {'Cuckoo':response_id}
+            Database.db_update_malware_on_id(self.file_id, output_obj)
+
+
     def run(self, Database):
         self.start_process()
         cwd = os.getcwd()
@@ -125,7 +137,13 @@ class Process:
         db_file_obj = Database.db_find_by_id(self.file_id)
         output_obj = {}
 
+        self.check_cuckoo(Database)
+
+
         for module in self.modules:
+
+            if module in self.modules_ignore:
+                continue
 
             #location main python file in modules folder on system
             location_of_module = '{0}/modules/{1}/{1}.py'.format(cwd, module)
@@ -148,7 +166,7 @@ class Process:
             self.modules[module] = module_passed
 
             #update our file in the database
-            Database.db_update_malware_on_id(db_file_obj["_id"], output_obj)
+        Database.db_update_malware_on_id(db_file_obj["_id"], output_obj)
 
         # put a timestamp on the process
         self.finish_process()
@@ -206,7 +224,8 @@ class MultiProcer:
 
 #CLASS to create process objects and run them
 class Processor:
-    def __init__(self, Database):
+    def __init__(self, Database, Wizard):
+        self.Wizard = Wizard
         self.modules = []       #all prossible modules we can run
         self.new_processes = [] #processes that need to be run still
         self.old_processes = [] #processes that have been run
@@ -257,6 +276,8 @@ class Processor:
         #for some reason this folder shows up when unzipping on mac so delete it
         self.modules = [x for x in self.modules if x != "__MACOSX"]
 
+        self.modules.append("Cuckoo")
+
         return self.modules
 
     #creates a process object from a form and uploads
@@ -301,7 +322,7 @@ class Processor:
 
     def create_process_obj_auto(self, files_array):
         for file in files_array:
-            modules_array = self.get_modules()
+            modules_array = self.Wizard.getModules()
             auto_modules_config = { x : True for x in modules_array }
 
             process = Process(file.id, file.filename)

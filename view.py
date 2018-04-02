@@ -39,7 +39,7 @@ Wizard = Wizard()
 
 Database = Dbio()
 Uploader = MalwareUploader(os.path.dirname(os.path.realpath(__file__)))
-Processor = Processor(Database)
+Processor = Processor(Database, Wizard)
 
 # def file_process_callback(files):
 #     for file in files:
@@ -242,6 +242,8 @@ def load_file():
     # used to not show location of the file on system
     #TODO could be deleted
     del database_obj['location']
+    print database_obj
+    # del database_obj['cuckoo_id']
 
     return template('file-output', file_obj=database_obj)
 
