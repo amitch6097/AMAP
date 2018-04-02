@@ -4,6 +4,7 @@ import os
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+from wizard import Wizard
 
 import multiprocessing as mp
 
@@ -56,12 +57,19 @@ class FileGrab:
             self.is_running = False
             self.proc.terminate()
 
-    def run(self):
+    def run(self, wizard):
         if(self.is_running == False):
 
             print ""
             print "----BACKGROUND PROCESSING RUNNING----"
             print ""
+
+            if wizard.getTimeInterval() < 0 or wizard.getFileGrabInterval() < 0:
+                self.number_of_file_to_grab_each_iter = 1
+                self.time_between_each_iter = 10
+            else:
+                self.number_of_file_to_grab_each_iter = wizard.getFileGrabInterval()
+                self.time_between_each_iter = wizard.getTimeInterval()
 
 
             self.is_running = True

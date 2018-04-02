@@ -6,7 +6,12 @@ class Wizard:
     def __init__(self):
         self.module_list = []
         self.running = False
+        self.time = -1
+        self.numFiles = -1
 
+    def resetConfig(self):
+        self.time = -1
+        self.numFiles = -1
 
     def addModule(self, module):
         self.module_list.append(module)
@@ -21,6 +26,7 @@ class Wizard:
         self.running = True
 
     def stopRunning(self):
+        self.resetConfig()
         self.running = False
 
     def setModules(self, forms, all_modules):
@@ -42,5 +48,30 @@ class Wizard:
         self.module_list = mList
         print self.module_list
 
+    def setConfig(self, forms):
+        t = forms.get("files-to-select")
+        n = forms.get("time-between-select")
+        if n == "" or t == "":
+            return
+        else:
+            self.time = float(forms.get("files-to-select"))
+            self.numFiles = int(forms.get("time-between-select"))
+
+    def getTimeInterval(self):
+        return self.time
+
+    def getFileGrabInterval(self):
+        return self.numFiles
+
+    def printConfig(self):
+        print "****** PRINT CONFIG ******"
+        print self.time
+        print self.numFiles
+
     def getModules(self):
         return self.module_list
+
+
+
+
+

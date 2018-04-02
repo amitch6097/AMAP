@@ -136,9 +136,11 @@ def start_amap():
         Wizard.startRunning()
         #set the selected modules
         Wizard.setModules(request.forms, Processor.get_modules())
+        Wizard.setConfig(request.forms)
+        Wizard.printConfig()
 
         # Run AMAP
-        FileGrab.run()
+        FileGrab.run(Wizard)
 
     # Return To Dashboard
     elif buttonPressed == "Return to Dashboard":
