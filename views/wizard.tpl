@@ -8,19 +8,30 @@
     <div class="col-12 grid-margin">
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title">Welcome to the Automated Malware Analysis Platform</h4>
+          % if running == False:
+          <h4 class="card-title" id="wizard-title">Welcome to the Automated Malware Analysis Platform</h4>
+          <h4 class="card-title" id="wizard-intra-title" style="display:none">AMAP Wizard</h4>
+          % end
+          % if running == True:
+          <h4 class="card-title" id="wizard-running">AMAP is currently runnning. Would you like to quit?</h4>
+          % end
           <div>
             <form action="/amap-active" method="post" enctype="multipart/form-data">
               % if running == True:
               <!-- AMAP is currently running... -->
               <div class="amap-running" style="display: inline-block" >
-                <label>AMAP is currently runnning. Would you like to quit?</label>
+                <ul class="list-group-flush">
+                  <lh><strong>Config Options:</strong></lh>
+                  <li class="list-group-item">Time between each pull from database: {{ time }} seconds</li>
+                  <li class="list-group-item">Files retrieved during each pull: {{ numFiles }}</li>
+                </ul>
                 <br>
                 <ul class="list-group-flush">
-                  <lh>Active Modules:</lh>
+                  <lh><strong>Active Modules:</strong></lh>
                 % for module in active_modules:
                   <li class="list-group-item">{{ module }}</li>
                 % end
+                </ul>
                 <br>
                 <div class="col-auto ml-auto">
                   <input type="submit" name="enter" class="btn btn-primary" value="Return to Dashboard">
@@ -29,6 +40,7 @@
               </div>
               % end
 
+              <!-- AMAP is not running -->
               % if running == False:
               <div class="amap-stopped">
                   <!-- Module Section -->
@@ -47,21 +59,40 @@
                       </div>
                       % end
                     </div>
-                    <button type="button" class="btn btn-primary" onclick="onNext()">Next</button>
+                    <button type="button" class="btn btn-success" onclick="onNextToConfig()">Next</button>
                     <!-- <p id="demo" onclick="myFunction()">Click me to change my text color.</p>               -->
                   </div>
 
-                  <!-- Confirmation Section -->
-                  <div id="confirmation" style="display:none">
-                    <label>Are you sure you want to continue?</label>
+                  <div id="config-file-watch" style="display:none">
+                    <label><em><strong>Optional:</strong> Leave blank for recommended settings</em></label>
+                    <div>
+                      <label>Number of files to select:</label>
+                      <input id="files-to-select" name="files-to-select" type="text">
+                    </div>
+                    <div>
+                      <label>Time between each pull:</label>
+                      <input id="time-between-select" name="time-between-select" type="text">
+                    </div>
+
+                    <button type="button" class="btn btn-primary" onclick="onBackToModules()">Back</button>
+                    <button type="button" class="btn btn-success" onclick="onNextToConfirm()">Next</button>
+                    <!-- <p id="demo" onclick="myFunction()">Click me to change my text color.</p>               -->
                   </div>
 
-                  <!-- add ability to upload module -->
-                  <!-- where the malware will be coming from -->
-                <div class="col-auto ml-auto" id="submit-button" style="display:none">
-                      <button type="button" class="btn btn-primary" onclick="onBack()">Back</button>
+
+                  <!-- Confirmation Section -->
+                  <div id="confirmation" style="display:none">
+                    <label>Are you sure you want to run AMAP?</label>
+
+                    <div class="col-auto ml-auto" id="submit-button" >
+                      <button type="button" class="btn btn-primary" onclick="onBackToConfig()">Back</button>
                       <input type="submit" name="enter" value="Submit" class="btn btn-success">
-                </div>
+                    </div>
+                  </div>
+
+                  <!-- TODO: add ability to upload module -->
+                  <!-- TODO: where the malware will be coming from -->
+                
             </div>
             % end
           </form>
@@ -72,18 +103,35 @@
 </div>
 
 <script>
-function onNext() {
+function onNextToConfig() {
   // alert("HELLO");
+    document.getElementById("wizard-title").style.display = "none";
+    document.getElementById("wizard-intra-title").style.display = "block";
     document.getElementById("modules-select").style.display = "none";
-    document.getElementById("confirmation").style.display = "block";
-    document.getElementById("submit-button").style.display = "block";
+    document.getElementById("config-file-watch").style.display = "block";
+    document.getElementById("confirmation").style.display = "none";
 }
 
-function onBack() {
+function onNextToConfirm() {
   // alert("HELLO");
+    document.getElementById("modules-select").style.display = "none";
+    document.getElementById("config-file-watch").style.display = "none";
+    document.getElementById("confirmation").style.display = "block";
+}
+
+function onBackToModules() {
+    document.getElementById("wizard-title").style.display = "block";
+    document.getElementById("wizard-intra-title").style.display = "none";
     document.getElementById("modules-select").style.display = "block";
+    document.getElementById("config-file-watch").style.display = "none";
     document.getElementById("confirmation").style.display = "none";
-    document.getElementById("submit-button").style.display = "none";
+}
+
+function onBackToConfig() {
+  // alert("HELLO");
+    document.getElementById("modules-select").style.display = "none";
+    document.getElementById("confirmation").style.display = "none";
+    document.getElementById("config-file-watch").style.display = "block";
 }
 
 </script>
