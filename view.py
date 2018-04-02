@@ -122,7 +122,7 @@ def index(name):
 @route('/wizard')
 def wizard():
     #get info to display on next page
-    info = {'module_options': Processor.get_modules(), 'running': Wizard.isRunning(), 'active_modules': Wizard.getModules() }
+    info = {'module_options': Processor.get_modules(), 'running': Wizard.isRunning(), 'active_modules': Wizard.getModules(), 'time': Wizard.getTimeInterval(), 'numFiles': Wizard.getFileGrabInterval() }
 
     return template('wizard', info)
 
@@ -155,7 +155,7 @@ def start_amap():
 
 
     #get info to display on next page
-    info = {'module_options': Processor.get_modules(), 'running': Wizard.isRunning(), 'active_modules': Wizard.getModules() }
+    info = {'module_options': Processor.get_modules(), 'running': Wizard.isRunning(), 'active_modules': Wizard.getModules(), 'time': Wizard.getTimeInterval(), 'numFiles': Wizard.getFileGrabInterval() }
 
     return template('wizard', info)
 

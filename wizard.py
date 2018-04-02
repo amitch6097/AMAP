@@ -52,9 +52,11 @@ class Wizard:
         t = forms.get("files-to-select")
         n = forms.get("time-between-select")
         if n == "" or t == "":
+            self.time = 10
+            self.numFiles = 1
             return
         else:
-            self.time = float(forms.get("files-to-select"))
+            self.time = int(forms.get("files-to-select"))
             self.numFiles = int(forms.get("time-between-select"))
 
     def getTimeInterval(self):
