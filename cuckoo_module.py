@@ -5,7 +5,7 @@ import time
 import subprocess
 import json
 
-class CuckooModule():
+class CuckooModule:
 	def __init__(self):
 		self.directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "CuckooReports")
 		if not os.path.exists(self.directory):

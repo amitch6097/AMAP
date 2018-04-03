@@ -238,9 +238,9 @@ def load_file():
     del database_obj['location']
 
     #TODO NOT SURE IF THIS WORKS
-    # if 'Cuckoo' in database_obj.keys():
-    #     if database_obj['Cuckoo'] == None:
-    #         Processor.get_cuckoo(database_obj)
+    if 'Cuckoo' in database_obj.keys():
+        if database_obj['Cuckoo'] == None:
+            Processor.get_cuckoo(database_obj)
 
     return template('file-output', file_obj=database_obj)
 

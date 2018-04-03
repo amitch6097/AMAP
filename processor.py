@@ -33,12 +33,9 @@ class Process:
         self.end_time = "waiting..."
         self.run_number = -1
         self.id = -1
-
-        self.modules_ignore = ["Cuckoo"]
+        self.modules_ignore = ["cuckoo_id", "Cuckoo"]
         self.starttime_num = 0
         self.endtime_num = 0
-
-        self.modules_ignore = ["cuckoo_id", "Cuckoo"]
 
 
     def edit_id(self, id):
@@ -117,8 +114,8 @@ class Process:
         #NOTE remove cuckoo because it is not run the same
         if "Cuckoo" in self.modules.keys() :
             print "---DOING CUCKOO THINGS---"
-            # response_id = Cuckoo.submit_file(file_path)
-            response_id = 1
+            response_id = Cuckoo.submit_file( file_path)
+            # response_id = 1
 
             output_obj = {'cuckoo_id':response_id}
             Database.db_update_malware_on_id(self.file_id, output_obj)
@@ -224,7 +221,7 @@ class MultiProcer:
 #CLASS to create process objects and run them
 class Processor:
     def __init__(self, Database, Wizard):
-        self.Cuckoo = CuckooModule
+        self.Cuckoo = CuckooModule()
         self.Wizard = Wizard
         self.modules = []       #all prossible modules we can run
         self.new_processes = [] #processes that need to be run still
