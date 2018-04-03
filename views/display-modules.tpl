@@ -19,6 +19,7 @@
                   <h4>{{obj}}</h4>
               </label>
               <div class="col-auto ml-auto">
+                <button type="submit" class="btn btn-success btn-fw" style="min-width: 12px; margin-right:20px">Update</button>
                 <button type="submit" class="btn btn-danger btn-fw" style="min-width: 12px;">Delete</button>
                 <input type="hidden" name="module-name" value="{{obj}}">
 

@@ -242,8 +242,12 @@ def load_file():
     # used to not show location of the file on system
     #TODO could be deleted
     del database_obj['location']
-    print database_obj
-    # del database_obj['cuckoo_id']
+
+    if('Cuckoo' in database_obj.keys()):
+        #GRAB CUCKOO THINGS
+        cuckoo_id = database_obj['Cuckoo']
+
+        del database_obj['Cuckoo']
 
     return template('file-output', file_obj=database_obj)
 

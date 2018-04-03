@@ -127,7 +127,7 @@ class Process:
             #     # response_id = CUCKOOAPI.add_file()?
             response_id = 1
 
-            output_obj = {'Cuckoo':response_id}
+            output_obj = {'cuckoo_id':response_id}
             Database.db_update_malware_on_id(self.file_id, output_obj)
 
 

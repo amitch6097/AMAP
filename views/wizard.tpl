@@ -13,7 +13,7 @@
           <h4 class="card-title" id="wizard-intra-title" style="display:none">AMAP Wizard</h4>
           % end
           % if running == True:
-          <h4 class="card-title" id="wizard-running">AMAP is currently runnning. Would you like to quit?</h4>
+          <h4 class="card-title" id="wizard-running">AMAP is currently runnning</h4>
           % end
           <div>
             <form action="/amap-active" method="post" enctype="multipart/form-data">
@@ -92,7 +92,7 @@
 
                   <!-- TODO: add ability to upload module -->
                   <!-- TODO: where the malware will be coming from -->
-                
+
             </div>
             % end
           </form>
@@ -101,7 +101,12 @@
     </div>
   </div>
 </div>
+</div>
 
+
+
+
+%include footer
 <script>
 function onNextToConfig() {
   // alert("HELLO");
@@ -135,6 +140,3 @@ function onBackToConfig() {
 }
 
 </script>
-
-
-%include footer
