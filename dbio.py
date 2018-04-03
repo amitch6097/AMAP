@@ -5,6 +5,8 @@ import pymongo
 import time
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+from passlib.apps import custom_app_context as pwd_context
+from beaker.middleware import SessionMiddleware
 
 class Dbio:
 	def __init__(self):
@@ -14,8 +16,26 @@ class Dbio:
 		#There is a collection called "alpha" in my database, so I need to get it...
 		self.alpha = db.alpha
 		self.proc = db.processes
+		self.authentication = db.authentication
 		self.malware = db.malware
 		print("\n CONNECT DB SUCCESS! \n")
+
+
+
+
+	def db_insert_to_login(self, username, password):	#Insert username and password into the database
+		sample = {"Username":username, "pwdhash":password}
+		self.authentication.insert(sample)
+
+	def db_get_user_by_username(self, username):
+		return self.authentication.find({'Username': username}))
+
+
+	def db_verify_login(self, username):
+		user_object = db_get_user_by_username(username)
+		username = user_object["Username"]
+		password = user_object["pwdhash"]
+
 
 	def db_insert_to(self, name, md5, sha256):	#Insert a piece of information into the database
 		sample = {"Name":name, "MD5":md5, "SHA256":sha256}

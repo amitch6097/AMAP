@@ -2,12 +2,17 @@
 # coding=utf-8
 import sys
 #trouble adding path so ...
+<<<<<<< HEAD
+sys.path.insert(0, "/usr/local/lib/python2.7/site-packages")
+from bottle import static_file, run, template, get, redirect, request, route, template, auth_basic
+=======
 
 #sys.path.insert(0, "/usr/local/lib/python2.7/site-packages")
 import gevent
 from gevent import monkey; monkey.patch_all()
 from bottle import static_file, run, template, get, redirect, request, route, template
 
+>>>>>>> 33bb2a17b9dc970e77973b68d6f8d2defc263a24
 import os
 import zipfile
 import json
@@ -24,6 +29,8 @@ import time
 from dbio import Dbio
 from processor import Processor
 from uploader import MalwareUploader
+from passlib.apps import custom_app_context as pwd_context
+from beaker.middleware import SessionMiddleware
 # from file_watcher import Watcher
 from file_watcher import FileGrab
 
@@ -383,13 +390,51 @@ def dash():
 def login_page():
     username = request.forms.get('user_email')
     password = request.forms.get('password')
+    if username == "" or password == "":
+        return {"error":"These can't be blank"}
+
+    user = users.find_one({"Username":username})
+    if user is None:
+        return {"error":"%s is not a valid user" %(username)}
+    if pwd_context.verify(password, user['pwdhash']):
+        #Success, let's set the session and send them back to the dashboard
+        success = bottle.request.environ.get('beaker.session')
+        success['logged_in'] = True
+        success['username'] = username
+        redirect("/")
+    else:
+        return {"error":"Incorrect password"}
     print("Printing username: {}".format(username))
     print("Printing password: {}".format(password))
+<<<<<<< HEAD
+    Databse.db_verify_login(username,password)
+    return template('dashboard')
+=======
     db_list = Database.db_list_all_time()
     print(db_list)
     info = {'processed_day' : Database.db_get_count(), 'new_sample': Database.db_get_count(), 'avg_time' : 3.5}
     return template('dashboard', info)
+>>>>>>> 33bb2a17b9dc970e77973b68d6f8d2defc263a24
+
+@route('/logout', method=['GET'])
+def handle_logout():
+    success = bottle.request.environ.get('beaker.session')
+    success.invalidate()
+    redirect("/")
 
 
 # run it
+<<<<<<< HEAD
+run(host='localhost', port=8080, reloder=True)
+
+#@route('/')
+#def check_password(user,password)
+#check user/password here and return True/False
+
+#@route('/')
+#@auth_basic(check)
+#def display_data():
+#    return {'data': request.auth_basic}
+=======
 run(host='0.0.0.0', port=8080, server='gevent')
+>>>>>>> 33bb2a17b9dc970e77973b68d6f8d2defc263a24
