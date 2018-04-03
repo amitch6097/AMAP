@@ -18,19 +18,25 @@
     <div class="row">
       <h3 class="text-info">New Module</h3>
     </div>
-    <form action="/module-create" class="h-75" method="post" enctype="multipart/form-data">
+    <form id="code-form" action="/module-create" class="h-75" method="post" enctype="multipart/form-data">
+      <input type="hidden" id="code-text-input"name="code-text-input">
+
 
       <div class="h-100 col-12 stretch-card grid-margin">
         <div class="card  h-100 ">
           <div class="card-body h-100">
           <div class="form-row align-items-center">
             <input type="button" class="btn btn-warning" value="Reset" />
+            <h1>Name: </h1>
+            <input type="text" name="module-name"/>
+
             <div class="col-auto ml-auto">
-              <input type="submit" class="btn btn-success" value="Save" />
+              <input type="submit" class="btn btn-success" value="Submit" onclick="saveFile()"/>
             </div>
           </div>
           <div class="row h-100" style="padding-bottom:20px">
           <div id="editor" class="h-100">import os
+
 import hashlib
 from optparse import OptionParser
 
@@ -56,6 +62,7 @@ if __name__ == "__main__":
         is_file = os.path.isfile(args[0])
         if is_file:
             sha1_module(args[0])
+
           </div>
 
           <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/ace.js"></script>
@@ -66,13 +73,21 @@ if __name__ == "__main__":
               editor.session.setMode("ace/mode/python");
             </script>
           </div>
-
-          </div>
+        </div>
       </div>
     </div>
   </form>
 
   </div>
+
+  <script>
+  function saveFile() {
+      // var code = document.getElementById("editor").innerHTML;
+      var code  = editor.getValue()
+      document.getElementById("code-text-input").value = code;
+      document.getElementById("code-form").submit();
+  }
+  </script>
 
 
 %include footer

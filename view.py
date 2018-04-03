@@ -2,17 +2,12 @@
 # coding=utf-8
 import sys
 #trouble adding path so ...
-<<<<<<< HEAD
-sys.path.insert(0, "/usr/local/lib/python2.7/site-packages")
-from bottle import static_file, run, template, get, redirect, request, route, template, auth_basic
-=======
 
 #sys.path.insert(0, "/usr/local/lib/python2.7/site-packages")
 import gevent
 from gevent import monkey; monkey.patch_all()
 from bottle import static_file, run, template, get, redirect, request, route, template
 
->>>>>>> 33bb2a17b9dc970e77973b68d6f8d2defc263a24
 import os
 import zipfile
 import json
@@ -29,8 +24,6 @@ import time
 from dbio import Dbio
 from processor import Processor
 from uploader import MalwareUploader
-from passlib.apps import custom_app_context as pwd_context
-from beaker.middleware import SessionMiddleware
 # from file_watcher import Watcher
 from file_watcher import FileGrab
 
@@ -210,17 +203,10 @@ def do_upload():
 @route('/process', method='POST')
 def process_upload():
 
-    #make process objects from page information and uploads
     Processor.create_process_obj(request.forms, Uploader.current_uploads)
-
-    #reset uploader so that we can upload more files
     Uploader.reset()
+    Processor.run_modules()
 
-    # run the process objects we just created
-    # Processor.run_modules(False, Database)
-    Processor.run_modules(False)
-
-    # return to the base page
     return load_processes()
 
 
@@ -250,11 +236,10 @@ def load_file():
     #TODO could be deleted
     del database_obj['location']
 
-    if('Cuckoo' in database_obj.keys()):
-        #GRAB CUCKOO THINGS
-        cuckoo_id = database_obj['Cuckoo']
-
-        del database_obj['Cuckoo']
+    #TODO NOT SURE IF THIS WORKS
+    # if 'Cuckoo' in database_obj.keys():
+    #     if database_obj['Cuckoo'] == None:
+    #         Processor.get_cuckoo(database_obj)
 
     return template('file-output', file_obj=database_obj)
 
@@ -289,12 +274,8 @@ def servo_pos():
         if not os.path.exists(save_path):
             os.makedirs(save_path)
 
-
         file_path = "{path}/{file}".format(path=save_path, file=upload.filename)
-        upload.save(file_path, overwrite=True) #overwrite TRUE might not be good?
-
-        # new_dir = "{0}/{1}".format(save_path, name)
-        # os.makedirs(new_dir)
+        upload.save(file_path, overwrite=True)
 
         zip_ref = zipfile.ZipFile(file_path, 'r')
         zip_ref.extractall(save_path)
@@ -302,19 +283,25 @@ def servo_pos():
 
         os.remove(file_path)
 
-        # mac_created_folder = "{0}/__MACOSX".format(save_path)
-        # if os.path.isdir(mac_created_folder):
-        #     shutil.rmtree(mac_created_folder)
-
-
     return dash()
 
 
 @route('/module-create', method='POST')
 def servo_pos():
     current_dir_path = os.path.dirname(os.path.realpath(__file__))
-    text = request.forms.get('')
+    text = request.forms.get('code-text-input')
+    module_name = request.forms.get('module-name')
 
+    module_name = module_name.split(".")[0]
+
+    save_path = os.path.join(current_dir_path, "modules", module_name)
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+
+    full_name = module_name + ".py"
+    file_path = os.path.join(save_path, full_name)
+    file = open(file_path, "w")
+    file.write(text)
 
     return dash()
 
@@ -390,51 +377,13 @@ def dash():
 def login_page():
     username = request.forms.get('user_email')
     password = request.forms.get('password')
-    if username == "" or password == "":
-        return {"error":"These can't be blank"}
-
-    user = users.find_one({"Username":username})
-    if user is None:
-        return {"error":"%s is not a valid user" %(username)}
-    if pwd_context.verify(password, user['pwdhash']):
-        #Success, let's set the session and send them back to the dashboard
-        success = bottle.request.environ.get('beaker.session')
-        success['logged_in'] = True
-        success['username'] = username
-        redirect("/")
-    else:
-        return {"error":"Incorrect password"}
     print("Printing username: {}".format(username))
     print("Printing password: {}".format(password))
-<<<<<<< HEAD
-    Databse.db_verify_login(username,password)
-    return template('dashboard')
-=======
     db_list = Database.db_list_all_time()
     print(db_list)
     info = {'processed_day' : Database.db_get_count(), 'new_sample': Database.db_get_count(), 'avg_time' : 3.5}
     return template('dashboard', info)
->>>>>>> 33bb2a17b9dc970e77973b68d6f8d2defc263a24
-
-@route('/logout', method=['GET'])
-def handle_logout():
-    success = bottle.request.environ.get('beaker.session')
-    success.invalidate()
-    redirect("/")
 
 
 # run it
-<<<<<<< HEAD
-run(host='localhost', port=8080, reloder=True)
-
-#@route('/')
-#def check_password(user,password)
-#check user/password here and return True/False
-
-#@route('/')
-#@auth_basic(check)
-#def display_data():
-#    return {'data': request.auth_basic}
-=======
 run(host='0.0.0.0', port=8080, server='gevent')
->>>>>>> 33bb2a17b9dc970e77973b68d6f8d2defc263a24

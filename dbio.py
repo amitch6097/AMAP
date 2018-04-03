@@ -28,7 +28,7 @@ class Dbio:
 		self.authentication.insert(sample)
 
 	def db_get_user_by_username(self, username):
-		return self.authentication.find({'Username': username}))
+		return self.authentication.find({'Username': username})
 
 
 	def db_verify_login(self, username):

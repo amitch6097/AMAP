@@ -9,26 +9,9 @@ import time
 # from dbio import Dbio
 import gevent
 from gevent import monkey; monkey.patch_all()
-# database = Dbio()
-#NOTE gevent queue doesnt work async with processes
-#NOTE also mp.manager.queue doesn't work
-# from gevent.queue import Queue
 
-#OLD MULTIPROCESSING STUFF
-#
-# def add_processes(key, values):
-#     return values
-#
-# def add_batch(batch_obj):
-#     pool = mp.Pool(processes=4)
-#     results = [pool.apply_async(add_processes, args=(key, batch_obj[key])) for key in batch_obj]
-#     output = [p.get() for p in results]
-#     print(output)
-#
-#
-# if __name__ == '__main__':
-#     dic = {'key':[1, 2, 3], 'key2':[1, 2 ,3]}
-#     add_batch(dic)
+
+from cuckoo_module import CuckooModule
 
 
 #CLASS to handle one file with X many modules running on it
@@ -50,7 +33,7 @@ class Process:
         self.end_time = "waiting..."
         self.run_number = -1
         self.id = -1
-        self.modules_ignore = ["Cuckoo"]
+        self.modules_ignore = ["cuckoo_id", "Cuckoo"]
 
     def edit_id(self, id):
         self.id = id
@@ -120,18 +103,18 @@ class Process:
 
         return retList
 
-    def check_cuckoo(self, Database):
+    def check_cuckoo(self, Database, Cuckoo, file_path):
         #NOTE remove cuckoo because it is not run the same
         if "Cuckoo" in self.modules.keys() :
-            #     print "---DOING CUCKOO THINGS---"
-            #     # response_id = CUCKOOAPI.add_file()?
+            print "---DOING CUCKOO THINGS---"
+            # response_id = Cuckoo.submit_file(file_path)
             response_id = 1
 
             output_obj = {'cuckoo_id':response_id}
             Database.db_update_malware_on_id(self.file_id, output_obj)
 
 
-    def run(self, Database):
+    def run(self, Database, Cuckoo):
         self.start_process()
         cwd = os.getcwd()
 
@@ -141,7 +124,7 @@ class Process:
         db_file_obj = Database.db_find_by_id(self.file_id)
         output_obj = {}
 
-        self.check_cuckoo(Database)
+        self.check_cuckoo(Database, Cuckoo, db_file_obj['location'])
 
 
         for module in self.modules:
@@ -178,10 +161,12 @@ class Process:
 
 
 class MultiProcer:
-    def __init__(self, Database):
+    def __init__(self, Database, Cuckoo):
         self.cpu_count = mp.cpu_count()
         # self.cpu_count = 1
         self.Database = Database
+        self.Cuckoo = Cuckoo
+
         self.processes = []
         self.queue = Queue()
 
@@ -221,7 +206,7 @@ class MultiProcer:
             process = q.get()
 
             print process.file_name
-            process.run(self.Database)
+            process.run(self.Database, self.Cuckoo )
 
 
 
@@ -229,12 +214,13 @@ class MultiProcer:
 #CLASS to create process objects and run them
 class Processor:
     def __init__(self, Database, Wizard):
+        self.Cuckoo = CuckooModule
         self.Wizard = Wizard
         self.modules = []       #all prossible modules we can run
         self.new_processes = [] #processes that need to be run still
         self.old_processes = [] #processes that have been run
 
-        self.Multiproc = MultiProcer( Database)
+        self.Multiproc = MultiProcer( Database, self.Cuckoo )
         self.Multiproc.start()
 
         self.Database = Database
@@ -340,7 +326,7 @@ class Processor:
             self.Database.db_proc_insert(process)
             #add the process to list of processes that still need to be processed
             self.new_processes.append(process)
-        self.run_modules(False)
+        self.run_modules()
 
 
     #processes the string data output of a processes
@@ -349,31 +335,20 @@ class Processor:
         aStr = ""
         # print data
         for c in data:
-
             if c == "\n":
                 retList.append(aStr)
                 # print aStr
                 aStr = ""
             else:
                 aStr += c
-
         return retList
 
-    # runs the new processes
-    #
-    #   debug      - TRUE/FALSE wether or not to print module ouput to console
-    #   Database   - globale database obj
-    def run_modules(self, debug):
-        #loop throug all curren new processees
-        # if(self.is_running == False):
-        #     self.is_running = True
-        #     self.Multiproc.start()
+    def get_cuckoo(self, file_database_obj):
+        task_id = database_obj['cuckoo_id']
+        response = self.Cuckoo.get_report(task_id)
+        return response
 
+    def run_modules(self):
         while self.new_processes:
-
-            #remove the process
             process = self.new_processes.pop()
-
             self.Multiproc.add_to_queue(process)
-
-        # self.MultiProcer.join_all()
