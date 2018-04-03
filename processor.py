@@ -6,11 +6,11 @@ import subprocess
 import sys
 from time import gmtime, strftime
 import time
+from datetime import datetime
 from dbio import Dbio
 import gevent
-from dbio import Dbio
 from gevent import monkey; monkey.patch_all()
-
+database = Dbio()
 
 from cuckoo_module import CuckooModule
 
@@ -28,7 +28,6 @@ class Process:
         # {'module name': wether or not module passed/ran}
         # Ex {'ratDecoder':False} -> ratDecoder failed to run on file
         self.modules = {}
-        self.database = Dbio()
         self.percent_done = 0
         self.start_time = "idle"
         self.end_time = "waiting..."
@@ -79,7 +78,7 @@ class Process:
     #for putting the process into the database
     def to_database_file(self):
         length = self.endtime_num - self.starttime_num
-        self.database.db_add_avgtime(length)
+        database.db_add_avgtime(length)
         return {'file_id':self.file_id,
             "file_name":self.file_name,
              "modules":self.modules,

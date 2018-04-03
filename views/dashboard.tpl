@@ -15,7 +15,7 @@
       <div class="card bg-gradient-info text-white">
         <div class="card-body">
           <h4 class="font-weight-normal mb-3">Average Processing Time</h4>
-          <h2 class="font-weight-normal mb-5">Time: {{avg_time}} minutes</h4>
+          <h2 class="font-weight-normal mb-5">{{avg_time}} seconds</h4>
         </div>
       </div>
     </div>

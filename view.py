@@ -12,6 +12,7 @@ import os
 import zipfile
 import json
 import shutil
+import datetime
 
 # need for other rat
 import pefile
@@ -73,7 +74,7 @@ FileGrab = FileGrab(Database, Processor.create_process_obj_auto)
 # NOTE HANGS FOREVER
 # gevent.spawn(Watcher.run, print_something)
 
-#Database.db_clear()
+Database.db_clear()
 
 @route('/')
 def default():
@@ -382,8 +383,9 @@ def dash():
     if av_count is 0:
         avg_time = 0
     else:
-        avg_time = total_time/av_count
-    info = {'new_mal' : malware_count, 'new_nmal': newnmal, 'avg_time' : time.strftime("%H:%M:%S", time.gmtime(avg_time))}
+        avg_time = total_time/(av_count-1)
+    print(total_time,'/',av_count,'=',avg_time)
+    info = {'new_mal' : malware_count, 'new_nmal': newnmal, 'avg_time' : datetime.datetime.utcfromtimestamp(avg_time).strftime("%S.%f")}
     return template('dashboard', info)
 
 
