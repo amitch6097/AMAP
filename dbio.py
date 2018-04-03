@@ -18,6 +18,7 @@ class Dbio:
 		self.proc = db.processes
 		self.authentication = db.authentication
 		self.malware = db.malware
+		self.average_proctime = db.avptime
 		print("\n CONNECT DB SUCCESS! \n")
 
 
@@ -57,6 +58,13 @@ class Dbio:
 	def db_add_malware(self,time):
 		info = {"Time":time}
 		self.malware.insert(info)
+
+	def db_add_avgtime(self,time):
+		info = {"ATime":time}
+		self.average_proctime.insert(info)
+
+	def db_list_avgproctime(self):
+		return self.average_proctime.find({},{'ATime':1,'_id':0})
 
 	def db_list_malwaredate(self):
 		return self.malware.find({},{'Time':1,'_id':0})
@@ -126,6 +134,8 @@ class Dbio:
 	def db_clear(self):
 		self.alpha.delete_many({})
 		self.proc.delete_many({})
+		self.malware.delete_many({})
+		self.average_proctime.delete_many({})
 
 
 

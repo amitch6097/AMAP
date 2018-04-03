@@ -73,7 +73,7 @@ FileGrab = FileGrab(Database, Processor.create_process_obj_auto)
 # NOTE HANGS FOREVER
 # gevent.spawn(Watcher.run, print_something)
 
-Database.db_clear()
+#Database.db_clear()
 
 @route('/')
 def default():
@@ -369,7 +369,21 @@ def dash():
     for i in from_DB:
         print(i["Time"])
         malware_count += 1
-    info = {'new_mal' : malware_count, 'new_nmal': Database.db_get_count()- malware_count, 'avg_time' : 3.5}
+    procset = Database.db_list_avgproctime()
+    avg_time = 0
+    total_time = 0
+    av_count = 0
+    newnmal = Database.db_get_count()- malware_count
+    if newnmal < 0:
+        newnmal = malware_count+3
+    for av in procset:
+        total_time += av["ATime"]
+        av_count += 1
+    if av_count is 0:
+        avg_time = 0
+    else:
+        avg_time = total_time/av_count
+    info = {'new_mal' : malware_count, 'new_nmal': newnmal, 'avg_time' : time.strftime("%H:%M:%S", time.gmtime(avg_time))}
     return template('dashboard', info)
 
 
@@ -379,10 +393,7 @@ def login_page():
     password = request.forms.get('password')
     print("Printing username: {}".format(username))
     print("Printing password: {}".format(password))
-    db_list = Database.db_list_all_time()
-    print(db_list)
-    info = {'processed_day' : Database.db_get_count(), 'new_sample': Database.db_get_count(), 'avg_time' : 3.5}
-    return template('dashboard', info)
+    return dash()
 
 
 # run it
