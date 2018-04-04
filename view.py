@@ -38,7 +38,7 @@ FileGrab = FileGrab(Processor.create_process_obj_auto)
 CWD = os.path.dirname(os.path.realpath(__file__))
 
 
-# Database.db_clear()
+#Database.db_clear()
 
 @route('/')
 def default():

@@ -89,7 +89,8 @@ class Process:
     def processData(self, data):
         retList = []
         aStr = ""
-        if "Unabel to match" not in data:
+        print(data)
+        if "Unabel to match" not in data and "Importing Decoder" in data:
             Database.db_add_malware(time.time())
         for c in data:
             if c == "\n":
