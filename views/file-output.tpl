@@ -9,7 +9,7 @@
     <input type="hidden" name="id" value="{{file_obj['_id']}}">
     <%
       dList = []
-      cnt = 5  #additional modules run after the core properties
+      cnt = 6  #additional modules run after the core properties
 
       #every file gets run with certain properties this puts them first for display
       for key, value in file_obj.iteritems():
