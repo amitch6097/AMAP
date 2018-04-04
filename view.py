@@ -354,7 +354,6 @@ def dash():
     C1V3 = 0
     C1V4 = 0
     C1V5 = 0
-    print(time.time())
     for i in from_DB:
         if (i["Time"] > (time.time()-3600)):
             C1V0 += 1
@@ -369,6 +368,27 @@ def dash():
         elif (i["Time"] < (time.time()-18000) and i["Time"] > (time.time()-21600)):
             C1V5 += 1
         malware_count += 1
+    from_DB_newmw = Database.db_gui_get_newmw()
+    nmw_count = 0
+    C2V0 = 0
+    C2V1 = 0
+    C2V2 = 0
+    C2V3 = 0
+    C2V4 = 0
+    C2V5 = 0
+    for j in from_DB_newmw:
+        if (j["NTime"] > (time.time()-3600)):
+            C2V0 += 1
+        elif (j["NTime"] < (time.time()-3600) and j["NTime"] > (time.time()-7200)):
+            C2V1 += 1
+        elif (j["NTime"] < (time.time()-7200) and j["NTime"] > (time.time()-10800)):
+            C2V2 += 1
+        elif (j["NTime"] < (time.time()-10800) and j["NTime"] > (time.time()-14400)):
+            C2V3 += 1
+        elif (j["NTime"] < (time.time()-14400) and j["NTime"] > (time.time()-18000)):
+            C2V4 += 1
+        elif (j["NTime"] < (time.time()-18000) and j["NTime"] > (time.time()-21600)):
+            C2V5 += 1
     procset = Database.db_list_avgproctime()
     avg_time = 0
     total_time = 0
@@ -385,7 +405,7 @@ def dash():
         avg_time = total_time/(av_count)
     print(total_time,'/',av_count,'=',avg_time)
 
-    info = {'new_mal' : malware_count, 'new_nmal': newnmal, 'avg_time' : datetime.datetime.utcfromtimestamp(avg_time).strftime("%S.%f"), 'C1V0':C1V0, 'C1V1':C1V1, 'C1V2':C1V2, 'C1V3':C1V3, 'C1V4':C1V4, 'C1V5':C1V5}
+    info = {'new_mal' : malware_count, 'new_nmal': newnmal, 'avg_time' : datetime.datetime.utcfromtimestamp(avg_time).strftime("%S.%f"), 'C1V0':C1V0, 'C1V1':C1V1, 'C1V2':C1V2, 'C1V3':C1V3, 'C1V4':C1V4, 'C1V5':C1V5, 'C2V0':C2V0, 'C2V1':C2V1, 'C2V2':C2V2, 'C2V3':C2V3, 'C2V4':C2V4, 'C2V5':C2V5}
     return template('dashboard', info)
 
 

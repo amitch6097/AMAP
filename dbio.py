@@ -20,6 +20,7 @@ class Dbio:
 		self.authentication = db.authentication
 		self.malware = db.malware
 		self.average_proctime = db.avptime
+		self.counter_newmw = db.newmw
 		print("\n CONNECT DB SUCCESS! \n")
 
 
@@ -51,6 +52,13 @@ class Dbio:
 
 	def db_find_by_id(self, id):
 		return self.alpha.find_one({"_id":ObjectId(id)})
+
+	def db_gui_insert_newmw(self):
+		info = {"NTime":time.time()}
+		self.counter_newmw.insert(info)
+
+	def db_gui_get_newmw(self):
+		return self.counter_newmw.find({},{'NTime':1,'_id':0})
 
 	def db_list_all_time(self):
 		for i in self.alpha.find({},{'time':1,'_id':0}):
@@ -121,8 +129,8 @@ class Dbio:
 	def db_insert_malware_obj(self, malware_obj):
 		db_obj = malware_obj.to_database_file()
 		db_id = self.alpha.insert(db_obj)
-		malware_obj.edit_id(db_id)		
-
+		malware_obj.edit_id(db_id)
+		self.db_gui_insert_newmw()
 
 	#updates a malware sample in the database
 	#
