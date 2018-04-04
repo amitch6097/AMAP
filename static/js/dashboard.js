@@ -2,10 +2,10 @@
   'use strict';
   $(function() {
     var data = {
-      labels: ["9:00AM", "10:00AM", "11:00AM", "12:00PM", "1:00PM", "2:00PM"],
+      labels: ["0 hr", "-1 hr", "-2 hr", "-3 hr", "-4 hr", "-5 hr"],
       datasets: [{
         label: 'Malware Samples',
-        data: [10, 12, 14, 10, 11, 13],
+        data: [parseInt(document.getElementById('C1V0').innertext), parseInt(document.getElementById('C1V1').innertext), parseInt(document.getElementById('C1V2').innertext), parseInt(document.getElementById('C1V3').innertext), parseInt(document.getElementById('C1V4').innertext), parseInt(document.getElementById('C1V5').innertext)],
         backgroundColor: [
           'rgba(54, 162, 235, 0.5)',
           'rgba(54, 162, 235, 0.2)',
@@ -26,10 +26,10 @@
       }]
     };
     var data2 = {
-      labels: ["9:00AM", "10:00AM", "11:00AM", "12:00PM", "1:00PM", "2:00PM"],
+      labels: ["0 hr", "-1 hr", "-2 hr", "-3 hr", "-4 hr", "-5 hr"],
       datasets: [{
         label: 'Malware Samples',
-        data: [100, 190, 300, 250, 200, 300],
+        data: [parseInt(document.getElementById('C2V0').innertext), parseInt(document.getElementById('C2V1').innertext), parseInt(document.getElementById('C2V2').innertext), parseInt(document.getElementById('C2V3').innertext), parseInt(document.getElementById('C2V4').innertext), parseInt(document.getElementById('C2V5').innertext)],
         backgroundColor: [
           'rgba(54, 162, 235, 0.5)',
           'rgba(54, 162, 235, 0.2)',

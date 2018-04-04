@@ -1,4 +1,3 @@
-
 # coding=utf-8
 import sys
 #trouble adding path so ...
@@ -12,44 +11,33 @@ import os
 import zipfile
 import json
 import shutil
-
+import datetime
 # need for other rat
 import pefile
 import pype32
 import yara
 import time
 
-# import run_modules
-# import helper_functions
-from dbio import Dbio
+from dbio import Database
 from processor import Processor
 from uploader import MalwareUploader
-# from file_watcher import Watcher
 from file_watcher import FileGrab
 
 # Wizard class for Background Analysis Platform
 from wizard import Wizard
 
-
 import multiprocessing as mp
 import threading
 
-
 Wizard = Wizard()
-
-Database = Dbio()
 Uploader = MalwareUploader(os.path.dirname(os.path.realpath(__file__)))
-Processor = Processor(Database, Wizard)
+Processor = Processor(Wizard)
+FileGrab = FileGrab(Processor.create_process_obj_auto)
 
-# def file_process_callback(files):
-#     for file in files:
-#         print file
+CWD = os.path.dirname(os.path.realpath(__file__))
 
-FileGrab = FileGrab(Database, Processor.create_process_obj_auto)
 
-# watcher_process = mp.Process(target=FileGrab.run)
-# watcher_process.daemon = True
-# watcher_process.start()
+#Database.db_clear()
 
 #WATCH DOG STUFF THAT DOESN'T WORK
 # Watcher = Watcher()
@@ -115,9 +103,7 @@ def default():
 
 @route('/<name>')
 def index(name):
-    print name
     return template(name)
-
 
 @route('/wizard')
 def wizard():
@@ -202,11 +188,9 @@ def do_upload():
 #RUNS WHEN submit button is pressed on file upload module options page
 @route('/process', method='POST')
 def process_upload():
-
     Processor.create_process_obj(request.forms, Uploader.current_uploads)
     Uploader.reset()
     Processor.run_modules()
-
     return load_processes()
 
 
@@ -224,7 +208,7 @@ def load_processes():
 #RUNS WHEN a file is click on in either processes page or search_input
 # TODO db_list_one only gets the first file with name, is a problem for duplicates
 @route('/file_view', method='POST')
-def load_file():
+def load_file_view_post():
 
     #grab the selected file
     file_select = request.forms.get('filename')
@@ -234,11 +218,9 @@ def load_file():
 
     # used to not show location of the file on system
     #TODO could be deleted
-    #del database_obj['location']
+    del database_obj['location']
 
-    #TODO NOT SURE IF THIS WORKS
-    if 'Cuckoo' in database_obj.keys():
-	Processor.get_cuckoo(database_obj)
+    cuckoo_file_path = Processor.get_cuckoo(database_obj)
 
     return template('file-output', file_obj=database_obj)
 
@@ -251,9 +233,7 @@ def static(filename):
 #RUNS WHEN a module is uploaded
 # unzips the file and places it in modules folder
 @route('/module-upload', method='POST')
-def servo_pos():
-    current_dir_path = os.path.dirname(os.path.realpath(__file__))
-
+def module_upload_post():
     uploads = request.files.getall('upload')
     uploads_name_array = []
 
@@ -269,7 +249,7 @@ def servo_pos():
         #     return "File extension not allowed."
 
         # set up downloads path
-        save_path = "{path}/modules".format(path=current_dir_path)
+        save_path = "{path}/modules".format(path=CWD)
         if not os.path.exists(save_path):
             os.makedirs(save_path)
 
@@ -282,18 +262,18 @@ def servo_pos():
 
         os.remove(file_path)
 
-    return dash()
+    return get_my_modules()
 
 
 @route('/module-create', method='POST')
-def servo_pos():
-    current_dir_path = os.path.dirname(os.path.realpath(__file__))
+def module_create_post():
     text = request.forms.get('code-text-input')
     module_name = request.forms.get('module-name')
 
     module_name = module_name.split(".")[0]
 
-    save_path = os.path.join(current_dir_path, "modules", module_name)
+
+    save_path = os.path.join(CWD, "modules", module_name)
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
@@ -301,8 +281,9 @@ def servo_pos():
     file_path = os.path.join(save_path, full_name)
     file = open(file_path, "w")
     file.write(text)
+    print text
 
-    return dash()
+    return get_my_modules()
 
 #RUNS WHEN search button is pressed
 #grabs input from search bar and searches database for those chars
@@ -319,45 +300,52 @@ def malware_search():
 
     return template('search', search_output=formated_objs)
 
+
+@route('/my-modules-creator', method='POST')
+def my_module_creator_post():
+    module_name = request.forms.get("module-name")
+    file_contents = []
+
+    if module_name == None:
+        file_contents = ['import os', 'from optparse import OptionParser', '', '', '__description__ =', '__author__ =', "__version__ = '1.0'", '__date__ =', '', 'def my_module(filename):', '', 'if __name__ == "__main__":', "        parser = OptionParser(usage='usage: %prog file / dir\\n' + __description__, version='%prog ' + __version__)", '        (options, args) = parser.parse_args()', '        is_file = os.path.isfile(args[0])', '        if is_file:', '            my_module(args[0])']
+        return template('module-creator', {"module_name":"", "file_contents":file_contents})
+
+    path = "{0}/modules/{1}".format(CWD, module_name)
+    full_name = "{0}.py".format(module_name)
+    file_path = os.path.join(path, full_name)
+
+    try:
+        with open(file_path, 'r') as fp:
+            for line in fp:
+                file_contents.append(line.rstrip())
+    except:
+        file_contents = []
+
+
+
+    return template('module-creator', {"module_name":full_name, "file_contents":file_contents})
+
 #RUNS WHEN my modules is selected
 #shows the current uploaded modules
 @route('/my-modules')
 def get_my_modules():
 
     modules = Processor.get_modules()
+    modules.remove("Cuckoo")
+
     return template('display-modules', modules=modules)
 
 #RUNS WHEN delete is selected on my modules page
 @route('/delete-module', method='POST')
-def get_my_modules():
+def delete_modules_post():
     modules_name = request.forms.get('module-name')
-    current_dir_path = os.path.dirname(os.path.realpath(__file__))
 
-    path = "{0}/modules/{1}".format(current_dir_path,modules_name)
+    path = "{0}/modules/{1}".format(CWD, modules_name)
 
     if os.path.isdir(path):
         shutil.rmtree(path)
 
-    modules = Processor.get_modules()
-    return template('display-modules', modules=modules)
-
-
-# @route('/upload-module', method='POST')
-# def upload_module():
-#     file_name = request.forms.get('file_name')
-#     file_location = "modules/{file_name}".format(file_name=file_name)
-#
-#     path_to_zip_file = file_location
-#     directory_to_extract_to = "modules"
-#
-#     zip_ref = zipfile.ZipFile(path_to_zip_file, 'r')
-#     zip_ref.extractall(directory_to_extract_to)
-#     zip_ref.close()
-#
-#     # os.remove(path_to_zip_file)
-#
-#     return template('dashboard')
-
+    return get_my_modules()
 
 @route('/dashboard')
 def dash():
@@ -365,8 +353,26 @@ def dash():
     #print(db_list)
     from_DB = Database.db_list_malwaredate()
     malware_count = 0
+    C1V0 = 0
+    C1V1 = 0
+    C1V2 = 0
+    C1V3 = 0
+    C1V4 = 0
+    C1V5 = 0
+    print(time.time())
     for i in from_DB:
-        print(i["Time"])
+        if (i["Time"] > (time.time()-3600)):
+            C1V0 += 1
+        elif (i["Time"] < (time.time()-3600) and i["Time"] > (time.time()-7200)):
+            C1V1 += 1
+        elif (i["Time"] < (time.time()-7200) and i["Time"] > (time.time()-10800)):
+            C1V2 += 1
+        elif (i["Time"] < (time.time()-10800) and i["Time"] > (time.time()-14400)):
+            C1V3 += 1
+        elif (i["Time"] < (time.time()-14400) and i["Time"] > (time.time()-18000)):
+            C1V4 += 1
+        elif (i["Time"] < (time.time()-18000) and i["Time"] > (time.time()-21600)):
+            C1V5 += 1
         malware_count += 1
     procset = Database.db_list_avgproctime()
     avg_time = 0
@@ -381,8 +387,10 @@ def dash():
     if av_count is 0:
         avg_time = 0
     else:
-        avg_time = total_time/av_count
-    info = {'new_mal' : malware_count, 'new_nmal': newnmal, 'avg_time' : time.strftime("%H:%M:%S", time.gmtime(avg_time))}
+        avg_time = total_time/(av_count-1)
+    print(total_time,'/',av_count,'=',avg_time)
+
+    info = {'new_mal' : malware_count, 'new_nmal': newnmal, 'avg_time' : datetime.datetime.utcfromtimestamp(avg_time).strftime("%S.%f"), 'C1V0':C1V0, 'C1V1':C1V1, 'C1V2':C1V2, 'C1V3':C1V3, 'C1V4':C1V4, 'C1V5':C1V5}
     return template('dashboard', info)
 
 
@@ -396,4 +404,4 @@ def login_page():
 
 
 # run it
-run(host='0.0.0.0', port=8080, server='gevent')
+run(host='0.0.0.0', port=8080, server='gevent', debug=True)

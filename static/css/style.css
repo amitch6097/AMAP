@@ -13229,7 +13229,8 @@ a.text-success:focus, a.text-success:hover {
   color: #25a25a !important; }
 
 .text-info {
-  color: #1976d2 !important; }
+  color: #1976d2 !important;
+  margin-left:18px;}
 
 a.text-info:focus, a.text-info:hover {
   color: #145ca4 !important; }

@@ -15,7 +15,7 @@
       <div class="card bg-gradient-info text-white">
         <div class="card-body">
           <h4 class="font-weight-normal mb-3">Average Processing Time</h4>
-          <h2 class="font-weight-normal mb-5">Time: {{avg_time}} minutes</h4>
+          <h2 class="font-weight-normal mb-5">{{avg_time}} seconds</h4>
         </div>
       </div>
     </div>
@@ -412,5 +412,31 @@
       </div>
     </div>
   </div> -->
+  <p id='C1V0' style="color:white;">{{C1V0}}</p>
+  <p id='C1V1' style="color:white;">{{C1V1}}</p>
+  <p id='C1V2' style="color:white;">{{C1V2}}</p>
+  <p id='C1V3' style="color:white;">{{C1V3}}</p>
+  <p id='C1V4' style="color:white;">{{C1V4}}</p>
+  <p id='C1V5' style="color:white;">{{C1V5}}</p>
+
+  <p id='C2V0' style="color:white;">1</p>
+  <p id='C2V1' style="color:white;">1</p>
+  <p id='C2V2' style="color:white;">1</p>
+  <p id='C2V3' style="color:white;">1</p>
+  <p id='C2V4' style="color:white;">1</p>
+  <p id='C2V5' style="color:white;">1</p>
 </div>
+<script>window.document.getElementById('C1V0').innertext = {{C1V0}}</script>
+<script>window.document.getElementById('C1V1').innertext = {{C1V1}}</script>
+<script>window.document.getElementById('C1V2').innertext = {{C1V2}}</script>
+<script>window.document.getElementById('C1V3').innertext = {{C1V3}}</script>
+<script>window.document.getElementById('C1V4').innertext = {{C1V4}}</script>
+<script>window.document.getElementById('C1V5').innertext = {{C1V5}}</script>
+
+<script>window.document.getElementById('C2V0').innertext = {{new_mal}}</script>
+<script>window.document.getElementById('C2V1').innertext = {{new_mal}}</script>
+<script>window.document.getElementById('C2V2').innertext = {{new_mal}}</script>
+<script>window.document.getElementById('C2V3').innertext = {{new_mal}}</script>
+<script>window.document.getElementById('C2V4').innertext = {{new_mal}}</script>
+<script>window.document.getElementById('C2V5').innertext = {{new_mal}}</script>
 %include footer
