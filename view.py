@@ -12,6 +12,7 @@ import os
 import zipfile
 import json
 import shutil
+import datetime
 
 # need for other rat
 import pefile
@@ -19,61 +20,23 @@ import pype32
 import yara
 import time
 
-# import run_modules
-# import helper_functions
-from dbio import Dbio
+from dbio import Database
 from processor import Processor
 from uploader import MalwareUploader
-# from file_watcher import Watcher
 from file_watcher import FileGrab
 
 # Wizard class for Background Analysis Platform
 from wizard import Wizard
 
-
 import multiprocessing as mp
 import threading
 
-
 Wizard = Wizard()
-
-Database = Dbio()
 Uploader = MalwareUploader(os.path.dirname(os.path.realpath(__file__)))
-Processor = Processor(Database, Wizard)
+Processor = Processor(Wizard)
+FileGrab = FileGrab(Processor.create_process_obj_auto)
 
-# def file_process_callback(files):
-#     for file in files:
-#         print file
-
-FileGrab = FileGrab(Database, Processor.create_process_obj_auto)
-
-# watcher_process = mp.Process(target=FileGrab.run)
-# watcher_process.daemon = True
-# watcher_process.start()
-
-#WATCH DOG STUFF THAT DOESN'T WORK
-# Watcher = Watcher()
-# def print_something(event):
-#     print "This"
-#     if event.is_directory:
-#         return None
-#
-#     elif event.event_type == 'created':
-#         # Take any action here when a file is first created.
-#         print "Received created event - %s." % event.src_path
-#
-#     elif event.event_type == 'modified':
-#         # Taken any action here when a file is modified.
-#         print "Received modified event - %s." % event.src_path
-# Watcher.run(print_something)
-# watcher_process = mp.Process(target=Watcher.run, args=(print_something,))
-# watcher_process.daemon = True
-# watcher_process.start()
-
-# NOTE HANGS FOREVER
-# gevent.spawn(Watcher.run, print_something)
-
-#Database.db_clear()
+# Database.db_clear()
 
 @route('/')
 def default():
@@ -202,11 +165,9 @@ def do_upload():
 #RUNS WHEN submit button is pressed on file upload module options page
 @route('/process', method='POST')
 def process_upload():
-
     Processor.create_process_obj(request.forms, Uploader.current_uploads)
     Uploader.reset()
     Processor.run_modules()
-
     return load_processes()
 
 
@@ -236,10 +197,7 @@ def load_file():
     #TODO could be deleted
     del database_obj['location']
 
-    #TODO NOT SURE IF THIS WORKS
-    # if 'Cuckoo' in database_obj.keys():
-    #     if database_obj['Cuckoo'] == None:
-    #         Processor.get_cuckoo(database_obj)
+    cuckoo_file_path = Processor.get_cuckoo(database_obj)
 
     return template('file-output', file_obj=database_obj)
 
@@ -382,8 +340,9 @@ def dash():
     if av_count is 0:
         avg_time = 0
     else:
-        avg_time = total_time/av_count
-    info = {'new_mal' : malware_count, 'new_nmal': newnmal, 'avg_time' : time.strftime("%H:%M:%S", time.gmtime(avg_time))}
+        avg_time = total_time/(av_count-1)
+    print(total_time,'/',av_count,'=',avg_time)
+    info = {'new_mal' : malware_count, 'new_nmal': newnmal, 'avg_time' : datetime.datetime.utcfromtimestamp(avg_time).strftime("%S.%f")}
     return template('dashboard', info)
 
 

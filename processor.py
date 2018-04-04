@@ -6,20 +6,18 @@ import subprocess
 import sys
 from time import gmtime, strftime
 import time
-# from dbio import Dbio
+from datetime import datetime
+import dbio
 import gevent
-from dbio import Dbio
 from gevent import monkey; monkey.patch_all()
-
+from dbio import Database
 
 from cuckoo_module import CuckooModule
+Cuckoo = CuckooModule()
 
 
 #CLASS to handle one file with X many modules running on it
 class Process:
-
-    #
-    #   file   - a Malware Object see Uploader.py
     def __init__(self, file_id, file_name):
         self.file_id =  file_id
         self.file_name = file_name
@@ -28,7 +26,7 @@ class Process:
         # {'module name': wether or not module passed/ran}
         # Ex {'ratDecoder':False} -> ratDecoder failed to run on file
         self.modules = {}
-        #self.database = Dbio()
+
         self.percent_done = 0
         self.start_time = "idle"
         self.end_time = "waiting..."
@@ -42,14 +40,9 @@ class Process:
     def edit_id(self, id):
         self.id = id
 
-    #add a modules to dictionary see above
-    #
-    #   module    - name of module adding (string)
     def add_module(self, module):
-        #all modules start as failing
         self.modules[module] = False
 
-    #helps for debugging
     def print_modules(self):
         for key in self.modules:
             print "KEY:{0} VALUE:{1}".format(key, self.modules[key])
@@ -69,15 +62,14 @@ class Process:
     #Get the number of runs the file has been through
     #
     #   Database  - our global database object
-    def get_file_runs(self, Database):
+    def get_file_runs(self):
         # assert self.file_id != -1
         self.run_number = Database.db_inc_runs_by_id(self.file_id)
 
     #for putting the process into the database
     def to_database_file(self):
         length = self.endtime_num - self.starttime_num
-        print(length)
-        # self.database.db_add_avgtime(length)
+        Database.db_add_avgtime(length)
         return {'file_id':self.file_id,
             "file_name":self.file_name,
              "modules":self.modules,
@@ -94,50 +86,38 @@ class Process:
         self.end_time = db_file["end_time"]
 
     #processes the string data output of a processes
-    def processData(self, data, Database):
+    def processData(self, data):
         retList = []
         aStr = ""
-        # print data
         if "Unabel to match" not in data:
             Database.db_add_malware(time.time())
-
         for c in data:
-
             if c == "\n":
                 retList.append(aStr)
-                # print aStr
                 aStr = ""
             else:
                 aStr += c
-
         return retList
 
-    def check_cuckoo(self, Database, Cuckoo, file_path):
-        #NOTE remove cuckoo because it is not run the same
-        if "Cuckoo" in self.modules.keys() :
-            print "---DOING CUCKOO THINGS---"
-            # response_id = Cuckoo.submit_file(file_path)
-            response_id = 1
-
+    def check_cuckoo(self, file_path):
+        if "Cuckoo" in self.modules.keys():
+            response_id = Cuckoo.submit_file( file_path)
+            if response_id == None:
+                return {}
             output_obj = {'cuckoo_id':response_id}
             Database.db_update_malware_on_id(self.file_id, output_obj)
+            return output_obj
+        else:
+            return {}
 
-
-    def run(self, Database, Cuckoo):
+    def run(self):
         self.start_process()
         cwd = os.getcwd()
 
-        # grab the file out of the databse because
-        #we are updating the information on the file
-        # output_obj = process.file.to_database_file()
         db_file_obj = Database.db_find_by_id(self.file_id)
-        output_obj = {}
-
-        self.check_cuckoo(Database, Cuckoo, db_file_obj['location'])
-
+        output_obj = self.check_cuckoo(db_file_obj['location'])
 
         for module in self.modules:
-
             if module in self.modules_ignore:
                 continue
 
@@ -146,50 +126,33 @@ class Process:
 
             p = subprocess.Popen(['python', location_of_module, db_file_obj['location']], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdoutdata, stderrdata = p.communicate()
-            # print stderrdata
 
             #if we get error data the module 'failed'
             module_passed = True
             if stderrdata:
                 module_passed = False
-
-            #process the output for printing to html
-            output = self.processData(stdoutdata, Database)
-            #update the file with new module information
-            output_obj[module] = output
-
-            # set the processed module to passede or not
             self.modules[module] = module_passed
 
-            #update our file in the database
-        Database.db_update_malware_on_id(db_file_obj["_id"], output_obj)
+            output = self.processData(stdoutdata)
+            output_obj[module] = output
 
-        # put a timestamp on the process
         self.finish_process()
+
+        Database.db_update_malware_on_id(db_file_obj["_id"], output_obj)
         Database.db_update_process(self.id, self.to_database_file())
 
 
-class MultiProcer:
-    def __init__(self, Database, Cuckoo):
+class MultiProcessor:
+    def __init__(self):
         self.cpu_count = mp.cpu_count()
-        # self.cpu_count = 1
-        self.Database = Database
-        self.Cuckoo = Cuckoo
-
         self.processes = []
         self.queue = Queue()
 
     def start(self):
-        #TODO
-        #could add process count so we don't always spin up 8 processes say
-
         self.processes = [mp.Process(target=self.run, args=(self.queue,)) for i in range(self.cpu_count)]
         for proc in self.processes:
             proc.start()
-        # pool = mp.Pool(processes=4)
-        # res= pool.apply_async(self.run)
 
-    #TODO LOCKS
     def add_to_queue(self, process):
         self.queue.put(process)
 
@@ -200,52 +163,34 @@ class MultiProcer:
         for proc in self.processes:
             proc.join()
 
-
     def run(self, q):
-        # proc = mp.current_process()
         while(True):
-            # if( q.empty()):
-            #
-            #     #TODO
-            #     #not sure if this actually exits the process
-            #
-            #     print "DONE"
-            #     return
-
             process = q.get()
-
-            print process.file_name
-            process.run(self.Database, self.Cuckoo )
-
-
+            process.run()
 
 
 #CLASS to create process objects and run them
 class Processor:
-    def __init__(self, Database, Wizard):
-        self.Cuckoo = CuckooModule
+    def __init__(self, Wizard):
         self.Wizard = Wizard
         self.modules = []       #all prossible modules we can run
         self.new_processes = [] #processes that need to be run still
         self.old_processes = [] #processes that have been run
-
-        self.Multiproc = MultiProcer( Database, self.Cuckoo )
+        self.Multiproc = MultiProcessor()
         self.Multiproc.start()
-
-        self.Database = Database
-
         self.is_running = False
+
 
     # for displaying all of the processes, already run or running
     def get_all_processes(self):
         return self.old_processes + self.new_processes
 
     def get_all_processes_db(self):
-        process_stack = self.Database.db_get_all_processes()
-        processes = self.process_stack_to_processes(process_stack, self.Database)
+        process_stack = Database.db_get_all_processes()
+        processes = self.process_stack_to_processes(process_stack)
         return processes
 
-    def process_stack_to_processes(self, db_process_stack, Database):
+    def process_stack_to_processes(self, db_process_stack):
         processes = []
         for db_process in db_process_stack:
 
@@ -291,7 +236,7 @@ class Processor:
             #create a process object from it
             process = Process(current_file.id, current_file.filename)
             # get the nummber of times the file has been run
-            process.get_file_runs(self.Database)
+            process.get_file_runs()
 
             # loop through all of the possible modules
             for index, module in enumerate(self.modules):
@@ -309,15 +254,11 @@ class Processor:
                     process.add_module(module)
 
             #insert the process into the database
-            self.Database.db_proc_insert(process)
+            Database.db_proc_insert(process)
 
             #add the process to list of processes that still need to be processed
             self.new_processes.append(process)
 
-
-    #auto_modules_config = {'module':True, 'module2':False}
-    #NOTE NEED TO CHANGE BACK ONCE CONFIG CLASS IS IMPLEMENTED
-    # def create_process_obj_auto(self, file, auto_modules_config):
 
     def create_process_obj_auto(self, files_array):
         for file in files_array:
@@ -325,37 +266,27 @@ class Processor:
             auto_modules_config = { x : True for x in modules_array }
 
             process = Process(file.id, file.filename)
-            process.get_file_runs(self.Database)
+            process.get_file_runs()
 
             for module in auto_modules_config:
                 if(auto_modules_config[module] == True):
                     process.add_module(module)
 
             #insert the process into the database
-            self.Database.db_proc_insert(process)
+            Database.db_proc_insert(process)
             #add the process to list of processes that still need to be processed
             self.new_processes.append(process)
         self.run_modules()
 
-
-    #processes the string data output of a processes
-    def processData(self, data):
-        retList = []
-        aStr = ""
-        # print data
-        for c in data:
-            if c == "\n":
-                retList.append(aStr)
-                # print aStr
-                aStr = ""
-            else:
-                aStr += c
-        return retList
-
     def get_cuckoo(self, file_database_obj):
-        task_id = database_obj['cuckoo_id']
-        response = self.Cuckoo.get_report(task_id)
-        return response
+        if 'Cuckoo' in file_database_obj.keys():
+            if file_database_obj['Cuckoo'] == None:
+                task_id = file_database_obj['cuckoo_id']
+                response = Cuckoo.get_report(task_id)
+                Database.db_update_malware_on_id(file_database_obj['_id'], {"Cuckoo", response})
+                return response
+            return file_database_obj['Cuckoo']
+        return None
 
     def run_modules(self):
         while self.new_processes:

@@ -2,25 +2,14 @@
 import time
 import os
 
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
-from wizard import Wizard
-
 import multiprocessing as mp
 
-#NOTE not pretty clean up
+from wizard import Wizard
 from uploader import Malware
-#NOTE really there should be a better way to "upload"
-#malware and add to database then FileGrab but ...
-
-#TODO Make sure we are moving files at the last second or they could be in limbo
+from dbio import Database
 
 class FileGrab:
-    def __init__(self, Database, file_process_callback):
-
-        #NOTE not pretty clean up
-        self.Database = Database
-
+    def __init__(self, file_process_callback):
         self.is_running = False
         self.number_of_file_to_grab_each_iter = 1
         self.time_between_each_iter = 10 #seconds I think?
@@ -125,12 +114,9 @@ class FileGrab:
         malware_array = []
 
         for file in filename_path_dict:
-
             path = filename_path_dict[file]
             malware = Malware(file, path)
-
-            self.Database.db_insert_malware_obj(malware)
-
+            Database.db_insert_malware_obj(malware)
             malware_array.append(malware)
 
         return malware_array
@@ -143,49 +129,6 @@ class FileGrab:
         print ""
 
         self.file_process_callback(malware_array)
-
-class Watcher:
-
-    def __init__(self):
-        self.observer = Observer()
-        self.event_handler = Handler()
-
-    def run(self, cb):
-        current_dir_path = os.path.dirname(os.path.realpath(__file__))
-        downloads_dir = os.path.join(current_dir_path, "downloads")
-
-        self.observer.schedule(self.event_handler, downloads_dir, recursive=True)
-        self.observer.start()
-        try:
-            while True:
-                time.sleep(5)
-        except:
-            self.observer.stop()
-            print "Error"
-
-        self.observer.join()
-
-
-class Handler(FileSystemEventHandler):
-
-    @staticmethod
-    def on_any_event(event):
-        if event.is_directory:
-            return None
-
-        elif event.event_type == 'created':
-            # Take any action here when a file is first created.
-            print "Received created event - %s." % event.src_path
-
-        elif event.event_type == 'modified':
-            # Taken any action here when a file is modified.
-            print "Received modified event - %s." % event.src_path
-
-def file_process_callback(files):
-    for file in files:
-        print "FILE ON THE OTHER END"
-        print file
-
 
 if __name__ == '__main__':
     f = FileGrab(file_process_callback)

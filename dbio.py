@@ -8,6 +8,7 @@ from bson.objectid import ObjectId
 from passlib.apps import custom_app_context as pwd_context
 from beaker.middleware import SessionMiddleware
 
+
 class Dbio:
 	def __init__(self):
 		client = MongoClient('45.32.65.58',27017)
@@ -162,6 +163,7 @@ class Dbio:
     	)
 
 
+Database = Dbio()
 
 #Example usages...
 #db_insert_to("0012.mid","25faa9b7d2ff96e3ba424d464580a375","2b110d7bc681eb133f089fd4cdf580ec496c21b9459b474ed33d000f260b4425")
