@@ -46,7 +46,7 @@ class CuckooModule:
 		"""submit a task id and returns the report object, if the task is not done or invalid returns None"""
 
 		if self.enabled:
-			request = requests.post("{}/{}".format(self.report_url,task_id))
+			request = requests.get("{}/{}".format(self.report_url,task_id))
 			if request.status_code == 404:
 				return None
 			file_path = os.path.join(self.directory, "task_{0}".format(task_id))

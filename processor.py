@@ -208,7 +208,8 @@ class Processor:
     def get_editable_modules(self):
         modules = self.get_modules()
         for to_remove in self.non_editable_modules:
-            modules.remove(to_remove)
+            if to_remove in modules:
+                modules.remove(to_remove)
         return modules
 
     #get all of the possible modules we can run
