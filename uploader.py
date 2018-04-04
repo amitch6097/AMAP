@@ -1,14 +1,18 @@
 import os
 import time
+import hashlib
+
 
 #CLASS to define a single file or malware upload
 class Malware:
 
     #   filename   - string
     #   path       - string path the to file on system
-    def __init__(self, filename, path):
+    def __init__(self, filename, path, hashes):
         self.filename = filename
         self.path = path
+        self.hashes = hashes
+
         self.id = -1
         self.runs = 0
         self.time = time.time()
@@ -21,7 +25,8 @@ class Malware:
             'Name'      :self.filename,
             'location'  :self.path,
             'runs'      :self.runs,
-            'time'      :self.time
+            'time'      :self.time,
+            'hashes'    :self.hashes
         }
 
 #CLASS to upload malware and get current uploaded files
@@ -34,6 +39,10 @@ class MalwareUploader:
         self.upload_dir = "{0}/{1}".format(path, self.dir)
         if not os.path.exists(self.upload_dir):
             os.makedirs(self.upload_dir)
+
+        self.hashed_dir = "{0}/{1}".format(path, "hashed")
+        if not os.path.exists(self.hashed_dir):
+            os.makedirs(self.hashed_dir)
 
         #two states "upload" and "module"
         #defines wether or not we are uploading a file
@@ -75,6 +84,30 @@ class MalwareUploader:
         malware.runs = db_file['runs']
         # Database.db_insert_malware_obj(malware)
 
+    def get_hashes_and_move_file(self, file_path, Database, filename):
+        opened_file = open(file_path)
+        read_file = opened_file.read()
+
+        sha1= hashlib.sha1(read_file).hexdigest()
+        sha256 = hashlib.sha256(read_file).hexdigest()
+        md5 = hashlib.md5(read_file).hexdigest()
+        hashes = {"sha1":sha1, "sha256":sha256, "md5":md5}
+
+        name = "{0}_{1}".format(sha1, md5)
+        new_path = os.path.join(self.hashed_dir, name)
+
+        malware = Malware(filename, new_path, hashes)
+
+        if os.path.isfile(new_path):
+            Database.db_add_name_to_malware(new_path, filename, malware)
+        else:
+            os.rename(file_path, new_path)
+            Database.db_insert_malware_obj(malware)
+
+        #add it to current uploads for later processing
+        self.current_uploads.append(malware)
+
+
 
     #TODO handle uploads with same names
     # Uploads files to the downloads folder
@@ -85,7 +118,6 @@ class MalwareUploader:
         self.state = "modules"
 
         for upload in file_uploads:
-
             # How to not allow file types
             # name, ext = os.path.splitext(upload.filename)
             # if ext not in ('.not', '.allowed', '.example'):
@@ -95,9 +127,4 @@ class MalwareUploader:
             file_path = "{path}/{file}".format(path=self.upload_dir, file=upload.filename)
             upload.save(file_path, overwrite=True)
 
-            #create a malware object from it
-            malware = Malware(upload.filename, file_path)
-            #add it to current uploads for later processing
-            self.current_uploads.append(malware)
-
-            Database.db_insert_malware_obj(malware)
+            self.get_hashes_and_move_file(file_path, Database, upload.filename)

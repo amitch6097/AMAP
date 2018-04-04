@@ -299,18 +299,13 @@ def my_module_creator_post():
     except:
         file_contents = []
 
-
-
     return template('module-creator', {"module_name":full_name, "file_contents":file_contents})
 
 #RUNS WHEN my modules is selected
 #shows the current uploaded modules
 @route('/my-modules')
 def get_my_modules():
-
-    modules = Processor.get_modules()
-    modules.remove("Cuckoo")
-
+    modules = Processor.get_editable_modules()
     return template('display-modules', modules=modules)
 
 #RUNS WHEN delete is selected on my modules page
