@@ -70,7 +70,7 @@
     };
     var doughnutPieData = {
       datasets: [{
-        data: [70, 20, 10],
+        data: [80, 20],
         backgroundColor: [
           'rgba(255, 99, 132, 0.5)',
           'rgba(54, 162, 235, 0.5)',
@@ -92,7 +92,6 @@
       // These labels appear in the legend and in the tooltips when hovering different arcs
       labels: [
         'Windows Executable',
-        'Microsoft Office Documents',
         'Other',
       ]
     };

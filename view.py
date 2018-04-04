@@ -382,7 +382,7 @@ def dash():
     if av_count is 0:
         avg_time = 0
     else:
-        avg_time = total_time/(av_count-1)
+        avg_time = total_time/(av_count)
     print(total_time,'/',av_count,'=',avg_time)
 
     info = {'new_mal' : malware_count, 'new_nmal': newnmal, 'avg_time' : datetime.datetime.utcfromtimestamp(avg_time).strftime("%S.%f"), 'C1V0':C1V0, 'C1V1':C1V1, 'C1V2':C1V2, 'C1V3':C1V3, 'C1V4':C1V4, 'C1V5':C1V5}
