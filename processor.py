@@ -89,7 +89,8 @@ class Process:
     def processData(self, data):
         retList = []
         aStr = ""
-        if "Unabel to match" not in data:
+        print(data)
+        if "Unabel to match" not in data and "Importing Decoder" in data:
             Database.db_add_malware(time.time())
         for c in data:
             if c == "\n":
@@ -297,4 +298,4 @@ class Processor:
     def run_modules(self):
         while self.new_processes:
             process = self.new_processes.pop()
-            self.Multiproc.add_to_queue(process)
+self.Multiproc.add_to_queue(process)

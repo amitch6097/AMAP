@@ -1,4 +1,3 @@
-
 # coding=utf-8
 import sys
 #trouble adding path so ...
@@ -13,7 +12,6 @@ import zipfile
 import json
 import shutil
 import datetime
-
 # need for other rat
 import pefile
 import pype32
@@ -39,7 +37,31 @@ FileGrab = FileGrab(Processor.create_process_obj_auto)
 CWD = os.path.dirname(os.path.realpath(__file__))
 
 
-# Database.db_clear()
+#Database.db_clear()
+
+#WATCH DOG STUFF THAT DOESN'T WORK
+# Watcher = Watcher()
+# def print_something(event):
+#     print "This"
+#     if event.is_directory:
+#         return None
+#
+#     elif event.event_type == 'created':
+#         # Take any action here when a file is first created.
+#         print "Received created event - %s." % event.src_path
+#
+#     elif event.event_type == 'modified':
+#         # Taken any action here when a file is modified.
+#         print "Received modified event - %s." % event.src_path
+# Watcher.run(print_something)
+# watcher_process = mp.Process(target=Watcher.run, args=(print_something,))
+# watcher_process.daemon = True
+# watcher_process.start()
+
+# NOTE HANGS FOREVER
+# gevent.spawn(Watcher.run, print_something)
+
+#Database.db_clear()
 
 @route('/')
 def default():
@@ -326,8 +348,26 @@ def dash():
     #print(db_list)
     from_DB = Database.db_list_malwaredate()
     malware_count = 0
+    C1V0 = 0
+    C1V1 = 0
+    C1V2 = 0
+    C1V3 = 0
+    C1V4 = 0
+    C1V5 = 0
+    print(time.time())
     for i in from_DB:
-        print(i["Time"])
+        if (i["Time"] > (time.time()-3600)):
+            C1V0 += 1
+        elif (i["Time"] < (time.time()-3600) and i["Time"] > (time.time()-7200)):
+            C1V1 += 1
+        elif (i["Time"] < (time.time()-7200) and i["Time"] > (time.time()-10800)):
+            C1V2 += 1
+        elif (i["Time"] < (time.time()-10800) and i["Time"] > (time.time()-14400)):
+            C1V3 += 1
+        elif (i["Time"] < (time.time()-14400) and i["Time"] > (time.time()-18000)):
+            C1V4 += 1
+        elif (i["Time"] < (time.time()-18000) and i["Time"] > (time.time()-21600)):
+            C1V5 += 1
         malware_count += 1
     procset = Database.db_list_avgproctime()
     avg_time = 0
@@ -344,7 +384,8 @@ def dash():
     else:
         avg_time = total_time/(av_count-1)
     print(total_time,'/',av_count,'=',avg_time)
-    info = {'new_mal' : malware_count, 'new_nmal': newnmal, 'avg_time' : datetime.datetime.utcfromtimestamp(avg_time).strftime("%S.%f")}
+
+    info = {'new_mal' : malware_count, 'new_nmal': newnmal, 'avg_time' : datetime.datetime.utcfromtimestamp(avg_time).strftime("%S.%f"), 'C1V0':C1V0, 'C1V1':C1V1, 'C1V2':C1V2, 'C1V3':C1V3, 'C1V4':C1V4, 'C1V5':C1V5}
     return template('dashboard', info)
 
 

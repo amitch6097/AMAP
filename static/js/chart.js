@@ -114,7 +114,7 @@ $(function() {
   };
   var browserTrafficData = {
     datasets: [{
-      data: [20, 20, 10, 30, 20],
+      data: [5, 5, 10, 30, 20],
       backgroundColor: [
         'rgba(255,99,132,1)',
         'rgba(54, 162, 235, 1)',
