@@ -24,6 +24,8 @@ class CuckooModule:
 		except OSError:
 			self.enabled = False
 
+	def is_available(self):
+		return self.enabled
 
 	def __del__(self):
 		if self.enabled:

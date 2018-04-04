@@ -8,12 +8,15 @@ __author__ = 'Andrew Mitchell'
 __version__ = '1.0'
 __date__ = '2016/04'
 
-def sha1_module(filename):
-    openedFile = open(filename)
+def sha1_module(filepath):
+    openedFile = open(filepath)
     readFile = openedFile.read()
     # print filename
 
     sha1Hash = hashlib.sha1(readFile)
+    sha1Hash = hashlib.sha256(readFile)
+    md5 = hashlib.md5(readFile)
+
     sha1Hashed = sha1Hash.hexdigest()
 
     print sha1Hashed

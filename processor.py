@@ -180,6 +180,7 @@ class Processor:
         self.Multiproc = MultiProcessor()
         self.Multiproc.start()
         self.is_running = False
+        self.non_editable_modules = ["Cuckoo"]
 
 
     # for displaying all of the processes, already run or running
@@ -204,7 +205,12 @@ class Processor:
 
         return processes
 
-
+    def get_editable_modules(self):
+        modules = self.get_modules()
+        for to_remove in self.non_editable_modules:
+            if to_remove in modules:
+                modules.remove(to_remove)
+        return modules
 
     #get all of the possible modules we can run
     def get_modules(self):
@@ -221,7 +227,8 @@ class Processor:
         #for some reason this folder shows up when unzipping on mac so delete it
         self.modules = [x for x in self.modules if x != "__MACOSX"]
 
-        self.modules.append("Cuckoo")
+        if(Cuckoo.is_available()):
+            self.modules.append("Cuckoo")
 
         return self.modules
 
@@ -291,5 +298,5 @@ class Processor:
 
     def run_modules(self):
         while self.new_processes:
-        	process = self.new_processes.pop()
-		self.Multiproc.add_to_queue(process)
+            process = self.new_processes.pop()
+            self.Multiproc.add_to_queue(process)

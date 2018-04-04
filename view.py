@@ -321,18 +321,13 @@ def my_module_creator_post():
     except:
         file_contents = []
 
-
-
     return template('module-creator', {"module_name":full_name, "file_contents":file_contents})
 
 #RUNS WHEN my modules is selected
 #shows the current uploaded modules
 @route('/my-modules')
 def get_my_modules():
-
-    modules = Processor.get_modules()
-    modules.remove("Cuckoo")
-
+    modules = Processor.get_editable_modules()
     return template('display-modules', modules=modules)
 
 #RUNS WHEN delete is selected on my modules page
@@ -387,7 +382,7 @@ def dash():
     if av_count is 0:
         avg_time = 0
     else:
-        avg_time = total_time/(av_count-1)
+        avg_time = total_time/(av_count)
     print(total_time,'/',av_count,'=',avg_time)
 
     info = {'new_mal' : malware_count, 'new_nmal': newnmal, 'avg_time' : datetime.datetime.utcfromtimestamp(avg_time).strftime("%S.%f"), 'C1V0':C1V0, 'C1V1':C1V1, 'C1V2':C1V2, 'C1V3':C1V3, 'C1V4':C1V4, 'C1V5':C1V5}
