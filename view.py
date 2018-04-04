@@ -1,4 +1,3 @@
-
 # coding=utf-8
 import sys
 #trouble adding path so ...
@@ -37,6 +36,30 @@ FileGrab = FileGrab(Processor.create_process_obj_auto)
 
 CWD = os.path.dirname(os.path.realpath(__file__))
 
+
+#Database.db_clear()
+
+#WATCH DOG STUFF THAT DOESN'T WORK
+# Watcher = Watcher()
+# def print_something(event):
+#     print "This"
+#     if event.is_directory:
+#         return None
+#
+#     elif event.event_type == 'created':
+#         # Take any action here when a file is first created.
+#         print "Received created event - %s." % event.src_path
+#
+#     elif event.event_type == 'modified':
+#         # Taken any action here when a file is modified.
+#         print "Received modified event - %s." % event.src_path
+# Watcher.run(print_something)
+# watcher_process = mp.Process(target=Watcher.run, args=(print_something,))
+# watcher_process.daemon = True
+# watcher_process.start()
+
+# NOTE HANGS FOREVER
+# gevent.spawn(Watcher.run, print_something)
 
 #Database.db_clear()
 
@@ -298,18 +321,13 @@ def my_module_creator_post():
     except:
         file_contents = []
 
-
-
     return template('module-creator', {"module_name":full_name, "file_contents":file_contents})
 
 #RUNS WHEN my modules is selected
 #shows the current uploaded modules
 @route('/my-modules')
 def get_my_modules():
-
-    modules = Processor.get_modules()
-    modules.remove("Cuckoo")
-
+    modules = Processor.get_editable_modules()
     return template('display-modules', modules=modules)
 
 #RUNS WHEN delete is selected on my modules page

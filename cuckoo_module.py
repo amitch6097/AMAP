@@ -20,13 +20,18 @@ class CuckooModule:
 			self.submit_url = "http://0.0.0.0:8090/tasks/create/file"
 			self.report_url = "http://0.0.0.0:8090/tasks/report"
 
+
 		except OSError:
 			self.enabled = False
+
+	def is_available(self):
+		return self.enabled
 
 	def __del__(self):
 		if self.enabled:
 			self.cuckoo.kill()
 			self.server.kill()
+
 	def submit_file(self,filename):
 		"""submits a file to the cuckoo api and returns the task id that is used to find that file later"""
 		if self.enabled:
@@ -51,14 +56,11 @@ class CuckooModule:
 			return file_path
 		else:
 			return None
+
 		# return json.loads(request.text)
 
 if __name__ == "__main__":
 	mod = CuckooModule()
 
-	task = mod.submit_file("/home/cse498/Desktop/GameSetup.exe")
-	while True:
-		answer = mod.get_report(task)
-		if answer is not None:
-			break
-	print answer
+	task = mod.get_report(2)
+	print task
