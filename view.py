@@ -36,6 +36,9 @@ Uploader = MalwareUploader(os.path.dirname(os.path.realpath(__file__)))
 Processor = Processor(Wizard)
 FileGrab = FileGrab(Processor.create_process_obj_auto)
 
+CWD = os.path.dirname(os.path.realpath(__file__))
+
+
 # Database.db_clear()
 
 @route('/')
@@ -78,9 +81,7 @@ def default():
 
 @route('/<name>')
 def index(name):
-    print name
     return template(name)
-
 
 @route('/wizard')
 def wizard():
@@ -185,7 +186,7 @@ def load_processes():
 #RUNS WHEN a file is click on in either processes page or search_input
 # TODO db_list_one only gets the first file with name, is a problem for duplicates
 @route('/file_view', method='POST')
-def load_file():
+def load_file_view_post():
 
     #grab the selected file
     file_select = request.forms.get('filename')
@@ -210,9 +211,7 @@ def static(filename):
 #RUNS WHEN a module is uploaded
 # unzips the file and places it in modules folder
 @route('/module-upload', method='POST')
-def servo_pos():
-    current_dir_path = os.path.dirname(os.path.realpath(__file__))
-
+def module_upload_post():
     uploads = request.files.getall('upload')
     uploads_name_array = []
 
@@ -228,7 +227,7 @@ def servo_pos():
         #     return "File extension not allowed."
 
         # set up downloads path
-        save_path = "{path}/modules".format(path=current_dir_path)
+        save_path = "{path}/modules".format(path=CWD)
         if not os.path.exists(save_path):
             os.makedirs(save_path)
 
@@ -241,18 +240,17 @@ def servo_pos():
 
         os.remove(file_path)
 
-    return dash()
+    return get_my_modules()
 
 
 @route('/module-create', method='POST')
-def servo_pos():
-    current_dir_path = os.path.dirname(os.path.realpath(__file__))
+def module_create_post():
     text = request.forms.get('code-text-input')
     module_name = request.forms.get('module-name')
 
     module_name = module_name.split(".")[0]
 
-    save_path = os.path.join(current_dir_path, "modules", module_name)
+    save_path = os.path.join(CWD, "modules", module_name)
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
@@ -261,7 +259,7 @@ def servo_pos():
     file = open(file_path, "w")
     file.write(text)
 
-    return dash()
+    return get_my_modules()
 
 #RUNS WHEN search button is pressed
 #grabs input from search bar and searches database for those chars
@@ -278,45 +276,52 @@ def malware_search():
 
     return template('search', search_output=formated_objs)
 
+
+@route('/my-modules-creator', method='POST')
+def my_module_creator_post():
+    module_name = request.forms.get("module-name")
+    file_contents = []
+
+    if module_name == None:
+        file_contents = ['import os', 'from optparse import OptionParser', '', '', '__description__ =', '__author__ =', "__version__ = '1.0'", '__date__ =', '', 'def my_module(filename):', '', 'if __name__ == "__main__":', "        parser = OptionParser(usage='usage: %prog file / dir\\n' + __description__, version='%prog ' + __version__)", '        (options, args) = parser.parse_args()', '        is_file = os.path.isfile(args[0])', '        if is_file:', '            my_module(args[0])']
+        return template('module-creator', {"module_name":"", "file_contents":file_contents})
+
+    path = "{0}/modules/{1}".format(CWD, module_name)
+    full_name = "{0}.py".format(module_name)
+    file_path = os.path.join(path, full_name)
+
+    try:
+        with open(file_path, 'r') as fp:
+            for line in fp:
+                file_contents.append(line.rstrip())
+    except:
+        file_contents = []
+
+
+
+    return template('module-creator', {"module_name":full_name, "file_contents":file_contents})
+
 #RUNS WHEN my modules is selected
 #shows the current uploaded modules
 @route('/my-modules')
 def get_my_modules():
 
     modules = Processor.get_modules()
+    modules.remove("Cuckoo")
+
     return template('display-modules', modules=modules)
 
 #RUNS WHEN delete is selected on my modules page
 @route('/delete-module', method='POST')
-def get_my_modules():
+def delete_modules_post():
     modules_name = request.forms.get('module-name')
-    current_dir_path = os.path.dirname(os.path.realpath(__file__))
 
-    path = "{0}/modules/{1}".format(current_dir_path,modules_name)
+    path = "{0}/modules/{1}".format(CWD, modules_name)
 
     if os.path.isdir(path):
         shutil.rmtree(path)
 
-    modules = Processor.get_modules()
-    return template('display-modules', modules=modules)
-
-
-# @route('/upload-module', method='POST')
-# def upload_module():
-#     file_name = request.forms.get('file_name')
-#     file_location = "modules/{file_name}".format(file_name=file_name)
-#
-#     path_to_zip_file = file_location
-#     directory_to_extract_to = "modules"
-#
-#     zip_ref = zipfile.ZipFile(path_to_zip_file, 'r')
-#     zip_ref.extractall(directory_to_extract_to)
-#     zip_ref.close()
-#
-#     # os.remove(path_to_zip_file)
-#
-#     return template('dashboard')
-
+    return get_my_modules()
 
 @route('/dashboard')
 def dash():
@@ -356,4 +361,4 @@ def login_page():
 
 
 # run it
-run(host='0.0.0.0', port=8080, server='gevent')
+run(host='0.0.0.0', port=8080, server='gevent', debug=True)
