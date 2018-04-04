@@ -250,6 +250,7 @@ def module_create_post():
 
     module_name = module_name.split(".")[0]
 
+
     save_path = os.path.join(CWD, "modules", module_name)
     if not os.path.exists(save_path):
         os.makedirs(save_path)
@@ -258,6 +259,7 @@ def module_create_post():
     file_path = os.path.join(save_path, full_name)
     file = open(file_path, "w")
     file.write(text)
+    print text
 
     return get_my_modules()
 
