@@ -115,7 +115,18 @@ class FileGrab:
 
         for file in filename_path_dict:
             path = filename_path_dict[file]
-            malware = Malware(file, path)
+
+            opened_file = open(path)
+            read_file = opened_file.read()
+
+            sha1= hashlib.sha1(read_file).hexdigest()
+            sha256 = hashlib.sha256(read_file).hexdigest()
+            md5 = hashlib.md5(read_file).hexdigest()
+            hashes = {"sha1":sha1, "sha256":sha256, "md5":md5}
+
+
+
+            malware = Malware(file, path, hashes)
             Database.db_insert_malware_obj(malware)
             malware_array.append(malware)
 
