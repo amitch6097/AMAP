@@ -105,7 +105,7 @@ class Process:
             response_id = Cuckoo.submit_file( file_path)
             if response_id == None:
                 return {}
-            output_obj = {'cuckoo_id':response_id}
+            output_obj = {'cuckoo_id':response_id, "Cuckoo":""}
             Database.db_update_malware_on_id(self.file_id, output_obj)
             return output_obj
         else:
@@ -287,11 +287,15 @@ class Processor:
         self.run_modules()
 
     def get_cuckoo(self, file_database_obj):
+	print file_database_obj.keys()
         if 'Cuckoo' in file_database_obj.keys():
-            if file_database_obj['Cuckoo'] == None:
+            if file_database_obj['Cuckoo'] == "":
                 task_id = file_database_obj['cuckoo_id']
+		print task_id
                 response = Cuckoo.get_report(task_id)
-                Database.db_update_malware_on_id(file_database_obj['_id'], {"Cuckoo", response})
+		print response
+		if response != "":
+                	Database.db_update_malware_on_id(file_database_obj['_id'], {"Cuckoo", response})
                 return response
             return file_database_obj['Cuckoo']
         return None

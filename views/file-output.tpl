@@ -54,9 +54,7 @@
       end
       dList.sort()
 
-      for element in dList:
-        print element
-      end
+
     %>
   
   <div>

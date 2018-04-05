@@ -44,18 +44,23 @@ class CuckooModule:
 
 	def get_report(self,task_id):
 		"""submit a task id and returns the report object, if the task is not done or invalid returns None"""
-
+		print "___IN REPORT____"
 		if self.enabled:
 			request = requests.get("{}/{}".format(self.report_url,task_id))
+			print request
 			if request.status_code == 404:
-				return None
-			file_path = os.path.join(self.directory, "task_{0}".format(task_id))
-			if not os.path.isfile(file_path):
-				file = open(file_path, "w")
-				file.write(request.text)
+				return ""
+			file_path = os.path.join(self.directory, "~/.cuckoo/storage/analyses/{0}/reports/report.json".format(task_id))
+			
+			#if not os.path.isfile(file_path):
+			#	print file_path
+			#	file = open(file_path, "w")
+			#	file.write(request.text)
+			#	file.close()
 			return file_path
+
 		else:
-			return None
+			return ""
 
 		# return json.loads(request.text)
 
