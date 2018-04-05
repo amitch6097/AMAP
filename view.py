@@ -226,6 +226,8 @@ def load_file_view_post():
     #TODO could be deleted
     del database_obj['location']
 
+    database_obj["time"] = database_obj["time"]
+
     cuckoo_file_path = Processor.get_cuckoo(database_obj)
 
     return template('file-output', file_obj=database_obj)
