@@ -299,10 +299,25 @@ def module_create_post():
 def malware_search():
 
     search_input = request.forms.get('module-search-input')
+    type_input = request.forms.get('malware-search-type').rstrip().lstrip()
+    print type_input
+    type_converter_dic = {
+        "File Name" : "Name",
+        "MD5": "md5",
+        "SHA1" :"sha1",
+        "SHA256": "sha256"
+    }
+    if(type_input in type_converter_dic.keys()):
+        type = type_converter_dic[type_input]
+    else:
+        type = "Name"
+
 
     formated_objs = []
 
-    search_ouput_objects = Database.db_find_first_char(search_input)
+    # search_ouput_objects = Database.db_find_first_char(search_input)
+    search_ouput_objects = Database.db_find_malware_hash(search_input, type)
+
     for obj in search_ouput_objects:
         formated_objs.append(obj)
 

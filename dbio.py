@@ -125,6 +125,11 @@ class Dbio:
 
 		return self.alpha.find( {'Name': { '$regex': '^' + chars}})
 
+	def db_find_malware_hash(self, chars, hash):
+		# assert (len) == 1
+		# isinstance(s, basestring)
+		return self.alpha.find( {hash: { '$regex': '^' + chars}})
+
 	#NOT USED ANYMORE, USE db_insert_malware_obj
 	# def db_insert(self, input_obj):
 	# 	assert 'Name' in input_obj

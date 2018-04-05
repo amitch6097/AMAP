@@ -30,23 +30,35 @@
       <div class="navbar-menu-wrapper d-flex align-items-stretch">
         <div class="search-field ml-4 d-none d-md-block">
           <!-- action="" method="post" enctype="multipart/form-data" id="js-upload-form" -->
-          <form class="d-flex align-items-stretch h-100" action="/malware-search" method="post" enctype="multipart/form-data">
+          <form class="d-flex align-items-stretch h-100" action="/malware-search" method="post" onsubmit="submitSearch()" enctype="multipart/form-data">
             <div class="input-group">
               <input type="text" name="module-search-input" class="form-control bg-transparent border-0" placeholder="Search">
+              <input type="hidden" id="malware-search-type" name="malware-search-type" value="File Name">
               <div class="input-group-btn">
-                <button type="button" class="btn bg-transparent dropdown-toggle px-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button id="malware-search-button" style="width:100px;"type="button" class="btn bg-transparent dropdown-toggle px-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class="mdi mdi-earth"></i>
                   File Name
                 </button>
                 <!-- Andrew Fix ALPHA -->
-                <!-- <div class="dropdown-menu dropdown-menu-right">
-                  <a class="dropdown-item" href="" id="search-category">File Name</a>
-                  <a class="dropdown-item" href="" id="search-category">MD256</a>
-                  <a class="dropdown-item" href="" id="search-category">SHA1</a>
+                <div class="dropdown-menu dropdown-menu-right">
+                  <a class="dropdown-item" href="" id="search-category" onClick="changeName(event, 'File Name')">File Name</a>
+                  <a class="dropdown-item" href="" id="search-category" onClick="changeName(event, 'MD5')">MD5</a>
+                  <a class="dropdown-item" href="" id="search-category" onClick="changeName(event, 'SHA1')">SHA1</a>
+                  <a class="dropdown-item" href="" id="search-category" onClick="changeName(event, 'SHA256')">SHA256</a>
                   <!-- <div role="separator" class="dropdown-divider"></div>
                   <a class="dropdown-item" href="#">Month and older</a> -->
-                <!-- </div> --> -->
+                <!-- </div> -->
               </div>
+
+              <script>
+              function changeName(event, new_name) {
+                event.preventDefault()
+                document.getElementById("malware-search-button").innerHTML = '<i class="mdi mdi-earth"></i> ' + new_name + ' '
+                document.getElementById("malware-search-type").value = new_name
+
+              }
+              </script>
+
               <div class="input-group-addon bg-transparent border-0 search-button">
                 <button type="submit" class="btn btn-sm bg-transparent px-0">
                   <i class="mdi mdi-magnify"></i>
@@ -55,6 +67,7 @@
             </div>
           </form>
         </div>
+      </div>
         <ul class="navbar-nav navbar-nav-right">
           <li class="nav-item d-none d-lg-block full-screen-link">
             <a class="nav-link">
