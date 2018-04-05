@@ -22,6 +22,7 @@ class Dbio:
 		self.average_proctime = db.avptime
 		self.counter_newmw = db.newmw
 		self.counter_type = db.typecount
+		self.proc_old = db.process_old
 		print("\n CONNECT DB SUCCESS! \n")
 
 
@@ -183,12 +184,27 @@ class Dbio:
 	#
 	#	process - A process object
 	def db_proc_insert(self, process):
-		db_id = self.proc.insert(process.to_database_file())
+		db_id = self.proc_old.insert(process.to_database_file())
 		process.edit_id(db_id)
+		self.proc.insert(process.to_database_file_id())
+
+	#Gets all the processes in the database
+	def db_get_all_processes_old(self):
+		return self.proc_old.find()
 
 	#Gets all the processes in the database
 	def db_get_all_processes(self):
 		return self.proc.find()
+
+	def db_new_processes_clear(self):
+		self.proc.delete_many({})
+
+	def db_proc_move_all_to_old(self):
+		# self.proc_old.delete_many({})
+
+		many = self.proc.find()
+		for proc in many:
+			self.proc_old.insert(many)
 
 	#updates a process in the database
 	#
@@ -198,9 +214,14 @@ class Dbio:
 	        {"_id": process_id},
 			{"$set": update_obj}
     	)
+		self.proc_old.update_one(
+	        {"_id": process_id},
+			{"$set": update_obj}
+    	)
 
 
 Database = Dbio()
+Database.db_new_processes_clear()
 
 #Example usages...
 #db_insert_to("0012.mid","25faa9b7d2ff96e3ba424d464580a375","2b110d7bc681eb133f089fd4cdf580ec496c21b9459b474ed33d000f260b4425")
