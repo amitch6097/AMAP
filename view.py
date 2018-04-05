@@ -37,6 +37,8 @@ FileGrab = FileGrab(Processor.create_process_obj_auto)
 CWD = os.path.dirname(os.path.realpath(__file__))
 
 
+
+
 #Database.db_clear()
 
 #WATCH DOG STUFF THAT DOESN'T WORK
@@ -65,12 +67,16 @@ CWD = os.path.dirname(os.path.realpath(__file__))
 
 @route('/')
 def default():
-    return template('login')
+    return login()
+
+@route('/login')
+def login():
+    return template('login', {"warning":""})
 
 @route('/download/<filename:path>')
 def d(filename):
     print filename
-    return static_file(filename, root='modues/', download=True)
+    return static_file(filename, root="CuckooReports/", download=True)
 
 # #RUNS WHEN delete is selected on my modules page
 # @route('/download-module')
@@ -433,6 +439,12 @@ def dash():
 def login_page():
     username = request.forms.get('user_email')
     password = request.forms.get('password')
+
+    if(username == ""):
+        return template('login', {"warning":"Wrong Username"})
+    if(password == ""):
+        return template('login', {"warning":"Wrong Password"})
+
     print("Printing username: {}".format(username))
     print("Printing password: {}".format(password))
     return dash()
