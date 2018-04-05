@@ -20,6 +20,8 @@ class Dbio:
 		self.authentication = db.authentication
 		self.malware = db.malware
 		self.average_proctime = db.avptime
+		self.counter_newmw = db.newmw
+		self.counter_type = db.typecount
 		print("\n CONNECT DB SUCCESS! \n")
 
 
@@ -52,6 +54,20 @@ class Dbio:
 	def db_find_by_id(self, id):
 		return self.alpha.find_one({"_id":ObjectId(id)})
 
+	def db_gui_insert_newmw(self):
+		info = {"NTime":time.time()}
+		self.counter_newmw.insert(info)
+
+	def db_gui_get_newmw(self):
+		return self.counter_newmw.find({},{'NTime':1,'_id':0})
+
+	def db_gui_insert_newtype(self,ftype):
+		info = {"Type":ftype}
+		self.counter_type.insert(info)
+
+	def db_gui_get_newtype(self):
+		return self.counter_type.find({},{'Type':1,'_id':0})
+
 	def db_list_all_time(self):
 		for i in self.alpha.find({},{'time':1,'_id':0}):
 			print(i)
@@ -83,6 +99,8 @@ class Dbio:
 
 	def db_add_name_to_malware(self, path, name, malware):
 		db_file = self.alpha.find_one({'location': path})
+		if db_file == None :
+			return False
 		old_name = db_file['Name']
 
 		old_names = []
@@ -92,6 +110,8 @@ class Dbio:
 
 		malware.edit_id(db_file['_id'])
 		self.db_update_malware_on_id(db_file['_id'], {"old_names":old_names, "Name":name})
+
+		return True
 
 	# Used for search
 	#uses regular expression to find database items with filename like Chars
@@ -121,8 +141,8 @@ class Dbio:
 	def db_insert_malware_obj(self, malware_obj):
 		db_obj = malware_obj.to_database_file()
 		db_id = self.alpha.insert(db_obj)
-		malware_obj.edit_id(db_id)		
-
+		malware_obj.edit_id(db_id)
+		self.db_gui_insert_newmw()
 
 	#updates a malware sample in the database
 	#
@@ -150,6 +170,8 @@ class Dbio:
 		self.proc.delete_many({})
 		self.malware.delete_many({})
 		self.average_proctime.delete_many({})
+		self.counter_newmw.delete_many({})
+		self.counter_type.delete_many({})
 
 
 
