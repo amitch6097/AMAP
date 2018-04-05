@@ -67,10 +67,12 @@ CWD = os.path.dirname(os.path.realpath(__file__))
 def default():
     return template('login')
 
+
+
 @route('/download/<filename:path>')
 def d(filename):
     print filename
-    return static_file(filename, root='modues/', download=True)
+    return static_file(filename, root="CuckooReports/", download=True)
 
 # #RUNS WHEN delete is selected on my modules page
 # @route('/download-module')

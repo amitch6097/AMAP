@@ -68,7 +68,8 @@
               <h5 class="font-weight-bold">{{key}}:</h5>
               <div style="margin-left:20px;">
               % if key == "Cuckoo":
-                <p><a href="{{value}}">Cuckoo Report</a></p>
+ 		<p><a href="/download/{{value}}">Cuckoo Report</a></p>
+
               % else:
                 % if isinstance(value, list):
                   % element = value
@@ -138,3 +139,21 @@
 </div>
 
 %include footer
+
+
+<script>
+
+function showRepo(event, linkStr)
+{
+	event.preventDefault();
+	window.location.open(linkStr);
+}
+
+function showReport(link) {
+	window.location.href = link.substring(0,10);
+	alert(link);
+}
+
+
+</script>
+
