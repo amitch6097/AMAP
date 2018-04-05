@@ -1,7 +1,7 @@
 
 import time
 import os
-
+import hashlib
 import multiprocessing as mp
 
 from wizard import Wizard
@@ -123,8 +123,6 @@ class FileGrab:
             sha256 = hashlib.sha256(read_file).hexdigest()
             md5 = hashlib.md5(read_file).hexdigest()
             hashes = {"sha1":sha1, "sha256":sha256, "md5":md5}
-
-
 
             malware = Malware(file, path, hashes)
             Database.db_insert_malware_obj(malware)
