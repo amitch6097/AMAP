@@ -75,7 +75,7 @@ class MalwareUploader:
         self.state = "modules"
 
         #create a Malware object from the database file
-        malware = Malware(db_file['Name'], db_file['location'])
+        malware = Malware(db_file['Name'], db_file['location'], db_file["hashes"])
 
         self.current_uploads.append(malware)
 
