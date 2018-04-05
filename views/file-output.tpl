@@ -54,7 +54,6 @@
       end
       dList.sort()
 
-
     %>
   
   <div>
@@ -68,37 +67,42 @@
             <div>
               <h5 class="font-weight-bold">{{key}}:</h5>
               <div style="margin-left:20px;">
-              % if isinstance(value, list):
-                % element = value
-                % element.append("spaceForException")
-                <ul>
-                   <!-- Use a copy of the list with an extra element to 
-                  handle an out of range exception  -->
-                % for i in range(len(value)-1):
-                  % val = element[i].strip()
-                  % nextVal = element[i+1].strip()
-                  % if val[:3] == "[+]":
-                    % if nextVal[:3] == "[-]":
-                      <li>{{ val[3:] }}<ul>
-                    % else:
-                      <li>{{ val[3:] }}</li>
-                    % end
-                  % else:
-                    % if val[:3] == "[-]":
+              % if key == "Cuckoo":
+                <p><a href="{{value}}">Cuckoo Report</a></p>
+              % else:
+                % if isinstance(value, list):
+                  % element = value
+                  % element.append("spaceForException")
+                  <ul>
+                     <!-- Use a copy of the list with an extra element to 
+                    handle an out of range exception  -->
+                  % for i in range(len(value)-1):
+                    % val = element[i].strip()
+                    % nextVal = element[i+1].strip()
+                    % if val[:3] == "[+]":
                       % if nextVal[:3] == "[-]":
-                        <li>{{ val[3:] }}</li>
+                        <li>{{ val[3:] }}<ul>
                       % else:
-                        <li>{{ val[3:] }}</li></ul>
+                        <li>{{ val[3:] }}</li>
                       % end
                     % else:
-                      <li>{{ val }}</li>
+                      % if val[:3] == "[-]":
+                        % if nextVal[:3] == "[-]":
+                          <li>{{ val[3:] }}</li>
+                        % else:
+                          <li>{{ val[3:] }}</li></ul>
+                        % end
+                      % else:
+                        <li>{{ val }}</li>
+                      % end
                     % end
                   % end
+
+                  </ul>
+                %else:
+                  <p>{{value}}</p>
                 % end
-                </ul>
-              %else:
-                <p>{{value}}</p>
-              %end
+              % end
               </div>
 
             </div>
@@ -134,5 +138,3 @@
 </div>
 
 %include footer
-
-
