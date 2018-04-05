@@ -50,7 +50,7 @@ class CuckooModule:
 			print request
 			if request.status_code == 404:
 				return ""
-			file_path = os.path.join(self.directory, "~/.cuckoo/storage/analyses/{0}/reports/report.json".format(task_id))
+			file_path = "/home/.cuckoo/storage/analyses/{0}/reports/report.json".format(task_id)
 			
 			#if not os.path.isfile(file_path):
 			#	print file_path

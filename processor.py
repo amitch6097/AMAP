@@ -299,7 +299,7 @@ class Processor:
                 response = Cuckoo.get_report(task_id)
 		print response
 		if response != "":
-                	Database.db_update_malware_on_id(file_database_obj['_id'], {"Cuckoo", response})
+                	Database.db_update_malware_on_id(file_database_obj['_id'], {"Cuckoo": response})
                 return response
             return file_database_obj['Cuckoo']
         return None
