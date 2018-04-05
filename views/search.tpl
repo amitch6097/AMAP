@@ -47,6 +47,17 @@
                 <input type="hidden" name="filename" value={{obj['Name']}}>
               </div>
             </div>
+            <div style="margin-left:15px">
+              %if "sha256" in obj.keys():
+              <p>SHA256: {{obj['sha256']}}</p>
+              %end
+              %if "sha1" in obj.keys():
+              <p>SHA1: {{obj['sha1']}}</p>
+              %end
+              %if "md5" in obj.keys():
+              <p>MD5: {{obj['md5']}}</p>
+              %end
+            </div>
           </div>
         </div>
       </div>

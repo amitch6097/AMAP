@@ -26,7 +26,10 @@ class Malware:
             'location'  :self.path,
             'runs'      :self.runs,
             'time'      :self.time,
-            'hashes'    :self.hashes
+            'hashes'    :self.hashes,
+            'sha1'      :self.hashes['sha1'],
+            'sha256'    :self.hashes['sha256'],
+            'md5'       :self.hashes['md5']
         }
 
 #CLASS to upload malware and get current uploaded files

@@ -1,3 +1,5 @@
+
+
 import os
 import hashlib
 from optparse import OptionParser
@@ -25,5 +27,10 @@ if __name__ == "__main__":
         parser = OptionParser(usage='usage: %prog file / dir\n' + __description__, version='%prog ' + __version__)
         (options, args) = parser.parse_args()
         is_file = os.path.isfile(args[0])
+
         if is_file:
             sha1_module(args[0])
+
+
+
+          

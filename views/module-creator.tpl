@@ -28,7 +28,7 @@
               <div class="input-group col-xs-12">
                 <input type="text" id="module-name" name="module-name" value="{{module_name}}" class="form-control file-upload-info"  placeholder="File Name" style="width:250px">
                 <span class="input-group-btn">
-                  <button class="file-upload-browse btn btn-info" type="button" onclick="saveFile(event)">Upload</button>
+                  <button class="file-upload-browse btn btn-info" type="button" onclick="saveFile(event)">Save</button>
                 </span>
             </div>
           </div>

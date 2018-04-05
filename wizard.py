@@ -56,8 +56,8 @@ class Wizard:
             self.numFiles = 1
             return
         else:
-            self.time = int(forms.get("files-to-select"))
-            self.numFiles = int(forms.get("time-between-select"))
+            self.numFiles = int(forms.get("files-to-select"))
+            self.time = int(forms.get("time-between-select"))
 
     def getTimeInterval(self):
         return self.time
@@ -72,8 +72,3 @@ class Wizard:
 
     def getModules(self):
         return self.module_list
-
-
-
-
-

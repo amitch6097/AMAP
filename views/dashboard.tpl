@@ -412,22 +412,29 @@
       </div>
     </div>
   </div> -->
-  <p id='C1V0' style="color:white;">{{C1V0}}</p>
-  <p id='C1V1' style="color:white;">{{C1V1}}</p>
-  <p id='C1V2' style="color:white;">{{C1V2}}</p>
-  <p id='C1V3' style="color:white;">{{C1V3}}</p>
-  <p id='C1V4' style="color:white;">{{C1V4}}</p>
-  <p id='C1V5' style="color:white;">{{C1V5}}</p>
+  <p id='C1V0' style="color:white;visibility: hidden;">{{C1V0}}</p>
+  <p id='C1V1' style="color:white;visibility: hidden;">{{C1V1}}</p>
+  <p id='C1V2' style="color:white;visibility: hidden;">{{C1V2}}</p>
+  <p id='C1V3' style="color:white;visibility: hidden;">{{C1V3}}</p>
+  <p id='C1V4' style="color:white;visibility: hidden;">{{C1V4}}</p>
+  <p id='C1V5' style="color:white;visibility: hidden;">{{C1V5}}</p>
 
-  <p id='C2V0' style="color:white;">{{C2V0}}</p>
-  <p id='C2V1' style="color:white;">{{C2V1}}</p>
-  <p id='C2V2' style="color:white;">{{C2V2}}</p>
-  <p id='C2V3' style="color:white;">{{C2V3}}</p>
-  <p id='C2V4' style="color:white;">{{C2V4}}</p>
-  <p id='C2V5' style="color:white;">{{C2V5}}</p>
+  <p id='C2V0' style="color:white;visibility: hidden;">{{C2V0}}</p>
+  <p id='C2V1' style="color:white;visibility: hidden;">{{C2V1}}</p>
+  <p id='C2V2' style="color:white;visibility: hidden;">{{C2V2}}</p>
+  <p id='C2V3' style="color:white;visibility: hidden;">{{C2V3}}</p>
+  <p id='C2V4' style="color:white;visibility: hidden;">{{C2V4}}</p>
+  <p id='C2V5' style="color:white;visibility: hidden;">{{C2V5}}</p>
 
-  <p id='PI1' style="color:white;">{{PI1}}</p>
-  <p id='PI2' style="color:white;">{{PI2}}</p>
+  <p id='PI1' style="color:white;visibility: hidden;">{{PI1}}</p>
+  <p id='PI2' style="color:white;visibility: hidden;">{{PI2}}</p>
+
+  <p id='T0' style="color:white;visibility: hidden;">{{T0}}</p>
+  <p id='T1' style="color:white;visibility: hidden;">{{T1}}</p>
+  <p id='T2' style="color:white;visibility: hidden;">{{T2}}</p>
+  <p id='T3' style="color:white;visibility: hidden;">{{T3}}</p>
+  <p id='T4' style="color:white;visibility: hidden;">{{T4}}</p>
+  <p id='T5' style="color:white;visibility: hidden;">{{T5}}</p>
 </div>
 <script>window.document.getElementById('C1V0').innertext = {{C1V0}}</script>
 <script>window.document.getElementById('C1V1').innertext = {{C1V1}}</script>
@@ -445,4 +452,11 @@
 
 <script>window.document.getElementById('PI1').innertext = {{PI1}}</script>
 <script>window.document.getElementById('PI2').innertext = {{PI2}}</script>
+
+<script>window.document.getElementById('T0').innertext = '{{T0}}'</script>
+<script>window.document.getElementById('T1').innertext = '{{T1}}'</script>
+<script>window.document.getElementById('T2').innertext = '{{T2}}'</script>
+<script>window.document.getElementById('T3').innertext = '{{T3}}'</script>
+<script>window.document.getElementById('T4').innertext = '{{T4}}'</script>
+<script>window.document.getElementById('T5').innertext = '{{T5}}'</script>
 %include footer

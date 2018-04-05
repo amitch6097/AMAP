@@ -2,7 +2,7 @@
   'use strict';
   $(function() {
     var data = {
-      labels: ["0 hr", "-1 hr", "-2 hr", "-3 hr", "-4 hr", "-5 hr"],
+      labels: [document.getElementById('T0').innertext, document.getElementById('T1').innertext, document.getElementById('T2').innertext, document.getElementById('T3').innertext, document.getElementById('T4').innertext, document.getElementById('T5').innertext],
       datasets: [{
         label: 'Malware Samples',
         data: [parseInt(document.getElementById('C1V0').innertext), parseInt(document.getElementById('C1V1').innertext), parseInt(document.getElementById('C1V2').innertext), parseInt(document.getElementById('C1V3').innertext), parseInt(document.getElementById('C1V4').innertext), parseInt(document.getElementById('C1V5').innertext)],
@@ -26,7 +26,7 @@
       }]
     };
     var data2 = {
-      labels: ["0 hr", "-1 hr", "-2 hr", "-3 hr", "-4 hr", "-5 hr"],
+      labels: [document.getElementById('T0').innertext, document.getElementById('T1').innertext, document.getElementById('T2').innertext, document.getElementById('T3').innertext, document.getElementById('T4').innertext, document.getElementById('T5').innertext],
       datasets: [{
         label: 'Malware Samples',
         data: [parseInt(document.getElementById('C2V0').innertext), parseInt(document.getElementById('C2V1').innertext), parseInt(document.getElementById('C2V2').innertext), parseInt(document.getElementById('C2V3').innertext), parseInt(document.getElementById('C2V4').innertext), parseInt(document.getElementById('C2V5').innertext)],

@@ -205,10 +205,10 @@ def process_upload():
 #RUNS WHEN processes sidebar option is pressed
 @route('/processes')
 def load_processes():
-    try:
-        processes = Processor.get_all_processes_db()
-    except ProtocolError:
-        processes = Processor.get_all_processes()
+    # try:
+    #     processes = Processor.get_all_processes_db()
+    # except ProtocolError:
+    processes = Processor.get_all_processes()
 
     return template('processes', processes=processes)
 
@@ -301,10 +301,25 @@ def module_create_post():
 def malware_search():
 
     search_input = request.forms.get('module-search-input')
+    type_input = request.forms.get('malware-search-type').rstrip().lstrip()
+    print type_input
+    type_converter_dic = {
+        "File Name" : "Name",
+        "MD5": "md5",
+        "SHA1" :"sha1",
+        "SHA256": "sha256"
+    }
+    if(type_input in type_converter_dic.keys()):
+        type = type_converter_dic[type_input]
+    else:
+        type = "Name"
+
 
     formated_objs = []
 
-    search_ouput_objects = Database.db_find_first_char(search_input)
+    # search_ouput_objects = Database.db_find_first_char(search_input)
+    search_ouput_objects = Database.db_find_malware_hash(search_input, type)
+
     for obj in search_ouput_objects:
         formated_objs.append(obj)
 
@@ -435,7 +450,7 @@ def dash():
     #print(exe_percent,'-',other_percent)
 
 
-    info = {'new_mal' : malware_count, 'new_nmal': total-malware_count, 'avg_time' : datetime.datetime.utcfromtimestamp(avg_time).strftime("%S.%f"), 'C1V0':C1V0, 'C1V1':C1V1, 'C1V2':C1V2, 'C1V3':C1V3, 'C1V4':C1V4, 'C1V5':C1V5, 'C2V0':C2V0, 'C2V1':C2V1, 'C2V2':C2V2, 'C2V3':C2V3, 'C2V4':C2V4, 'C2V5':C2V5, 'PI1':exe_percent, 'PI2':other_percent}
+    info = {'new_mal' : malware_count, 'new_nmal': total-malware_count, 'avg_time' : datetime.datetime.utcfromtimestamp(avg_time).strftime("%S.%f"), 'C1V0':C1V0, 'C1V1':C1V1, 'C1V2':C1V2, 'C1V3':C1V3, 'C1V4':C1V4, 'C1V5':C1V5, 'C2V0':C2V0, 'C2V1':C2V1, 'C2V2':C2V2, 'C2V3':C2V3, 'C2V4':C2V4, 'C2V5':C2V5, 'PI1':exe_percent, 'PI2':other_percent, 'T0':datetime.datetime.fromtimestamp(time.time()).strftime("%H:%M"), 'T1':datetime.datetime.fromtimestamp(time.time()-3600).strftime("%H:%M"), 'T2':datetime.datetime.fromtimestamp(time.time()-7200).strftime("%H:%M"), 'T3':datetime.datetime.fromtimestamp(time.time()-10800).strftime("%H:%M"), 'T4':datetime.datetime.fromtimestamp(time.time()-14400).strftime("%H:%M"), 'T5':datetime.datetime.fromtimestamp(time.time()-18000).strftime("%H:%M")}
     return template('dashboard', info)
 
 
