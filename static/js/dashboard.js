@@ -70,7 +70,7 @@
     };
     var doughnutPieData = {
       datasets: [{
-        data: [80, 20],
+        data: [parseInt(document.getElementById('PI1').innertext), parseInt(document.getElementById('PI2').innertext)],
         backgroundColor: [
           'rgba(255, 99, 132, 0.5)',
           'rgba(54, 162, 235, 0.5)',

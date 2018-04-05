@@ -116,6 +116,7 @@ class Process:
         cwd = os.getcwd()
 
         db_file_obj = Database.db_find_by_id(self.file_id)
+        Database.db_gui_insert_newtype(db_file_obj['Name'].split(".")[-1])
         output_obj = self.check_cuckoo(db_file_obj['location'])
 
         for module in self.modules:

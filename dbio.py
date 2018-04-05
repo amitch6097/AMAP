@@ -21,6 +21,7 @@ class Dbio:
 		self.malware = db.malware
 		self.average_proctime = db.avptime
 		self.counter_newmw = db.newmw
+		self.counter_type = db.typecount
 		print("\n CONNECT DB SUCCESS! \n")
 
 
@@ -59,6 +60,13 @@ class Dbio:
 
 	def db_gui_get_newmw(self):
 		return self.counter_newmw.find({},{'NTime':1,'_id':0})
+
+	def db_gui_insert_newtype(self,ftype):
+		info = {"Type":ftype}
+		self.counter_type.insert(info)
+
+	def db_gui_get_newtype(self):
+		return self.counter_type.find({},{'Type':1,'_id':0})
 
 	def db_list_all_time(self):
 		for i in self.alpha.find({},{'time':1,'_id':0}):
@@ -158,6 +166,8 @@ class Dbio:
 		self.proc.delete_many({})
 		self.malware.delete_many({})
 		self.average_proctime.delete_many({})
+		self.counter_newmw.delete_many({})
+		self.counter_type.delete_many({})
 
 
 

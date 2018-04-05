@@ -403,9 +403,29 @@ def dash():
         avg_time = 0
     else:
         avg_time = total_time/(av_count)
-    print(total_time,'/',av_count,'=',avg_time)
+    #print(total_time,'/',av_count,'=',avg_time)
 
-    info = {'new_mal' : malware_count, 'new_nmal': newnmal, 'avg_time' : datetime.datetime.utcfromtimestamp(avg_time).strftime("%S.%f"), 'C1V0':C1V0, 'C1V1':C1V1, 'C1V2':C1V2, 'C1V3':C1V3, 'C1V4':C1V4, 'C1V5':C1V5, 'C2V0':C2V0, 'C2V1':C2V1, 'C2V2':C2V2, 'C2V3':C2V3, 'C2V4':C2V4, 'C2V5':C2V5}
+    types = Database.db_gui_get_newtype()
+    exe = 0
+    other = 0
+    for k in types:
+        #print(k["Type"])
+        if ("exe" in k["Type"]):
+            exe += 1
+        else:
+            other += 1
+    #print(exe/float(exe+other) ,'-',exe,'-',other)
+    total = exe + other
+    if total is not 0:
+        exe_percent = 100*(exe/float(exe+other))
+        other_percent = 100-exe_percent
+    else:
+        exe_percent = 0
+        other_percent = 0
+    #print(exe_percent,'-',other_percent)
+
+
+    info = {'new_mal' : malware_count, 'new_nmal': newnmal, 'avg_time' : datetime.datetime.utcfromtimestamp(avg_time).strftime("%S.%f"), 'C1V0':C1V0, 'C1V1':C1V1, 'C1V2':C1V2, 'C1V3':C1V3, 'C1V4':C1V4, 'C1V5':C1V5, 'C2V0':C2V0, 'C2V1':C2V1, 'C2V2':C2V2, 'C2V3':C2V3, 'C2V4':C2V4, 'C2V5':C2V5, 'PI1':exe_percent, 'PI2':other_percent}
     return template('dashboard', info)
 
 

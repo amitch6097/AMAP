@@ -425,6 +425,9 @@
   <p id='C2V3' style="color:white;">{{C2V3}}</p>
   <p id='C2V4' style="color:white;">{{C2V4}}</p>
   <p id='C2V5' style="color:white;">{{C2V5}}</p>
+
+  <p id='PI1' style="color:white;">{{PI1}}</p>
+  <p id='PI2' style="color:white;">{{PI2}}</p>
 </div>
 <script>window.document.getElementById('C1V0').innertext = {{C1V0}}</script>
 <script>window.document.getElementById('C1V1').innertext = {{C1V1}}</script>
@@ -439,4 +442,7 @@
 <script>window.document.getElementById('C2V3').innertext = {{C2V3}}</script>
 <script>window.document.getElementById('C2V4').innertext = {{C2V4}}</script>
 <script>window.document.getElementById('C2V5').innertext = {{C2V5}}</script>
+
+<script>window.document.getElementById('PI1').innertext = {{PI1}}</script>
+<script>window.document.getElementById('PI2').innertext = {{PI2}}</script>
 %include footer
