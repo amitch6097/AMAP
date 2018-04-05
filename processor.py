@@ -113,6 +113,30 @@ class Process:
         else:
             return {}
 
+    def get_cuckoo(self, output_obj):
+        if "Cuckoo" in self.modules.keys():
+            if "cuckoo_id" in output_obj.keys():
+                response = ""
+                while response == "":
+                    response = Cuckoo.get_report(output_obj["cuckoo_id"])
+                output_obj["Cuckoo"] = response
+                return output_obj
+
+        return output_obj
+
+
+
+        #     if file_database_obj['Cuckoo'] == "":
+        #         task_id = file_database_obj['cuckoo_id']
+		# print task_id
+        #         response = Cuckoo.get_report(task_id)
+		# print response
+		# if response != "":
+        #         	Database.db_update_malware_on_id(file_database_obj['_id'], {"Cuckoo": response})
+        #         return response
+        #     return file_database_obj['Cuckoo']
+        # return None
+
     def run(self):
         self.start_process()
         cwd = os.getcwd()
@@ -139,6 +163,11 @@ class Process:
 
             output = self.processData(stdoutdata)
             output_obj[module] = output
+
+        Database.db_update_malware_on_id(db_file_obj["_id"], output_obj)
+        Database.db_update_process(self.id, self.to_database_file())
+
+        output_obj = self.check_cuckoo(output_obj)
 
         self.finish_process()
         Database.db_update_malware_on_id(db_file_obj["_id"], output_obj)
