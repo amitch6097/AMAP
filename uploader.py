@@ -99,7 +99,9 @@ class MalwareUploader:
         malware = Malware(filename, new_path, hashes)
 
         if os.path.isfile(new_path):
-            Database.db_add_name_to_malware(new_path, filename, malware)
+            if Database.db_add_name_to_malware(new_path, filename, malware) == False:
+                os.rename(file_path, new_path)
+                Database.db_insert_malware_obj(malware)
         else:
             os.rename(file_path, new_path)
             Database.db_insert_malware_obj(malware)

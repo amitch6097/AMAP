@@ -83,6 +83,8 @@ class Dbio:
 
 	def db_add_name_to_malware(self, path, name, malware):
 		db_file = self.alpha.find_one({'location': path})
+		if db_file == None :
+			return False
 		old_name = db_file['Name']
 
 		old_names = []
@@ -92,6 +94,8 @@ class Dbio:
 
 		malware.edit_id(db_file['_id'])
 		self.db_update_malware_on_id(db_file['_id'], {"old_names":old_names, "Name":name})
+
+		return True
 
 	# Used for search
 	#uses regular expression to find database items with filename like Chars
@@ -121,7 +125,7 @@ class Dbio:
 	def db_insert_malware_obj(self, malware_obj):
 		db_obj = malware_obj.to_database_file()
 		db_id = self.alpha.insert(db_obj)
-		malware_obj.edit_id(db_id)		
+		malware_obj.edit_id(db_id)
 
 
 	#updates a malware sample in the database

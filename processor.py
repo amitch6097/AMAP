@@ -75,8 +75,8 @@ class Process:
              "modules":self.modules,
              "run_number":self.run_number,
              "start_time":self.start_time,
-             "end_time":self.end_time,
-             }
+             "end_time":self.end_time
+        }
 
     def from_database_file(self, db_file):
         self.id = db_file["_id"]
@@ -105,7 +105,7 @@ class Process:
             response_id = Cuckoo.submit_file( file_path)
             if response_id == None:
                 return {}
-            output_obj = {'cuckoo_id':response_id}
+            output_obj = {'cuckoo_id':response_id, "Cuckoo":None}
             Database.db_update_malware_on_id(self.file_id, output_obj)
             return output_obj
         else:
@@ -138,9 +138,10 @@ class Process:
             output_obj[module] = output
 
         self.finish_process()
-
         Database.db_update_malware_on_id(db_file_obj["_id"], output_obj)
         Database.db_update_process(self.id, self.to_database_file())
+
+
 
 
 class MultiProcessor:
