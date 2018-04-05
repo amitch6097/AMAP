@@ -153,6 +153,8 @@ class Dbio:
     #     "country":country
 	# 	}
 	def db_update_malware_on_id(self, id, update_obj):
+		if not update_obj:
+			return
 		self.alpha.update_one(
 	        {"_id": id},
 			{"$set": update_obj}
