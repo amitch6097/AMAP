@@ -1,0 +1,94 @@
+<div id="module-page">
+  <div class="content-wrapper">
+    <div class="row">
+      <div class="col-4 grid-margin">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Module Input</h4>
+            <form action="/_module-upload" name="module-upload-submit" id="module-upload-submit" method="post" enctype="multipart/form-data">
+              <p>Select a file: <input type="file" onclick="resetFile()" id="uploaded-modules" name="upload" multiple></p>
+              <p><input type="submit" id="module-upload-submit-button" value="Start upload" /></p>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-8 grid-margin" >
+          <div class="card" id="my-modules-section" >
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="module-creator-section" onclick="moduleCreatorOff(event)">
+</div>
+
+<script>
+function moduleCreatorOff(event) {
+  console.log(event.target.id)
+  if(event.target.id === "module-creator-section"){
+    document.getElementById("module-creator-section").style.display = "none";
+    document.getElementById("module-page").style.display = "block";
+
+  }
+}
+
+function resetFile(){
+  document.getElementById("module-upload-submit").value = ""
+}
+
+var getModules = function() {
+  $.ajax({
+    url: '_my-modules',
+    type: 'GET',
+    cache: false,
+    success: function(data) {
+      $( "#my-modules-section" ).html(data);
+    }
+  });
+  return false;
+};
+
+$( "body" ).ready(getModules);
+
+
+function submitModules(event) {
+  event.preventDefault();
+  document.getElementById("module-upload-submit-button").innerHTML = 'Uploading...';
+
+  var formData = new FormData();
+  var files = document.getElementById("uploaded-modules").files
+  for (var i = 0; i < files.length; i++) {
+    var file = files[i];
+    formData.append('files[]', file, file.name);
+  }
+  // Set up the request.
+  var xhr = new XMLHttpRequest();
+  // Open the connection.
+  xhr.open('POST', '/_module-upload', true);
+  // Set up a handler for when the request finishes.
+  xhr.onload = function (e) {
+    if (xhr.status === 200) {
+      document.getElementById("uploaded-modules").value = ""
+      document.getElementById("module-upload-submit-button").value = "Start upload"
+      getModules();
+    } else {
+      alert('An error occurred!');
+    }
+  };
+  // Send the Data.
+  xhr.send(formData);
+  return false;
+}
+
+$('form[name=module-upload-submit]').submit(function(e){
+    e.preventDefault();
+    submitModules(e)
+    return false;
+});
+
+
+
+
+
+</script>

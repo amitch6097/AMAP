@@ -60,7 +60,7 @@
   <div class="col-lg-6 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">New Malware Samples Per Hour</h4>
+        <h4 class="card-title">New Samples Per Hour</h4>
         <canvas id="lineChart2" style="height:250px"></canvas>
       </div>
     </div>

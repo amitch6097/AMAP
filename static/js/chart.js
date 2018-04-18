@@ -63,7 +63,7 @@ $(function() {
     scales: {
       yAxes: [{
         ticks: {
-          beginAtZero: true
+          beginAtZero: false
         }
       }]
     },
@@ -106,10 +106,10 @@ $(function() {
     ]
   };
   var doughnutPieOptions = {
-    responsive: true,
+    responsive: false,
     animation: {
-      animateScale: true,
-      animateRotate: true
+      animateScale: false,
+      animateRotate: false
     }
   };
   var browserTrafficData = {

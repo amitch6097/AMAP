@@ -5,9 +5,6 @@
     <h3 class="text-info">Processes</h3>
   </div>
 
-  <a href="/download/test.txt" download>THIS IS DONWLOAD</a>
-
-
   <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
       <div class="card">

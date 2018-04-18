@@ -1,0 +1,30 @@
+<tr>
+  <td>
+    <span id="index"></span>
+  </td>
+  <td>
+    <span id="file_name"></span>
+  </td>
+  <td>
+    <span id="run_number"></span>
+  </td>
+  <td>
+    <span id="start_time"></span>
+  </td>
+  <td>
+    <span id="end_time"></span>
+  </td>
+  <td>
+
+    <button class="btn btn-primary" type="button" data-toggle="collapse" id="data-target-index" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+      Display Modules
+    </button>
+  </td>
+
+  <td>
+    <form action="/file_view" method="post" enctype="multipart/form-data">
+        <button type="submit" class="btn btn-info btn-fw" style="min-width: 12px;">View</button>
+        <input type="hidden" name="filename" id="hidden-file-name" value="">
+    </form>
+  </td>
+</tr>

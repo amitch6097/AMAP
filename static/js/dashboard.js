@@ -51,6 +51,9 @@
     };
 
     var options = {
+      animation:{
+        duration: 0
+      },
       scales: {
         yAxes: [{
           ticks: {
@@ -98,8 +101,9 @@
     var doughnutPieOptions = {
       responsive: true,
       animation: {
+        duration: 0,
         animateScale: true,
-        animateRotate: true
+        animateRotate: false
       }
     };
     if ($("#sales-chart").length) {
