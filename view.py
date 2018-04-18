@@ -206,6 +206,17 @@ def file_rerun():
     info = {'file_names' : Uploader.get_current_upload_filenames(), 'module_options': Processor.get_modules()}
     return template('process-modules', info)
 
+#MALWARE UPLOADING THINGS
+
+#RUNS WHEN a start new process button is pressed on File View page
+@route('/_file-rerun', method='POST')
+def file_rerun():
+    db_file = Database.db_find_by_id(request.forms.get('id'))
+
+    Uploader.add_preloaded(db_file, Database)
+    info = {'file_names' : Uploader.get_current_upload_filenames(), 'module_options': Processor.get_modules()}
+    return template('_process-modules', info)
+
 #RUNS WHEN file upload side bar button is Processed
 # Decides which page to show file upload or process options
 @route('/file-upload')

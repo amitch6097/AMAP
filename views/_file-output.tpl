@@ -2,9 +2,11 @@
 
   <div class="card"style="border-radius:10px; padding:10px;" >
     <h4 class="card-title" >{{file_obj['Name']}}</h4>
+      <button type="button" onclick="submitReRun(event)" class="btn btn-success">Start New Process</button>
     <div class="card-body" style="overflow: scroll; height:600px; text-align:left; border:1px solid #e8e8e8">
 
-  <form action="/file-rerun" method="post" enctype="multipart/form-data">
+  <form action="/file-rerun" id="file-rerun-form" method="post" enctype="multipart/form-data">
+
     <input type="hidden" name="id" value="{{file_obj['_id']}}">
     <%
       dList = []
@@ -108,27 +110,30 @@
   %end
   </div>
 
-  <div class="row">
-    <div class="col-12 grid-margin">
-      <div class="card">
-        <div class="card-body">
-          <div class="form-row align-items-center">
-            <!-- <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" name="selection_1">
-              Match Modules For all Files
-            </label> -->
-            <div class="col-auto ml-auto">
-              <button type="submit" class="btn btn-success">Start New Process</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   </form>
 
 
   </div>
 </div>
 </div>
+
+
+<script>
+function submitReRun(event) {
+  event.preventDefault()
+  $form = $("#file-rerun-form");
+
+  $.ajax({
+      type: 'POST',
+      cache: false,
+      url:"_file-rerun",
+      data: 'id=header_contact_send&'+$form.serialize(),
+      success: function(msg) {
+        $( "#overlay" ).html( msg);
+        document.getElementById("overlay").style.display = "block";
+        return false
+      }
+  });
+  return false
+}
+</script>
