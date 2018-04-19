@@ -37,7 +37,7 @@
 
           window.document.getElementById('new_mal').innerHTML =   data.new_mal
           window.document.getElementById('new_nmal').innerHTML =   data.new_nmal
-          window.document.getElementById('avg_time').innerHTML =   data.avg_time
+          window.document.getElementById('avg_time').innerHTML =   parseInt(data.avg_time * 100)/100
           $.getScript("js/dashboard.js", function(){
           });
         }
