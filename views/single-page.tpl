@@ -40,9 +40,9 @@
           </div>
         </header>
 
-        <div id="page-dashboard" style="position: fixed;width: 100%;">
+        <div id="page-dashboard" style="position: relative;width: 100%;">
         </div>
-        <div id="page-files" style="display:none; position: fixed;width: 100%;">
+        <div id="page-files" style="display:none; position: relative;width: 100%;">
         </div>
         <div id="page-modules" style="display:none; position: fixed;width: 100%;">
         </div>
