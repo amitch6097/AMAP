@@ -62,7 +62,7 @@
                     </td>
                     <td>
 
-                      <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample{{index}}" aria-expanded="false" aria-controls="collapseExample">
+                      <button class="btn btn-primary" onclick="showModules(event, '{{index}}')" type="button" data-toggle="collapse" data-target="#collapseExample{{index}}" aria-expanded="false" aria-controls="collapseExample">
                         Display Modules
                       </button>
                     </td>
@@ -74,20 +74,20 @@
                       </form>
                     </td>
                   </tr>
-                  <tr class="collapse" id="collapseExample{{index}}">
+                  <tr style="display:none; text-align: left;" id="{{index}}row">
                     <td>
                     </td>
-                    <td>
+                    <td style="text-align: left;">
 
                       <!-- <div class="collapse" id="collapseExample"> -->
                         %for module in process.modules:
                           %if process.modules[module] == True:
-                          <p>
+                          <p style="display:inline-flex;">
                           <i class="mdi mdi-circle mr-2 text-primary"></i>
                             {{module}}
                           </p>
                           %else:
-                          <p>
+                          <p style="display:inline-flex;">
                             <i class="mdi mdi-circle mr-2 text-danger"></i>
                             {{module}}
                           </p>
@@ -105,3 +105,10 @@
       </div>
     </div>
   </div>
+
+
+<script>
+
+
+
+</script>

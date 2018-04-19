@@ -7,9 +7,9 @@
   %for obj in modules:
   <form id="my-modules-form_{{obj}}" method="post" name="current-module-form" enctype="multipart/form-data">
     <div class="row">
-      <div class="col-12 grid-margin">
+      <div class="col-12 grid-margin" style="margin-bottom: 10px;">
         <div class="card">
-          <div class="card-body" style="padding:10px; border: 1px solid #c0c0c0; border-width: 1px 0px 1px 0px; margin-left:20px;margin-right:20px">
+          <div class="card-body" style="padding:10px; border: 1px solid #c0c0c0; border-width: 1px 0px 0px 0px; margin-left:20px;margin-right:20px">
             <div class="form-row align-items-center">
               <label class="form-check-label">
                   <h4>{{obj}}</h4>

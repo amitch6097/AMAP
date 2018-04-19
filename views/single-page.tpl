@@ -28,10 +28,10 @@
   <body class="text-center">
 
       <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
-        <header class="masthead mb-auto">
+        <header class="masthead mb-auto" style="z-index:2;">
           <div class="inner">
             <h3 class="masthead-brand">Accenture AMAP</h3>
-            <nav class="nav nav-masthead justify-content-center">
+            <nav class="nav nav-masthead justify-content-center" style="z-index:2;">
               <a class="nav-link active" id="Dashboard" onClick="pageSelector(event,'Dashboard')" href="">Dashboard</a>
               <a class="nav-link" id="Files" onClick="pageSelector(event, 'Files')" href="">Files</a>
               <a class="nav-link" id="Modules" onClick="pageSelector(event,'Modules')" href="">Modules</a>
@@ -40,18 +40,12 @@
           </div>
         </header>
 
-        <div id="page-dashboard">
+        <div id="page-dashboard" style="position: fixed;width: 100%;">
         </div>
-        <div id="page-files" style="display:none;">
+        <div id="page-files" style="display:none; position: fixed;width: 100%;">
         </div>
-        <div id="page-modules" style="display:none;">
+        <div id="page-modules" style="display:none; position: fixed;width: 100%;">
         </div>
-
-        <footer class="mastfoot mt-auto">
-          <div class="inner">
-            <p>Cover template for <a href="https://getbootstrap.com/">Bootstrap</a>, by <a href="https://twitter.com/mdo">@mdo</a>.</p>
-          </div>
-        </footer>
       </div>
     </body>
 
@@ -101,6 +95,30 @@ var pageSelector = function(event, pageName)
     $( "#Files" ).removeClass('active')
     $( "#Modules" ).addClass('active')
     clearInterval(processInterval);
+  }
+}
+
+var countOpen = 0;
+
+function showModules(event, i)
+{
+  event.preventDefault()
+  var id = "#"+i.toString()+"row"
+  console.log(countOpen)
+
+  var dis = $(id).css('display')
+
+  if(dis==='block'){
+    countOpen-=1
+    $(id).css('display', "none")
+    if(countOpen<=0)
+    {
+      processInterval = setInterval(getProcesses, 5000);
+    }
+  }else if(dis==='none'){
+    countOpen+=1
+    clearInterval(processInterval);
+    $(id).css('display', "block");
   }
 }
 </script>
