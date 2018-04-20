@@ -52,7 +52,6 @@ class Process:
         self.percent_done = 100
         self.end_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
         self.endtime_num = time.time()
-
     #gives start timestamp
     def start_process(self):
         self.start_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
@@ -68,7 +67,7 @@ class Process:
 
     #for putting the process into the database
     def to_database_file(self):
-        length = self.endtime_num - self.starttime_num
+        length = self.endtime_num - self.starttime_num 
         Database.db_add_avgtime(length)
         return {'file_id':self.file_id,
             "file_name":self.file_name,
@@ -192,7 +191,7 @@ class Process:
         Database.db_update_process(self.id, self.to_database_file())
 
         output_obj = self.check_cuckoo(output_obj)
-
+	
         self.finish_process()
         Database.db_update_malware_on_id(db_file_obj["_id"], output_obj)
         Database.db_update_process(self.id, self.to_database_file())

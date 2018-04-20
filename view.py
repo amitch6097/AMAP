@@ -400,8 +400,9 @@ def add_numbers():
     if newnmal < 0:
         newnmal = malware_count+3
     for av in procset:
-        total_time += av["ATime"]
-        av_count += 1
+	if av["ATime"] > 0:
+        	total_time += av["ATime"]
+        	av_count += 1
     if av_count is 0:
         avg_time = 0
     else:
