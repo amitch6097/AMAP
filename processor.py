@@ -77,6 +77,17 @@ class Process:
              "start_time":self.start_time,
              "end_time":self.end_time
         }
+    #for putting the process into the database
+    def to_database_file_html(self):
+        length = self.endtime_num - self.starttime_num
+        Database.db_add_avgtime(length)
+        return {'file_id':str(self.file_id),
+            "file_name":self.file_name,
+             "modules":self.modules,
+             "run_number":self.run_number,
+             "start_time":self.start_time,
+             "end_time":self.end_time
+        }
 
     #for putting the process into the database
     def to_database_file_id(self):
@@ -222,7 +233,8 @@ class Processor:
         self.Wizard = Wizard
         self.modules = []       #all prossible modules we can run
         self.new_processes = [] #processes that need to be run still
-        self.old_processes = self.get_all_processes_db_old() #processes that have been run
+        self.old_processes = []
+        # self.get_all_processes_db_old() #processes that have been run
         self.Multiproc = MultiProcessor()
         self.Multiproc.start()
         self.is_running = False
@@ -231,7 +243,7 @@ class Processor:
 
     # for displaying all of the processes, already run or running
     def get_all_processes(self):
-        return self.old_processes + self.get_all_processes_db()
+        return self.get_all_processes_db()
 
     def get_all_processes_db_old(self):
         process_stack = Database.db_get_all_processes_old()

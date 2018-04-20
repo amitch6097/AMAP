@@ -51,6 +51,9 @@
     };
 
     var options = {
+      animation:{
+        duration: 0
+      },
       scales: {
         yAxes: [{
           ticks: {
@@ -98,8 +101,9 @@
     var doughnutPieOptions = {
       responsive: true,
       animation: {
+        duration: 0,
         animateScale: true,
-        animateRotate: true
+        animateRotate: false
       }
     };
     if ($("#sales-chart").length) {
@@ -184,13 +188,55 @@
             })
     }
     if ($("#doughnutChart").length) {
-      var doughnutChartCanvas = $("#doughnutChart").get(0).getContext("2d");
-      var doughnutChart = new Chart(doughnutChartCanvas, {
-        type: 'doughnut',
-        data: doughnutPieData,
-        options: doughnutPieOptions
-      });
-    }
+    //   var doughnutChartCanvas = $("#doughnutChart").get(0).getContext("2d");
+    //   var doughnutChart = new Chart(doughnutChartCanvas, {
+    //     type: 'bar',
+    //     data: doughnutPieData,
+    //     options: doughnutPieOptions
+    //   });
+    // }
+	var ctx = document.getElementById("doughnutChart");
+	var myLineChart = new Chart(ctx, {
+	  type: 'bar',
+	  data: {
+	    labels: ["0","1", "2", "3", "4"],
+	    datasets: [{
+	      label: "Amount",
+	      backgroundColor: "rgba(2,117,216,1)",
+	      borderColor: "rgba(2,117,216,1)",
+	      data: [1,2,3,4,5]
+	    }],
+	  },
+	  options: {
+	    scales: {
+	      xAxes: [{
+	        time: {
+	          unit: 'amount'
+	        },
+	        gridLines: {
+	          display: false
+	        },
+	        ticks: {
+	          maxTicksLimit: 6
+	        }
+	      }],
+	      yAxes: [{
+	        ticks: {
+	          min: 0,
+	          max: 10,
+	          maxTicksLimit: 5
+	        },
+	        gridLines: {
+	          display: true
+	        }
+	      }],
+	    },
+	    legend: {
+	      display: false
+	    }
+	  }
+	});
+}
     if ($("#lineChart").length) {
       var lineChartCanvas = $("#lineChart").get(0).getContext("2d");
       var lineChart = new Chart(lineChartCanvas, {

@@ -55,7 +55,7 @@
       dList.sort()
 
     %>
-  
+
   <div>
   % for i in range(len(dList)):
   % key = dList[i][1]
@@ -75,7 +75,7 @@
                   % element = value
                   % element.append("spaceForException")
                   <ul>
-                     <!-- Use a copy of the list with an extra element to 
+                     <!-- Use a copy of the list with an extra element to
                     handle an out of range exception  -->
                   % for i in range(len(value)-1):
                     % val = element[i].strip()
@@ -139,6 +139,7 @@
 </div>
 
 %include footer
+<<<<<<< HEAD
 
 
 <script>
@@ -157,3 +158,5 @@ function showReport(link) {
 
 </script>
 
+=======
+>>>>>>> 91251fbd5e6fc79a8ebb4514710d1c67b9dbf57f

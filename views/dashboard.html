@@ -1,0 +1,225 @@
+<body>
+<div class="content-wrapper">
+    <title>jQuery Example</title>
+<script type="text/javascript"
+  src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+  var getDashboard = function() {
+    console.log("get dash")
+    $.ajax({
+      url: '_dash_data',
+      type: 'GET',
+      cache: false,
+      success: function(data) {
+        var data = JSON.parse(data)
+          window.document.getElementById('C1V0').innertext = data.C1V0
+          window.document.getElementById('C1V1').innertext = data.C1V1
+          window.document.getElementById('C1V2').innertext = data.C1V2
+          window.document.getElementById('C1V3').innertext = data.C1V3
+          window.document.getElementById('C1V4').innertext = data.C1V4
+          window.document.getElementById('C1V5').innertext = data.C1V5
+          window.document.getElementById('C2V0').innertext = data.C2V0
+          window.document.getElementById('C2V1').innertext = data.C2V1
+          window.document.getElementById('C2V2').innertext = data.C2V2
+          window.document.getElementById('C2V3').innertext = data.C2V3
+          window.document.getElementById('C2V4').innertext = data.C2V4
+          window.document.getElementById('C2V5').innertext = data.C2V5
+          window.document.getElementById('PI1').innertext =  data.PI1
+          window.document.getElementById('PI2').innertext =  data.PI2
+          window.document.getElementById('T0').innertext =   data.T0
+          window.document.getElementById('T1').innertext =   data.T1
+          window.document.getElementById('T2').innertext =   data.T2
+          window.document.getElementById('T3').innertext =   data.T3
+          window.document.getElementById('T4').innertext =   data.T4
+          window.document.getElementById('T5').innertext =   data.T5
+
+          window.document.getElementById('new_mal').innerHTML =   data.new_mal
+          window.document.getElementById('new_nmal').innerHTML =   data.new_nmal
+          window.document.getElementById('avg_time').innerHTML =   parseInt(data.avg_time * 100)/100
+          $.getScript("js/dashboard.js", function(){
+          });
+        }
+    });
+    return false;
+  };
+  $( "body" ).ready(getDashboard);
+
+  var xhr = new XMLHttpRequest();
+  // Open the connection.
+  xhr.open('GET', '/_wizard', true);
+  // Set up a handler for when the request finishes.
+  xhr.onload = function (e) {
+    if (xhr.status === 200) {
+      $( "#wizard-section" ).html( xhr.response);
+      // document.getElementById("wizard-section").innerHTML = xhr.response;
+    } else {
+      alert('An error occurred!');
+    }
+  };
+  // Send the Data.
+  xhr.send();
+
+</script>
+
+  <div class="row">
+    <div id="wizard-section" class="col-md-4 stretch-card grid-margin">
+    </div>
+    <div class="col-md-4 stretch-card grid-margin">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="font-weight-normal mb-3">Todays Processed Files</h4>
+          <h4 class="font-weight-normal mb-5">New Malicious Files: <span id="new_mal"></span></h4>
+          <h4 class="font-weight-normal mb-5">New Non-Malicious Files: <span id="new_nmal"></span></h4>
+          <h4 class="font-weight-normal mb-3">Average Processing Time</h4>
+          <h2 class="font-weight-normal mb-5"><span id="avg_time"></span> seconds</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">File Types</h4>
+          <canvas id="doughnutChart" style="height:250px"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-6 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Malware Processed Per Hour</h4>
+          <canvas id="lineChart" style="height:250px"></canvas>
+        </div>
+      </div>
+    </div>
+  <div class="col-lg-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">New Samples Per Hour</h4>
+        <canvas id="lineChart2" style="height:250px"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <p id='C1V0' style="color:white;visibility: hidden;"></p>
+  <p id='C1V1' style="color:white;visibility: hidden;"></p>
+  <p id='C1V2' style="color:white;visibility: hidden;"></p>
+  <p id='C1V3' style="color:white;visibility: hidden;"></p>
+  <p id='C1V4' style="color:white;visibility: hidden;"></p>
+  <p id='C1V5' style="color:white;visibility: hidden;"></p>
+  <p id='C2V0' style="color:white;visibility: hidden;"></p>
+  <p id='C2V1' style="color:white;visibility: hidden;"></p>
+  <p id='C2V2' style="color:white;visibility: hidden;"></p>
+  <p id='C2V3' style="color:white;visibility: hidden;"></p>
+  <p id='C2V4' style="color:white;visibility: hidden;"></p>
+  <p id='C2V5' style="color:white;visibility: hidden;"></p>
+
+  <p id='PI1' style="color:white;visibility: hidden;"></p>
+  <p id='PI2' style="color:white;visibility: hidden;"></p>
+
+  <p id='T0' style="color:white;visibility: hidden;"></p>
+  <p id='T1' style="color:white;visibility: hidden;"></p>
+  <p id='T2' style="color:white;visibility: hidden;"></p>
+  <p id='T3' style="color:white;visibility: hidden;"></p>
+  <p id='T4' style="color:white;visibility: hidden;"></p>
+  <p id='T5' style="color:white;visibility: hidden;"></p>
+</div>
+<!-- endinject -->
+<!-- Plugin js for this page-->
+<script src="node_modules/chart.js/dist/Chart.min.js"></script>
+
+<script>
+var dashboardInterval;
+
+$( "#wizard-submit-form" ).submit(function( event ) {
+  console.log("A")
+  event.preventDefault()
+  var formElement = document.querySelector("#wizard-submit-form");
+  var form = new FormData(formElement)
+  var xhr = new XMLHttpRequest();
+  // Open the connection.
+  xhr.open('POST', '/_amap-active', true);
+  // Set up a handler for when the request finishes.
+  xhr.onload = function (e) {
+    if (xhr.status === 200) {
+      $( "#wizard-section" ).html( xhr.response);
+
+      // document.getElementById("wizard-section").innerHTML = xhr.response;
+    } else {
+      alert('An error occurred!');
+    }
+  xhr.send(form);
+}
+});
+
+function onWizardSubmit(event, type){
+  event.preventDefault()
+  var xhr = new XMLHttpRequest();
+
+  if(type == "quit")
+  {
+    xhr.open('POST', '/_amap-quit', true);
+
+    xhr.onload = function (e) {
+      if (xhr.status === 200) {
+        $( "#wizard-section" ).html( xhr.response);
+        clearInterval(dashboardInterval);
+      } else {
+        alert('An error occurred!');
+      }
+    }
+    xhr.send($("form").serialize());
+  }
+  else {
+
+    xhr.open('POST', '/_amap-active', true);
+    xhr.onload = function (e) {
+      if (xhr.status === 200) {
+        $( "#wizard-section" ).html( xhr.response);
+        dashboardInterval = setInterval( getDashboard, 3000);
+      } else {
+        alert('An error occurred!');
+      }
+    }
+    xhr.send($("form").serialize());
+  }
+}
+
+
+function onNextToConfig() {
+  // alert("HELLO");
+    document.getElementById("wizard-title").style.display = "none";
+    document.getElementById("wizard-intra-title").style.display = "block";
+    document.getElementById("modules-select").style.display = "none";
+    document.getElementById("config-file-watch").style.display = "block";
+    document.getElementById("confirmation").style.display = "none";
+}
+
+function onNextToConfirm() {
+  // alert("HELLO");
+    document.getElementById("modules-select").style.display = "none";
+    document.getElementById("config-file-watch").style.display = "none";
+    document.getElementById("confirmation").style.display = "block";
+}
+
+function onBackToModules() {
+    document.getElementById("wizard-title").style.display = "block";
+    document.getElementById("wizard-intra-title").style.display = "none";
+    document.getElementById("modules-select").style.display = "block";
+    document.getElementById("config-file-watch").style.display = "none";
+    document.getElementById("confirmation").style.display = "none";
+}
+
+function onBackToConfig() {
+  // alert("HELLO");
+    document.getElementById("modules-select").style.display = "none";
+    document.getElementById("confirmation").style.display = "none";
+    document.getElementById("config-file-watch").style.display = "block";
+}
+
+</script>
+</body>

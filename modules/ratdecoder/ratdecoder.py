@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 import os
 import sys
@@ -164,4 +163,3 @@ if __name__ == "__main__":
         print "[+] Reading {0}".format(args[0])
         config_data = run(file_data)
         print_output(config_data, options.output)
-          

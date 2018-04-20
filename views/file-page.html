@@ -1,0 +1,166 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+
+<div class="content-wrapper">
+  <div class="row">
+    <div class="col-6 grid-margin stretch-card">
+      <div class="card">
+        <div id="file-input-section">
+        <div class="card-body">
+          <h4 class="card-title">File Input</h4>
+          <form action="/upload" onsubmit="submitFiles(event)" method="post" enctype="multipart/form-data">
+            Select a file: <input type="file" id="file-input" name="upload" multiple>
+            <input type="submit" id="file-submit"  value="Start upload" />
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 grid-margin stretch-card">
+    <div class="card">
+      <div id="file-input-section">
+      <div class="card-body">
+        <h4 class="card-title">Malware Search</h4>
+        <div class="search-field ml-4 d-none d-md-block" style="border: 1px solid #c0c0c0; border-radius: 10px">
+          <!-- action="" method="post" enctype="multipart/form-data" id="js-upload-form" -->
+          <form class="d-flex align-items-stretch h-100" id="malware-search-form" action="/_malware-search" method="post" onsubmit="submitSearch(event)" enctype="multipart/form-data">
+            <div class="input-group">
+              <input type="text" name="module-search-input" class="form-control bg-transparent border-0" placeholder="Search">
+              <input type="hidden" id="malware-search-type" name="malware-search-type" value="File Name">
+              <div class="input-group-btn">
+                <select class="form-control" id="malware-search-type" style="    height: 100%;margin: auto;border-width:0px;">
+                  <option onClick="changeName(event, 'File Name')">File Name</option>
+                  <option onClick="changeName(event, 'MD5')">MD5</option>
+                  <option onClick="changeName(event, 'SHA1')">SHA1</option>
+                </select>
+              <div class="input-group-addon bg-transparent border-0 search-button">
+                <button type="submit" class="btn btn-sm bg-transparent px-0">
+                  <div id="search-icon">
+                  <i class="mdi mdi-magnify"></i>
+                </div>
+                </button>
+              </div>
+            </div>
+          </div>
+          </form>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="process-table" style="height:500px;">
+</div>
+</div>
+</div>
+<div id="overlay"  onclick="overlayOff(event)">
+</div>
+
+<script type="text/javascript">
+
+function overlayOff(event) {
+  console.log(event.target.id)
+  if(event.target.id === "overlay"){
+    document.getElementById("overlay").style.display = "none";
+
+  }
+}
+
+  function submitFiles(event) {
+    console.log(event)
+
+    event.preventDefault();
+
+    document.getElementById("file-submit").innerHTML = 'Uploading...';
+
+    var formData = new FormData();
+    var files = document.getElementById("file-input").files
+    for (var i = 0; i < files.length; i++) {
+      var file = files[i];
+      formData.append('files[]', file, file.name);
+    }
+    // Set up the request.
+    var xhr = new XMLHttpRequest();
+    // Open the connection.
+    xhr.open('POST', '/_upload_files', true);
+    // Set up a handler for when the request finishes.
+    xhr.onload = function (e) {
+      if (xhr.status === 200) {
+        $( "#overlay" ).html( xhr.response);
+        document.getElementById("overlay").style.display = "block";
+        // document.getElementById("file-input-section").innerHTML = xhr.response;
+
+      } else {
+        alert('An error occurred!');
+        uploads--;
+      }
+    };
+    // Send the Data.
+    xhr.send(formData);
+    return false;
+  }
+
+  function submitSearch(event) {
+    event.preventDefault()
+    $('#search-icon').html('<i class="fa fa-spinner fa-spin"></i>')
+    $form = $("#malware-search-form");
+
+    $.ajax({
+        type: 'POST',
+        cache: false,
+        url:"_malware-search",
+        data: 'id=header_contact_send&'+$form.serialize(),
+        success: function(msg) {
+          $( "#overlay" ).html( msg);
+          document.getElementById("overlay").style.display = "block";
+          $('#search-icon').html('<i class="mdi mdi-magnify"></i>')
+
+          return false
+        }
+    });
+    return false
+  }
+
+
+  var getProcesses = function() {
+    console.log("get dash")
+    $.ajax({
+      url: '_processes',
+      type: 'GET',
+      cache: false,
+      success: function(data) {
+        $( "#process-table" ).html( data);
+      }
+    });
+    return false;
+  };
+
+  $( document ).ready(function(){
+    getProcesses();
+  });
+
+</script>
+
+<script>
+function fileView(event, id) {
+  event.preventDefault()
+  var id = "#"+id.toString()
+  $form = $(id);
+  console.log($form.find("#filename"))
+
+  $.ajax({
+      type: 'POST',
+      cache: false,
+      url:"_file_view",
+      data: 'id=header_contact_send&'+$form.serialize(),
+      success: function(msg) {
+        console.log(msg)
+        $( "#overlay" ).html( msg);
+        document.getElementById("overlay").style.display = "block";
+        return false
+      }
+  });
+  return false
+}
+</script>
