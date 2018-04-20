@@ -14143,7 +14143,7 @@ html {
 .content-wrapper {
   /* background: white; */
   /* margin-left: 0; */
-  margin-top: 50px;
+  margin-top: 10px;
   min-height: 100vh;
   padding: 1.5rem 1.7rem;
   transition: width 0.25s ease, margin 0.25s ease;

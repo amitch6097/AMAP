@@ -1,4 +1,0 @@
-openedFile = open(filename)
-readFile = openedFile.read()
-
-hash =  hashlib.sha224(readFile).hexdigest()

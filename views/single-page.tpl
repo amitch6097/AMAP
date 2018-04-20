@@ -30,7 +30,9 @@
       <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
         <header class="masthead mb-auto" style="z-index:2;">
           <div class="inner">
-            <h3 class="masthead-brand">Accenture AMAP</h3>
+            <img class="masthead-brand" src="images/accenture_logo_white.png" width="150px" alt="logo"/><h3 style="margin:15px 0px 0px 15px;" class="masthead-brand">AMAP</h3>
+
+            <!-- <h3 class="masthead-brand">Accenture AMAP</h3> -->
             <nav class="nav nav-masthead justify-content-center" style="z-index:2;">
               <a class="nav-link active" id="Dashboard" onClick="pageSelector(event,'Dashboard')" href="">Dashboard</a>
               <a class="nav-link" id="Files" onClick="pageSelector(event, 'Files')" href="">Files</a>
