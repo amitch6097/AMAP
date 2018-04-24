@@ -8,6 +8,10 @@ class Malware:
 
     #   filename   - string
     #   path       - string path the to file on system
+    #   hashes     - dictionary of sha1, sha256, and md5 with their appropriate hashes for this file
+    #   id         - integer id that is used for display purposes
+    #   runs       - integer number of times a malware has been processed
+    #   time       -the current time
     def __init__(self, filename, path, hashes):
         self.filename = filename
         self.path = path
@@ -16,10 +20,12 @@ class Malware:
         self.id = -1
         self.runs = 0
         self.time = time.time()
-
+    #   setter for id
+    #   PARAM id the value id will be set to
     def edit_id(self, id):
         self.id = id
-
+    #   gets all the basic information about a malware including name, path, runs, and the hashes
+    #   RETURNS a dictionary of attributes of the object
     def to_database_file(self):
         return {
             'Name'      :self.filename,
@@ -82,7 +88,10 @@ class MalwareUploader:
         self.current_uploads.append(malware)
         malware.edit_id(db_file['_id'])
         malware.runs = db_file['runs']
-
+    # generates hashes for a file and a Malware object so it can go on to be processed and adds it to the database
+    #   PARAM file_path the path to the file
+    #   PARAM Database the database object that the file is being added to
+    #   PARAM filename the name of the file
     def get_hashes_and_move_file(self, file_path, Database, filename):
         opened_file = open(file_path)
         read_file = opened_file.read()
@@ -98,6 +107,7 @@ class MalwareUploader:
         malware = Malware(filename, new_path, hashes)
 
         if os.path.isfile(new_path):
+            #adds new names of the same file as entries on original file
             if Database.db_add_name_to_malware(new_path, filename, malware) == False:
                 os.rename(file_path, new_path)
                 Database.db_insert_malware_obj(malware)
