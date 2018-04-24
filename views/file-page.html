@@ -60,18 +60,13 @@
 <script type="text/javascript">
 
 function overlayOff(event) {
-  console.log(event.target.id)
   if(event.target.id === "overlay"){
     document.getElementById("overlay").style.display = "none";
-
   }
 }
 
   function submitFiles(event) {
-    console.log(event)
-
     event.preventDefault();
-
     document.getElementById("file-submit").innerHTML = 'Uploading...';
 
     var formData = new FormData();
@@ -124,7 +119,6 @@ function overlayOff(event) {
 
 
   var getProcesses = function() {
-    console.log("get dash")
     $.ajax({
       url: '_processes',
       type: 'GET',
@@ -147,15 +141,12 @@ function fileView(event, id) {
   event.preventDefault()
   var id = "#"+id.toString()
   $form = $(id);
-  console.log($form.find("#filename"))
-
   $.ajax({
       type: 'POST',
       cache: false,
       url:"_file_view",
       data: 'id=header_contact_send&'+$form.serialize(),
       success: function(msg) {
-        console.log(msg)
         $( "#overlay" ).html( msg);
         document.getElementById("overlay").style.display = "block";
         return false

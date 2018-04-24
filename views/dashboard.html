@@ -7,7 +7,6 @@
 <script type="text/javascript">
 
   var getDashboard = function() {
-    console.log("get dash")
     $.ajax({
       url: '_dash_data',
       type: 'GET',
@@ -37,7 +36,7 @@
 
           window.document.getElementById('new_mal').innerHTML =   data.new_mal
           window.document.getElementById('new_nmal').innerHTML =   data.new_nmal
-          window.document.getElementById('avg_time').innerHTML =   parseInt(data.avg_time * 100)/100
+          window.document.getElementById('avg_time').innerHTML =   parseInt(data.avg_time * 1000)/1000
           $.getScript("js/dashboard.js", function(){
           });
         }
@@ -136,7 +135,6 @@
 var dashboardInterval;
 
 $( "#wizard-submit-form" ).submit(function( event ) {
-  console.log("A")
   event.preventDefault()
   var formElement = document.querySelector("#wizard-submit-form");
   var form = new FormData(formElement)

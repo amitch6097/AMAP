@@ -11,7 +11,6 @@ __date__ = '2016/04'
 def sha1_module(filename):
     openedFile = open(filename)
     readFile = openedFile.read()
-    # print filename
 
     sha1Hash = hashlib.sha1(readFile)
     sha1Hashed = sha1Hash.hexdigest()

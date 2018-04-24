@@ -196,18 +196,27 @@
     //   });
     // }
 	var ctx = document.getElementById("doughnutChart");
+  var exe = document.getElementById('PI1').innertext;
+  var other = document.getElementById('PI2').innertext;
+
+  var y_max = Math.max(exe, other);
 	var myLineChart = new Chart(ctx, {
 	  type: 'bar',
+
 	  data: {
-	    labels: ["0","1", "2", "3", "4"],
+	    labels: ["windows exe","other"],
 	    datasets: [{
 	      label: "Amount",
 	      backgroundColor: "rgba(2,117,216,1)",
 	      borderColor: "rgba(2,117,216,1)",
-	      data: [1,2,3,4,5]
+	      data: [exe, other]
 	    }],
 	  },
+
 	  options: {
+      animation: {
+        duration: 0
+      },
 	    scales: {
 	      xAxes: [{
 	        time: {
@@ -223,14 +232,16 @@
 	      yAxes: [{
 	        ticks: {
 	          min: 0,
-	          max: 10,
-	          maxTicksLimit: 5
+	          max: y_max,
+	          maxTicksLimit: y_max,
+            stepSize: Math.ceil(y_max/5)
 	        },
 	        gridLines: {
 	          display: true
 	        }
 	      }],
 	    },
+
 	    legend: {
 	      display: false
 	    }

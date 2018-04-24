@@ -67,7 +67,7 @@ class Process:
 
     #for putting the process into the database
     def to_database_file(self):
-        length = self.endtime_num - self.starttime_num 
+        length = self.endtime_num - self.starttime_num
         Database.db_add_avgtime(length)
         return {'file_id':self.file_id,
             "file_name":self.file_name,
@@ -174,8 +174,11 @@ class Process:
 
             #location main python file in modules folder on system
             location_of_module = '{0}/modules/{1}/{1}.py'.format(cwd, module)
+            module_dir = '{0}/modules/{1}/'.format(cwd, module)
 
-            p = subprocess.Popen(['python', location_of_module, db_file_obj['location']], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            os.chdir(module_dir)
+            p = subprocess.Popen(['python', "{0}.py".format(module), db_file_obj['location']], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            os.chdir(cwd)
             stdoutdata, stderrdata = p.communicate()
 
             #if we get error data the module 'failed'
@@ -191,7 +194,7 @@ class Process:
         Database.db_update_process(self.id, self.to_database_file())
 
         output_obj = self.check_cuckoo(output_obj)
-	
+
         self.finish_process()
         Database.db_update_malware_on_id(db_file_obj["_id"], output_obj)
         Database.db_update_process(self.id, self.to_database_file())

@@ -106,7 +106,6 @@ function showModules(event, i)
 {
   event.preventDefault()
   var id = "#"+i.toString()+"row"
-  console.log(countOpen)
 
   var dis = $(id).css('display')
 

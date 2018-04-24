@@ -228,7 +228,6 @@ class Dbio:
 Database = Dbio()
 Database.db_new_processes_clear()
 Database.db_clear()
-
 #Example usages...
 #db_insert_to("0012.mid","25faa9b7d2ff96e3ba424d464580a375","2b110d7bc681eb133f089fd4cdf580ec496c21b9459b474ed33d000f260b4425")
 #db_del_element("Name","0012.mid")

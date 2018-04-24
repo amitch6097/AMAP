@@ -1,9 +1,4 @@
-# coding=utf-8
 import sys
-#trouble adding path so ...
-
-#sys.path.insert(0, "/usr/local/lib/python2.7/site-packages")
-import gevent
 from gevent import monkey; monkey.patch_all()
 from bottle import static_file, run, template, get, redirect, request, route, template, abort
 
@@ -12,22 +7,20 @@ import zipfile
 import json
 import shutil
 import datetime
-# need for other rat
+
 import pefile
 import pype32
 import yara
 import time
 
+import multiprocessing as mp
+import threading
+
 from dbio import Database
 from processor import Processor
 from uploader import MalwareUploader
 from file_watcher import FileGrab
-
-# Wizard class for Background Analysis Platform
 from wizard import Wizard
-
-import multiprocessing as mp
-import threading
 
 Wizard = Wizard()
 Uploader = MalwareUploader(os.path.dirname(os.path.realpath(__file__)))
@@ -90,13 +83,10 @@ def quit_amap_jquery():
     #Stop Running
     FileGrab.stop()
 
-
     #get info to display on next page
     info = {'module_options': Processor.get_modules(), 'running': Wizard.isRunning(), 'active_modules': Wizard.getModules(), 'time': Wizard.getTimeInterval(), 'numFiles': Wizard.getFileGrabInterval() }
 
     return template('_wizard', info)
-
-
 
 #MALWARE UPLOADING THINGS
 
@@ -429,7 +419,7 @@ def add_numbers():
     #print(exe_percent,'-',other_percent)
 
 
-    info = {'new_mal' : malware_count, 'new_nmal': total-malware_count, 'avg_time' : datetime.datetime.utcfromtimestamp(avg_time).strftime("%S.%f"), 'C1V0':C1V0, 'C1V1':C1V1, 'C1V2':C1V2, 'C1V3':C1V3, 'C1V4':C1V4, 'C1V5':C1V5, 'C2V0':C2V0, 'C2V1':C2V1, 'C2V2':C2V2, 'C2V3':C2V3, 'C2V4':C2V4, 'C2V5':C2V5, 'PI1':exe_percent, 'PI2':other_percent, 'T0':datetime.datetime.fromtimestamp(time.time()).strftime("%H:%M"), 'T1':datetime.datetime.fromtimestamp(time.time()-3600).strftime("%H:%M"), 'T2':datetime.datetime.fromtimestamp(time.time()-7200).strftime("%H:%M"), 'T3':datetime.datetime.fromtimestamp(time.time()-10800).strftime("%H:%M"), 'T4':datetime.datetime.fromtimestamp(time.time()-14400).strftime("%H:%M"), 'T5':datetime.datetime.fromtimestamp(time.time()-18000).strftime("%H:%M")}
+    info = {'new_mal' : malware_count, 'new_nmal': total-malware_count, 'avg_time' : datetime.datetime.utcfromtimestamp(avg_time).strftime("%S.%f"), 'C1V0':C1V0, 'C1V1':C1V1, 'C1V2':C1V2, 'C1V3':C1V3, 'C1V4':C1V4, 'C1V5':C1V5, 'C2V0':C2V0, 'C2V1':C2V1, 'C2V2':C2V2, 'C2V3':C2V3, 'C2V4':C2V4, 'C2V5':C2V5, 'PI1':exe, 'PI2':other, 'T0':datetime.datetime.fromtimestamp(time.time()).strftime("%H:%M"), 'T1':datetime.datetime.fromtimestamp(time.time()-3600).strftime("%H:%M"), 'T2':datetime.datetime.fromtimestamp(time.time()-7200).strftime("%H:%M"), 'T3':datetime.datetime.fromtimestamp(time.time()-10800).strftime("%H:%M"), 'T4':datetime.datetime.fromtimestamp(time.time()-14400).strftime("%H:%M"), 'T5':datetime.datetime.fromtimestamp(time.time()-18000).strftime("%H:%M")}
 
     return json.dumps(info)
 

@@ -1,5 +1,5 @@
 
-<div class="col-6" style="margin: 0 auto; margin-top: 200px;">
+<div class="col-6" style="margin: 0 auto; margin-top: 100px;">
 
   <div class="card" style="border-radius:10px; padding:10px;">
 
