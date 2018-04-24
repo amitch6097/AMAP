@@ -79,13 +79,9 @@ class MalwareUploader:
 
         #create a Malware object from the database file
         malware = Malware(db_file['Name'], db_file['location'], db_file["hashes"])
-
         self.current_uploads.append(malware)
-
         malware.edit_id(db_file['_id'])
-
         malware.runs = db_file['runs']
-        # Database.db_insert_malware_obj(malware)
 
     def get_hashes_and_move_file(self, file_path, Database, filename):
         opened_file = open(file_path)
@@ -123,12 +119,6 @@ class MalwareUploader:
         self.state = "modules"
 
         for upload in file_uploads:
-            # How to not allow file types
-            # name, ext = os.path.splitext(upload.filename)
-            # if ext not in ('.not', '.allowed', '.example'):
-            #     return "File extension not allowed."
-
-            #set the file path and save it
             file_path = "{path}/{file}".format(path=self.upload_dir, file=upload.filename)
             upload.save(file_path, overwrite=True)
 

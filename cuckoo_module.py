@@ -56,17 +56,10 @@ class CuckooModule:
 			new_path = os.path.join(self.directory, file_name)
 			subprocess.Popen(["cp","{}".format(file_path),"{}".format(new_path)])
 
-			#if not os.path.isfile(file_path):
-			#	print file_path
-			#	file = open(file_path, "w")
-			#	file.write(request.text)
-			#	file.close()
 			return file_name
 
 		else:
 			return ""
-
-		# return json.loads(request.text)
 
 if __name__ == "__main__":
 	mod = CuckooModule()

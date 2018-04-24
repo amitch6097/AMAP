@@ -25,9 +25,6 @@ class Dbio:
 		self.proc_old = db.process_old
 		print("\n CONNECT DB SUCCESS! \n")
 
-
-
-
 	def db_insert_to_login(self, username, password):	#Insert username and password into the database
 		sample = {"Username":username, "pwdhash":password}
 		self.authentication.insert(sample)
@@ -120,25 +117,10 @@ class Dbio:
 	# 	chars - the first charaters of filename looking for
 	#TODO extend to use SHA/MD
 	def db_find_first_char(self, chars):
-		# assert (len) == 1
-		# isinstance(s, basestring)
-
 		return self.alpha.find( {'Name': { '$regex': '^' + chars}})
 
 	def db_find_malware_hash(self, chars, hash):
-		# assert (len) == 1
-		# isinstance(s, basestring)
 		return self.alpha.find( {hash: { '$regex': '^' + chars}})
-
-	#NOT USED ANYMORE, USE db_insert_malware_obj
-	# def db_insert(self, input_obj):
-	# 	assert 'Name' in input_obj
-	# 	self.alpha.insert(input_obj)
-	#
-	# def db_insert_many(self, input_objs):
-	# 	for obj in input_objs:
-	# 		assert 'Name' in input_obj
-	# 		self.alpha.insert(input_obj)
 
 
 	#inserts a malware object into the database
@@ -228,7 +210,3 @@ class Dbio:
 Database = Dbio()
 Database.db_new_processes_clear()
 Database.db_clear()
-#Example usages...
-#db_insert_to("0012.mid","25faa9b7d2ff96e3ba424d464580a375","2b110d7bc681eb133f089fd4cdf580ec496c21b9459b474ed33d000f260b4425")
-#db_del_element("Name","0012.mid")
-#db_list_one("Name","0012.mid")

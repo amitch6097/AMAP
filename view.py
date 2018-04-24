@@ -150,11 +150,7 @@ def process_upload():
 #RUNS WHEN processes sidebar option is pressed
 @route('/_processes', method="GET")
 def load_processes():
-    # try:
-    #     processes = Processor.get_all_processes_db()
-    # except ProtocolError:
     processes = Processor.get_all_processes()
-
     return template('_processes', processes=processes)
 
 
@@ -169,16 +165,12 @@ def load_file_view_post():
 
     #grab a file with the same name
     database_obj = Database.db_list_one('Name', file_select)
-
-    # used to not show location of the file on system
-    #TODO could be deleted
     del database_obj['location']
-
     database_obj["time"] = database_obj["time"]
-
     cuckoo_file_path = Processor.get_cuckoo(database_obj)
 
     return template('_file-output', file_obj=database_obj)
+
 # Static Routes
 #USED for our CSS, JS and other assets
 @get('/<filename:path>')
@@ -198,12 +190,6 @@ def module_upload_post():
         print upload.filename
         name, ext = os.path.splitext(upload.filename)
         assert ext == '.zip'
-
-
-        # How to not allow file types
-        # name, ext = os.path.splitext(upload.filename)
-        # if ext not in ('.not', '.allowed', '.example'):
-        #     return "File extension not allowed."
 
         # set up downloads path
         save_path = "{path}/modules".format(path=CWD)
@@ -226,9 +212,7 @@ def module_upload_post():
 def module_create_post():
     text = request.forms.get('code-text-input')
     module_name = request.forms.get('module-name')
-
     module_name = module_name.split(".")[0]
-
 
     save_path = os.path.join(CWD, "modules", module_name)
     if not os.path.exists(save_path):
@@ -238,7 +222,6 @@ def module_create_post():
     file_path = os.path.join(save_path, full_name)
     file = open(file_path, "w")
     file.write(text)
-    print text
 
     return get_my_modules()
 
@@ -265,7 +248,6 @@ def malware_search():
 
     formated_objs = []
 
-    # search_ouput_objects = Database.db_find_first_char(search_input)
     search_ouput_objects = Database.db_find_malware_hash(search_input, type)
 
     for obj in search_ouput_objects:
@@ -324,9 +306,6 @@ def delete_module_post():
 
 @route('/_processes_data', "GET")
 def load_processes_data_jquery():
-    # try:
-    #     processes = Processor.get_all_processes_db()
-    # except ProtocolError:
     processes = Processor.get_all_processes()
 
     arr = []
@@ -337,8 +316,6 @@ def load_processes_data_jquery():
 
 @route('/_dash_data', "GET")
 def add_numbers():
-    #db_list = Database.db_list_all_time()
-    #print(db_list)
     from_DB = Database.db_list_malwaredate()
     malware_count = 0
     C1V0 = 0
@@ -397,18 +374,15 @@ def add_numbers():
         avg_time = 0
     else:
         avg_time = total_time/(av_count)
-    #print(total_time,'/',av_count,'=',avg_time)
 
     types = Database.db_gui_get_newtype()
     exe = 0
     other = 0
     for k in types:
-        #print(k["Type"])
         if ("exe" in k["Type"]):
             exe += 1
         else:
             other += 1
-    #print(exe/float(exe+other) ,'-',exe,'-',other)
     total = exe + other
     if total is not 0:
         exe_percent = 100*(exe/float(exe+other))
@@ -416,8 +390,6 @@ def add_numbers():
     else:
         exe_percent = 0
         other_percent = 0
-    #print(exe_percent,'-',other_percent)
-
 
     info = {'new_mal' : malware_count, 'new_nmal': total-malware_count, 'avg_time' : datetime.datetime.utcfromtimestamp(avg_time).strftime("%S.%f"), 'C1V0':C1V0, 'C1V1':C1V1, 'C1V2':C1V2, 'C1V3':C1V3, 'C1V4':C1V4, 'C1V5':C1V5, 'C2V0':C2V0, 'C2V1':C2V1, 'C2V2':C2V2, 'C2V3':C2V3, 'C2V4':C2V4, 'C2V5':C2V5, 'PI1':exe, 'PI2':other, 'T0':datetime.datetime.fromtimestamp(time.time()).strftime("%H:%M"), 'T1':datetime.datetime.fromtimestamp(time.time()-3600).strftime("%H:%M"), 'T2':datetime.datetime.fromtimestamp(time.time()-7200).strftime("%H:%M"), 'T3':datetime.datetime.fromtimestamp(time.time()-10800).strftime("%H:%M"), 'T4':datetime.datetime.fromtimestamp(time.time()-14400).strftime("%H:%M"), 'T5':datetime.datetime.fromtimestamp(time.time()-18000).strftime("%H:%M")}
 

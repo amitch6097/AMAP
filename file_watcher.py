@@ -76,15 +76,11 @@ class FileGrab:
                 filename_path_dict = self.move_files(files)
                 malware_array = self.paths_to_malware_objs(filename_path_dict)
 
-                #NOTE IDEALLY FILEWATCHER WOULD JUST WORK AND CATCH THE FILES BUT ...
                 self.process_files(malware_array)
-
                 time.sleep(self.time_between_each_iter)
 
         except Exception as e:
             print(e)
-            # self.proc.terminate()
-
 
     def grab_files_names(self):
         only_files = [f for f in os.listdir(self.input_dir) if os.path.isfile(os.path.join(self.input_dir, f))]
@@ -97,8 +93,6 @@ class FileGrab:
         return files_clipped
 
     def move_files(self,files):
-
-        #{"filename":"path/to/file", "filename":"path/to/file"}
         filename_path_dict = {}
 
         for file in files:
@@ -108,7 +102,6 @@ class FileGrab:
 
         return filename_path_dict
 
-    #NOTE not pretty clean up
     def paths_to_malware_objs(self, filename_path_dict):
 
         malware_array = []

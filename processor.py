@@ -148,18 +148,6 @@ class Process:
         return output_obj
 
 
-
-        #     if file_database_obj['Cuckoo'] == "":
-        #         task_id = file_database_obj['cuckoo_id']
-		# print task_id
-        #         response = Cuckoo.get_report(task_id)
-		# print response
-		# if response != "":
-        #         	Database.db_update_malware_on_id(file_database_obj['_id'], {"Cuckoo": response})
-        #         return response
-        #     return file_database_obj['Cuckoo']
-        # return None
-
     def run(self):
         self.start_process()
         cwd = os.getcwd()
