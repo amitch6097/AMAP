@@ -155,7 +155,9 @@ class Process:
             return output_obj
         else:
             return {}
-
+    #retrives a cuckoo report if cuckoo is installed and the report exists
+    #   PARAM output_obj a dictionary with the cuckoo report id
+    #   RETURNS output_obj the same parameter dictionary with the addition of the report pathname
     def get_cuckoo(self, output_obj):
         """retrives a cuckoo report if it is an avaiable module"""
 
@@ -169,7 +171,7 @@ class Process:
 
         return output_obj
 
-
+    #runs each of the modules a process has activated and updates th database
     def run(self):
         """runs all of the modules in a process on the given file and upates the mongodb"""
 
@@ -215,28 +217,32 @@ class Process:
 
 """Handles the multiporcessing of processes in the system"""
 class MultiProcessor:
+    # cpu_count -integer count of the systems cpus
+    # processes -list list of processes this MultiProcessor is associated with
+    # queue -Queue with manages the processes
     def __init__(self):
         self.cpu_count = mp.cpu_count()
         self.processes = []
         self.queue = Queue()
 
-
+    # starts the multiprocessing
     def start(self):
         """starts the multiprocessing of current processes in the object"""
         self.processes = [mp.Process(target=self.run, args=(self.queue,)) for i in range(self.cpu_count)]
         for proc in self.processes:
             proc.start()
-
+    # adds a new process to the queu
+    #   PARAM process Process to be added to the queue
     def add_to_queue(self, process):
         self.queue.put(process)
-
+    # RETURNS the queue's head
     def pop_queue(self):
         return self.queue.get()
-
+    # joins all the processes so the program must wait for them
     def join_all():
         for proc in self.processes:
             proc.join()
-
+    # runs each process
     def run(self, q):
         while(True):
             process = q.get()
