@@ -358,17 +358,17 @@ class Processor:
     """Checks if cuckoo is a modules and tries to retrive a cuckoo report"""
     def get_cuckoo(self, file_database_obj):
     	print file_database_obj.keys()
-            if 'Cuckoo' in file_database_obj.keys():
-                if file_database_obj['Cuckoo'] == "":
-                    task_id = file_database_obj['cuckoo_id']
-    		print task_id
-                    response = Cuckoo.get_report(task_id)
-    		print response
-    		if response != "":
-                    	Database.db_update_malware_on_id(file_database_obj['_id'], {"Cuckoo": response})
-                    return response
-                return file_database_obj['Cuckoo']
-            return None
+        if 'Cuckoo' in file_database_obj.keys():
+            if file_database_obj['Cuckoo'] == "":
+                task_id = file_database_obj['cuckoo_id']
+		print task_id
+                response = Cuckoo.get_report(task_id)
+		print response
+		if response != "":
+                	Database.db_update_malware_on_id(file_database_obj['_id'], {"Cuckoo": response})
+                return response
+            return file_database_obj['Cuckoo']
+        return None
 
     """Triggers the start of the parrellel processing of process objects through MultiProcessor"""
     def run_modules(self):
