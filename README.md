@@ -1,5 +1,5 @@
 
-#README
+# README
 
 If you already have git and Python 2.7 installed on your machine, skip to step 3.
 
