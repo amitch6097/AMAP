@@ -40,6 +40,7 @@ def yara_scan(raw_data):
     yara_rules = yara.compile(rule_file)
     matches = yara_rules.match(data=raw_data)
     if len(matches) > 0:
+        print matches
         return str(matches[0])
     else:
         return
