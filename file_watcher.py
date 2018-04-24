@@ -7,8 +7,16 @@ import multiprocessing as mp
 from wizard import Wizard
 from uploader import Malware
 from dbio import Database
-
+#CLASS that pulls files from the unprocessed collection, processes them, and adds them to the processed collection
 class FileGrab:
+    #   is_running -boolean
+    #   number_of_file_to_grab_each_iter -integer
+    #   time_between_each_iter  -integer
+    #   input_dir   -string
+    #   output_dir  -string
+    #   file_process_callback   -function
+    #   proc    -multiprocessing.Process
+    #   PARAM file_process_callback function that is invoked to perform processing
     def __init__(self, file_process_callback):
         self.is_running = False
         self.number_of_file_to_grab_each_iter = 1
@@ -28,14 +36,8 @@ class FileGrab:
 
         self.proc = mp.Process(target=self.run_loop)
 
-    def set_files_per_sec(files_count, sec):
-        self.number_of_file_to_grab_each_iter = files_count
-        self.time_between_each_iter = sec #seconds I think?
 
-    def set_files_per_sec(file_amount, sec):
-        self.number_of_file_to_grab_each_iter = file_amount
-        self.time_between_each_iter = sec #seconds I think?
-
+    #   stops the currently running instance of FileGrab and terminates its process
     def stop(self):
         if(self.is_running):
 
@@ -45,7 +47,8 @@ class FileGrab:
 
             self.is_running = False
             self.proc.terminate()
-
+    #   starts the FileGrab runnning and updates frequency information then starts self.proc
+    #   PARAM wizard the wizard object that contains all the information for number of files and frequency if pulls
     def run(self, wizard):
         if(self.is_running == False):
 
@@ -67,7 +70,7 @@ class FileGrab:
 
             self.proc.daemon = True
             self.proc.start()
-
+    #   function which is utilized by FileGrab to get files, move them, and perform processing
     def run_loop(self):
 
         try:
@@ -78,10 +81,11 @@ class FileGrab:
 
                 self.process_files(malware_array)
                 time.sleep(self.time_between_each_iter)
-
+        # when self.stop() terminates the run loop
         except Exception as e:
             print(e)
-
+    #   gets a list of the files in the unprocessed collection and shortens it to length = number_of_file_to_grab_each_iter
+    #   RETURNS files_clipped a list of filenames of no greater than number_of_file_to_grab_each_iter
     def grab_files_names(self):
         only_files = [f for f in os.listdir(self.input_dir) if os.path.isfile(os.path.join(self.input_dir, f))]
 
@@ -91,7 +95,9 @@ class FileGrab:
             files_clipped = only_files
 
         return files_clipped
-
+    #   moves files from the unprocessed directory to the processed directory
+    #   PARAM files a list of filenames of files to be moved
+    #   RETURNS filename_path_dict a dictionary which maps filenames to their new paths
     def move_files(self,files):
         filename_path_dict = {}
 
@@ -101,7 +107,9 @@ class FileGrab:
             filename_path_dict[file] = full_path
 
         return filename_path_dict
-
+    #   gets the new file paths of each file to be processed, generates hashes, adds it to the database and collects all the files in an array
+    #   PARAM filename_path_dict a dictionary which maps filenames to their relative paths
+    #   RETURNS malware_array a list of Malware objects to be processed
     def paths_to_malware_objs(self, filename_path_dict):
 
         malware_array = []
@@ -123,7 +131,8 @@ class FileGrab:
 
         return malware_array
 
-
+    #   invokes the function specified in file_process_callback on a malware_array
+    #   PARAM malware_array a list of Malware objects to be processed
     def process_files(self,malware_array):
 
         print ""

@@ -52,11 +52,7 @@
                     <td>
                       {{process.start_time}}
                     </td>
-                    <!-- <td>
-                      <div class="progress">
-                        <div class="progress-bar bg-info" role="progressbar" style="width: {{process.percent_done}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </td> -->
+
                     <td>
                       {{process.end_time}}
                     </td>

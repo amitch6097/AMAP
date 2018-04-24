@@ -31,7 +31,7 @@ class Process:
         # Ex {'ratDecoder':False} -> ratDecoder failed to run on file
         self.modules = {}
 
-        self.percent_done = 0
+
         self.start_time = "idle"
         self.end_time = "waiting..."
         self.run_number = -1

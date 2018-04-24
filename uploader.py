@@ -17,7 +17,8 @@ class Malware:
         self.id = -1
         self.runs = 0
         self.time = time.time()
-
+    #   setter for id
+    #   PARAM id the value id will be set to
     def edit_id(self, id):
         self.id = id
 
@@ -28,6 +29,7 @@ class Malware:
             'location'  :self.path,
             'runs'      :self.runs,
             'time'      :self.time,
+            'hashes'    :self.hashes,
             'hashes'    :self.hashes,
             'sha1'      :self.hashes['sha1'],
             'sha256'    :self.hashes['sha256'],
@@ -102,6 +104,7 @@ class MalwareUploader:
         malware = Malware(filename, new_path, hashes)
 
         if os.path.isfile(new_path):
+            #adds new names of the same file as entries on original file
             if Database.db_add_name_to_malware(new_path, filename, malware) == False:
                 os.rename(file_path, new_path)
                 Database.db_insert_malware_obj(malware)
