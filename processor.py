@@ -27,7 +27,7 @@ class Process:
         # Ex {'ratDecoder':False} -> ratDecoder failed to run on file
         self.modules = {}
 
-        self.percent_done = 0
+        
         self.start_time = "idle"
         self.end_time = "waiting..."
         self.run_number = -1
@@ -49,7 +49,6 @@ class Process:
 
     #sets the process to finished and puts a timestamp on it
     def finish_process(self):
-        self.percent_done = 100
         self.end_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
         self.endtime_num = time.time()
     #gives start timestamp
