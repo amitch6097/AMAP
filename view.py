@@ -29,18 +29,20 @@ FileGrab = FileGrab(Processor.create_process_obj_auto)
 
 CWD = os.path.dirname(os.path.realpath(__file__))
 
+
+"""default is login page"""
 @route('/')
 def default():
     return login()
 
+"""login with warning based on password/uesrname"""
 @route('/login')
 def login():
     return template('login', {"warning":""})
 
-
+"""for donwloading a staticfile"""
 @route('/download/<filename:path>')
 def d(filename):
-    print filename
     return static_file(filename, root="CuckooReports/", download=True)
 
 
@@ -48,20 +50,20 @@ def d(filename):
 def index(name):
     return template(name)
 
-
+"""displays the wizard with options from the wizard class"""
 @route('/_wizard', "GET")
 def wizard():
     #get info to display on next page
     info = {'module_options': Processor.get_modules(), 'running': Wizard.isRunning(), 'active_modules': Wizard.getModules(), 'time': Wizard.getTimeInterval(), 'numFiles': Wizard.getFileGrabInterval() }
-
     return template('_wizard', info)
 
-
+"""post to activate the amap wizard"""
 @route('/_amap-active', method='POST')
 def start_amap_jquery():
 
-    #set the wizard to running == True
+    #set the wizard to running
     Wizard.startRunning()
+
     #set the selected modules
     Wizard.setModules(request.forms, Processor.get_modules())
     Wizard.setConfig(request.forms)
@@ -75,9 +77,11 @@ def start_amap_jquery():
 
     return template('_wizard', info)
 
+"""post to quit the amap wizard"""
 @route('/_amap-quit', method='POST')
 def quit_amap_jquery():
 
+    #set the wizard to not running
     Wizard.stopRunning()
 
     #Stop Running
@@ -88,104 +92,79 @@ def quit_amap_jquery():
 
     return template('_wizard', info)
 
-#MALWARE UPLOADING THINGS
-
-#RUNS WHEN a start new process button is pressed on File View page
+"""sets a previously uploaded file to rerun"""
 @route('/_file-rerun', method='POST')
 def file_rerun():
-    db_file = Database.db_find_by_id(request.forms.get('id'))
 
+    #grab file from dabatase using post form
+    db_file = Database.db_find_by_id(request.forms.get('id'))
+    #add to uploads
     Uploader.add_preloaded(db_file, Database)
+    #get options for modules
     info = {'file_names' : Uploader.get_current_upload_filenames(), 'module_options': Processor.get_modules()}
+
     return template('_process-modules', info)
 
-#RUNS WHEN file upload side bar button is Processed
-# Decides which page to show file upload or process options
-@route('/file-upload')
-def file_upload():
-    #We have files that need to be processed still
-    if Uploader.has_uploads():
-        info = {'file_names' : Uploader.get_current_upload_filenames(), 'module_options': Processor.get_modules()}
-        return template('process-modules', info)
-
-    #show file upload
-    else:
-        return template('file-upload')
-
-#RUNS WHEN upload button is pressed on file upload packages
-#Uploads the files and navigates to process options page
-@route('/upload', method='POST')
-def do_upload():
-
-    #upload files
-    files = request.files.getall('upload')
-    Uploader.upload(files, Database)
-
-    #get info to display on next page
-    info = {'file_names' : Uploader.get_current_upload_filenames(), 'module_options': Processor.get_modules()}
-
-    return template('process-modules', info)
-
-#RUNS WHEN upload button is pressed on file upload packages
-#Uploads the files and navigates to process options page
+"""uploades files to the system"""
 @route('/_upload_files', method='POST')
 def file_upload_jquery():
 
-    #upload files
+    #grab files from post form
     files = request.files.getall('files[]')
-    print len(files)
+    #upload to system
     Uploader.upload(files, Database)
+    #get info to display modules
     info = {'file_names' : Uploader.get_current_upload_filenames(), 'module_options': Processor.get_modules()}
-
     return template('_process-modules', info)
 
-#RUNS WHEN submit button is pressed on file upload module options page
+"""starts the processing of files that have been uploaded"""
 @route('/_process', method='POST')
 def process_upload():
+    #create process object from the uploaders uploads
     Processor.create_process_obj(request.forms, Uploader.current_uploads)
     Uploader.reset()
+
+    #run the processes
     Processor.run_modules()
     return template("_file-upload")
 
-#RUNS WHEN processes sidebar option is pressed
+"""gets all running and past processes to display"""
 @route('/_processes', method="GET")
 def load_processes():
     processes = Processor.get_all_processes()
     return template('_processes', processes=processes)
 
-
-#RUNS WHEN a file is click on in either processes page or search_input
-# TODO db_list_one only gets the first file with name, is a problem for duplicates
-
+"""gets the view for a file with all module ouput"""
 @route('/_file_view', method='POST')
 def load_file_view_post():
 
-    #grab the selected file
+    #grab the selected file from the post form
     file_select = request.forms.get('filename')
 
     #grab a file with the same name
     database_obj = Database.db_list_one('Name', file_select)
+
+    #remove the location from modules
     del database_obj['location']
     database_obj["time"] = database_obj["time"]
+
+    #grab cuckoo report if avaiable
     cuckoo_file_path = Processor.get_cuckoo(database_obj)
 
     return template('_file-output', file_obj=database_obj)
 
-# Static Routes
-#USED for our CSS, JS and other assets
+"""static routes for css, js, and html"""
 @get('/<filename:path>')
 def static(filename):
     return static_file(filename, root='static/')
 
 
-#RUNS WHEN a module is uploaded
-# unzips the file and places it in modules folder
+"""unzips an uploaded module and adds it to the list of modules"""
 @route('/_module-upload', method='POST')
 def module_upload_post():
     uploads = request.files.getall('files[]')
     uploads_name_array = []
     print uploads
-    #TODO handle uploads with same names
     for upload in uploads:
         print upload.filename
         name, ext = os.path.splitext(upload.filename)

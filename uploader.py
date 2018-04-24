@@ -3,20 +3,17 @@ import time
 import hashlib
 
 
-#CLASS to define a single file or malware upload
+"""
+Defines a Malware sample file object
+filename:   name of the sample
+path:       path to the file in the system
+hashes:     all hashes associated with the file
+"""
 class Malware:
-
-    #   filename   - string
-    #   path       - string path the to file on system
-    #   hashes     - dictionary of sha1, sha256, and md5 with their appropriate hashes for this file
-    #   id         - integer id that is used for display purposes
-    #   runs       - integer number of times a malware has been processed
-    #   time       -the current time
     def __init__(self, filename, path, hashes):
         self.filename = filename
         self.path = path
         self.hashes = hashes
-
         self.id = -1
         self.runs = 0
         self.time = time.time()
@@ -24,8 +21,8 @@ class Malware:
     #   PARAM id the value id will be set to
     def edit_id(self, id):
         self.id = id
-    #   gets all the basic information about a malware including name, path, runs, and the hashes
-    #   RETURNS a dictionary of attributes of the object
+
+    """used when placing object in a mongodb"""
     def to_database_file(self):
         return {
             'Name'      :self.filename,
@@ -33,16 +30,18 @@ class Malware:
             'runs'      :self.runs,
             'time'      :self.time,
             'hashes'    :self.hashes,
+            'hashes'    :self.hashes,
             'sha1'      :self.hashes['sha1'],
             'sha256'    :self.hashes['sha256'],
             'md5'       :self.hashes['md5']
         }
 
-#CLASS to upload malware and get current uploaded files
+"""
+Defines a object which can upload malware to the system
+path: string path to the Current working directory
+"""
 class MalwareUploader:
 
-    # takes the current path of view.py
-    # makes downloads folder if necessary
     def __init__(self, path):
         self.dir = "downloads"
         self.upload_dir = "{0}/{1}".format(path, self.dir)
@@ -59,26 +58,26 @@ class MalwareUploader:
         self.state = "upload"
         self.current_uploads = []
 
-    #reset state to uploading and clear uploads
+    """reset state to uploading and clear uploads"""
     def reset(self):
         self.state = "upload"
         self.current_uploads = []
 
-    # if we have files that are uploaded
+    """checks if system has malware uploads to process"""
     def has_uploads(self):
         if(self.state != "upload"):
             return True
 
-    # get the current uploaded files in an array
+    """get the current uploaded files in an array"""
     def get_current_upload_filenames(self):
         file_name_array = [f.filename for f in self.current_uploads]
         return file_name_array
 
-    # ran when we are running moudles on a file that is
-    # already in our database -- we don't need to upload it
-    #
-    #   db_file   - the database object of the file
-    #   Database  - our global database obj
+    """
+    ran when we are running moudles on a file that is
+    already in our database -- we don't need to upload it
+    db_file:  the database object of the file
+    Database: our global database obj"""
     def add_preloaded(self, db_file, Database):
 
         self.state = "modules"
@@ -88,10 +87,8 @@ class MalwareUploader:
         self.current_uploads.append(malware)
         malware.edit_id(db_file['_id'])
         malware.runs = db_file['runs']
-    # generates hashes for a file and a Malware object so it can go on to be processed and adds it to the database
-    #   PARAM file_path the path to the file
-    #   PARAM Database the database object that the file is being added to
-    #   PARAM filename the name of the file
+
+    """retrives the hashes from a file and renames the file based on this"""
     def get_hashes_and_move_file(self, file_path, Database, filename):
         opened_file = open(file_path)
         read_file = opened_file.read()
@@ -120,11 +117,10 @@ class MalwareUploader:
 
 
 
-    #TODO handle uploads with same names
-    # Uploads files to the downloads folder
-    #
-    #   file_uploads   - files from a form post action, array
-    #   Database       - our global database object
+    """Uploads files to the downloads folder
+    file_uploads   - files from a form post action, array
+    Database       - our global database object
+    """
     def upload(self, file_uploads, Database):
         self.state = "modules"
 
