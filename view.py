@@ -186,13 +186,17 @@ def module_upload_post():
 
     return get_my_modules()
 
-
+"""creates a new module from the module creator"""
 @route('/module-create', method='POST')
 def module_create_post():
+
+    # get the code created in module creator
     text = request.forms.get('code-text-input')
+    #get the name the file is to be saved as
     module_name = request.forms.get('module-name')
     module_name = module_name.split(".")[0]
 
+    #write to and save the module from the form info
     save_path = os.path.join(CWD, "modules", module_name)
     if not os.path.exists(save_path):
         os.makedirs(save_path)
@@ -205,14 +209,15 @@ def module_create_post():
     return get_my_modules()
 
 
-#RUNS WHEN search button is pressed
-#grabs input from search bar and searches database for those chars
+"""searches the database for malware similar to search settings"""
 @route('/_malware-search', method='POST')
 def malware_search():
 
+    # greab form input
     search_input = request.forms.get('module-search-input')
     type_input = request.forms.get('malware-search-type').rstrip().lstrip()
-    print type_input
+
+    #grab the type of search we want
     type_converter_dic = {
         "File Name" : "Name",
         "MD5": "md5",
@@ -224,65 +229,72 @@ def malware_search():
     else:
         type = "Name"
 
-
+    #setup array for return from search
     formated_objs = []
-
+    #search in database
     search_ouput_objects = Database.db_find_malware_hash(search_input, type)
-
+    #add to ouput array
     for obj in search_ouput_objects:
         formated_objs.append(obj)
 
     return template('_search', search_output=formated_objs)
 
-
+"""returns to view for module creator when edit or create new module is pressed"""
 @route('/_my-modules-creator', method='POST')
 def my_module_creator_get():
+
+    #try to find the module name and file to edit
     try:
         module_name = request.forms.get("module-name")
-        print module_name
     except NameError:
         module_name = ''
 
     file_contents = []
 
+    #if we can not find a file create a template file
     if module_name == None:
         file_contents = ['import os', 'from optparse import OptionParser', '', '', '__description__ =', '__author__ =', "__version__ = '1.0'", '__date__ =', '', 'def my_module(filename):', '', 'if __name__ == "__main__":', "        parser = OptionParser(usage='usage: %prog file / dir\\n' + __description__, version='%prog ' + __version__)", '        (options, args) = parser.parse_args()', '        is_file = os.path.isfile(args[0])', '        if is_file:', '            my_module(args[0])']
         return template('_module-creator', {"module_name":"", "file_contents":file_contents})
 
+    # otherwise return the file contents that was given to us
     path = "{0}/modules/{1}".format(CWD, module_name)
     full_name = "{0}.py".format(module_name)
     file_path = os.path.join(path, full_name)
 
+
+    #try to open the file and read the contents
     try:
         with open(file_path, 'r') as fp:
             for line in fp:
                 file_contents.append(line.rstrip())
+
+    #other wise the file is considered empty
     except:
         file_contents = []
 
     return template('_module-creator', {"module_name":full_name, "file_contents":file_contents})
 
-#RUNS WHEN my modules is selected
-#shows the current uploaded modules
+"""returns to view for all of the current modules"""
 @route('/_my-modules', "GET")
 def get_my_modules():
+    # only show editable modules
     modules = Processor.get_editable_modules()
     return template('_display-modules', modules=modules)
 
 
-#RUNS WHEN delete is selected on my modules page
+"""deletes a module from a form post"""
 @route('/_delete-module', method='POST')
 def delete_module_post():
+    # grab the name of the module to delete
     modules_name = request.forms.get('module-name')
-    print modules_name
-
+    #get the path
     path = "{0}/modules/{1}".format(CWD, modules_name)
-
+    #remove the tree structor
     if os.path.isdir(path):
         shutil.rmtree(path)
 
     return {}
-
+"""Gets all of the processor data and puts it into a json obj"""
 @route('/_processes_data', "GET")
 def load_processes_data_jquery():
     processes = Processor.get_all_processes()
@@ -293,6 +305,7 @@ def load_processes_data_jquery():
 
     return json.dumps({"processes":arr})
 
+"""Retrives the data fror the dashboard"""
 @route('/_dash_data', "GET")
 def add_numbers():
     from_DB = Database.db_list_malwaredate()
@@ -374,12 +387,12 @@ def add_numbers():
 
     return json.dumps(info)
 
-
+"""Retrives the single page application"""
 @route('/dashboard')
 def index():
     return template('single-page')
 
-
+"""Logs a user in before returning to the dashboard"""
 @route('/login-user', method="POST")
 def login_page():
     username = request.forms.get('user_email')
