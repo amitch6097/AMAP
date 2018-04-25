@@ -8,7 +8,7 @@ from bson.objectid import ObjectId
 from passlib.apps import custom_app_context as pwd_context
 from beaker.middleware import SessionMiddleware
 
-
+#CLASS used to connect with the database and performa all necessary opertaions
 class Dbio:
 	def __init__(self):
 		client = MongoClient('45.32.65.58',27017)
@@ -16,6 +16,7 @@ class Dbio:
 
 		#There is a collection called "alpha" in my database, so I need to get it...
 		self.alpha = db.alpha
+		#these are all the collection names
 		self.proc = db.processes
 		self.authentication = db.authentication
 		self.malware = db.malware
@@ -29,11 +30,11 @@ class Dbio:
 		sample = {"Username":username, "pwdhash":password}
 		self.authentication.insert(sample)
 
-	def db_get_user_by_username(self, username):
+	def db_get_user_by_username(self, username): # Insert username
 		return self.authentication.find({'Username': username})
 
 
-	def db_verify_login(self, username):
+	def db_verify_login(self, username): #Check username and password hash in the database
 		user_object = db_get_user_by_username(username)
 		username = user_object["Username"]
 		password = user_object["pwdhash"]
@@ -49,39 +50,39 @@ class Dbio:
 	def db_list_one(self, name,val): #Show one result using specific rule
 		return self.alpha.find_one({name:val})
 
-	def db_find_by_id(self, id):
+	def db_find_by_id(self, id): #Finds a database object based on database assigned id
 		return self.alpha.find_one({"_id":ObjectId(id)})
 
-	def db_gui_insert_newmw(self):
+	def db_gui_insert_newmw(self): #Inserts a counter into the databse
 		info = {"NTime":time.time()}
 		self.counter_newmw.insert(info)
 
-	def db_gui_get_newmw(self):
+	def db_gui_get_newmw(self): #Gets the counter from the database
 		return self.counter_newmw.find({},{'NTime':1,'_id':0})
 
-	def db_gui_insert_newtype(self,ftype):
+	def db_gui_insert_newtype(self,ftype): #Inserts a file type in the database
 		info = {"Type":ftype}
 		self.counter_type.insert(info)
 
-	def db_gui_get_newtype(self):
+	def db_gui_get_newtype(self): #Gets the filetype from the database
 		return self.counter_type.find({},{'Type':1,'_id':0})
 
 	def db_list_all_time(self):
 		for i in self.alpha.find({},{'time':1,'_id':0}):
 			print(i)
 
-	def db_add_malware(self,time):
+	def db_add_malware(self,time): #Updates the time of a malware
 		info = {"Time":time}
 		self.malware.insert(info)
 
-	def db_add_avgtime(self,time):
+	def db_add_avgtime(self,time): #Adds an average time to the collection
 		info = {"ATime":time}
 		self.average_proctime.insert(info)
 
-	def db_list_avgproctime(self):
+	def db_list_avgproctime(self): #Lists all the average times in the collection
 		return self.average_proctime.find({},{'ATime':1,'_id':0})
 
-	def db_list_malwaredate(self):
+	def db_list_malwaredate(self): #Lists all the malware times
 		return self.malware.find({},{'Time':1,'_id':0})
 	# increments the amount of times a file has been run
 	def db_inc_runs_by_id(self, db_id):
@@ -95,7 +96,7 @@ class Dbio:
     	)
 		return runs
 
-	def db_add_name_to_malware(self, path, name, malware):
+	def db_add_name_to_malware(self, path, name, malware): #Updates a malware with a new name for the same malware
 		db_file = self.alpha.find_one({'location': path})
 		if db_file == None :
 			return False
@@ -155,7 +156,7 @@ class Dbio:
 	def db_del_element(self, name,val):	#Remove info from the database
 		self.alpha.remove({name:val})
 
-	def db_clear(self):
+	def db_clear(self): #delete all of the collections in the database
 		self.alpha.delete_many({})
 		self.proc.delete_many({})
 		self.malware.delete_many({})
@@ -182,7 +183,7 @@ class Dbio:
 	#Gets all the processes in the database
 	def db_get_all_processes(self):
 		return self.proc.find()
-
+	#Clears the processes database
 	def db_new_processes_clear(self):
 		self.proc.delete_many({})
 
